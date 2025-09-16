@@ -1,0 +1,31 @@
+project:
+  type: website
+  output-dir: docs
+  
+filters:
+  - webr
+
+website:
+  title: "Biomedical Data Science (BDS) Club"
+  bread-crumbs: false
+  sidebar:
+    style: "floating"
+    search: true
+    contents:
+      - href: index.qmd
+        text: Welcome!
+      - href: workshop_1.qmd
+        text: 1. Introduction
+        
+    tools:
+      - icon: github
+        menu:
+          - text: Source Code
+            url:  https://github.com/rich2355/Biomedical_Data_Science_Club_Materials
+
+format:
+  html:
+    theme: [default]
+    css: styles.css
+    toc: true
+
