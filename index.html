@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Biomedical Data Science (BDS) Workshop – Biomedical Data Science (BDS) Club</title>
+<title>Biomedical Data Science (BDS) Club Workshop – Biomedical Data Science (BDS) Club</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -367,7 +367,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"print(\"Welcome to SER 2025!\")","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"print(\"Welcome to Biomedical Data Science Club!\")","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script>
 <script type="module">
@@ -1635,7 +1635,7 @@ globalThis.qwebrExecuteCode = async function (
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-          <h1 class="quarto-secondary-nav-title">Biomedical Data Science (BDS) Workshop</h1>
+          <h1 class="quarto-secondary-nav-title">Biomedical Data Science (BDS) Club Workshop</h1>
         </a>     
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
@@ -1676,16 +1676,8 @@ globalThis.qwebrExecuteCode = async function (
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives">Learning objectives</a></li>
-  <li><a href="#tentative-schedule" id="toc-tentative-schedule" class="nav-link" data-scroll-target="#tentative-schedule">Tentative Schedule</a></li>
-  <li><a href="#webr" id="toc-webr" class="nav-link" data-scroll-target="#webr">webR</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -1976,7 +1968,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Biomedical Data Science (BDS) Workshop</h1>
+<h1 class="title d-none d-lg-block">Biomedical Data Science (BDS) Club Workshop</h1>
 </div>
 
 
@@ -1993,111 +1985,33 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </header>
 
 
-<p>In this workshop, we present methods to define and estimate the causal effects of categorical, continuous, and multivariate exposures. The methods are based on a generalization of the static and dynamic interventions that may be familiar to some of you. This generalization has been recently called modified treatment policies (MTPs). MTPs are hypothetical interventions where the post-intervention exposure is defined as a modification of the natural value of the exposure that can also depend on the unit’s history. This short course will introduce the <strong>lmtp</strong> R package for estimating the causal effects of these general estimand in both point-treatment and longitudinal studies. We will discuss identification of MTPs, estimation with a targeted minimum-loss based estimator and a sequentially doubly-robust estimator, and provide guidance on estimator choice and software usage.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Conference</th>
-<th>Year</th>
-<th>📍Location</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>SER</td>
-<td>2024</td>
-<td>Austin, TX</td>
-</tr>
-<tr class="even">
-<td>ACIC</td>
-<td>2025</td>
-<td>Detroit, MI</td>
-</tr>
-<tr class="odd">
-<td>SER</td>
-<td>2025</td>
-<td>Boston, MA</td>
-</tr>
-<tr class="even">
-<td>LiDS</td>
-<td>2025</td>
-<td>Brooklyn, NY</td>
-</tr>
-</tbody>
-</table>
-<section id="learning-objectives" class="level3">
-<h3 class="anchored" data-anchor-id="learning-objectives">Learning objectives</h3>
-<p>By the end of the workshop, participants will be able to:</p>
-<ol type="1">
-<li><p>Generalize static and dynamic interventions intuitively and using notation.</p></li>
-<li><p>Estimate the effect of a static or dynamic intervention with <strong>lmtp</strong> for point-treatment and longitudinal studies.</p></li>
-<li><p>Estimate the effect of an MTP on a continuous-valued exposure with <strong>lmtp</strong> for point-treatment and longitudinal studies.</p></li>
-<li><p>Estimate the effect of multivariate exposures with <strong>lmtp</strong> for point-treatment and longitudinal studies.</p></li>
-</ol>
-<div class="callout callout-style-simple callout-warning">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p>This workshop assumes the participant has a basic understanding of fundamental concepts in causal inference such as the concept of counterfactuals, and some experience with the R programming language.</p>
-</div>
-</div>
-</div>
-</section>
-<section id="tentative-schedule" class="level3">
-<h3 class="anchored" data-anchor-id="tentative-schedule">Tentative Schedule</h3>
+<p>This is the indexing page for all the archived materials from Biomedical Data Science (BDS) Club. Richard Liu and Emily Zhang co-found this club based in NYU Langone Health.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
 <th>Topic</th>
-<th>Duration</th>
+<th>Workshop</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Introductions</td>
-<td>15 minutes</td>
+<td>Basic R</td>
+<td>1</td>
 </tr>
 <tr class="even">
-<td>From observed data to causal estimands</td>
-<td>15 minutes</td>
+<td>Tidyverse: Data Manipulation</td>
+<td>1-3</td>
 </tr>
 <tr class="odd">
-<td>Defining causal effects using MTPs</td>
-<td>1 hour</td>
-</tr>
-<tr class="even">
-<td>The estimator landscape</td>
-<td>20 minutes</td>
-</tr>
-<tr class="odd">
-<td><strong>Break</strong></td>
-<td>10 minutes</td>
-</tr>
-<tr class="even">
-<td>Setting up the correct data structure</td>
-<td>15 minutes</td>
-</tr>
-<tr class="odd">
-<td>Estimating effects using the <em>lmtp</em> package</td>
-<td>1 hour 30 min</td>
-</tr>
-<tr class="even">
-<td>Q + A</td>
-<td>15 minutes</td>
+<td>Visualization</td>
+<td>4-5</td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="webr" class="level3">
-<h3 class="anchored" data-anchor-id="webr">webR</h3>
-<p>This workshop was prepared using <a href="https://quarto.org/">Quarto</a> and <a href="https://docs.r-wasm.org/webr/latest/">webR</a>. The source code is available on <a href="https://github.com/nt-williams/lmtp-workshop">GitHub</a>. webR is a version of the R programming language compiled to be run directly in the browser. Using webR for this workshop avoids having to spend time setting up a computing environment and making sure workshop participants are using the same version of R and R packages.</p>
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -2172,7 +2086,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/rich2355\.github\.io\/Biomedical_Data_Science_Club_Materials\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
