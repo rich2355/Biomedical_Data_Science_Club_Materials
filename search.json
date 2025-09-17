@@ -44,7 +44,7 @@
     "href": "workshop_1.html#logical-operators",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
     "section": "Logical Operators",
-    "text": "Logical Operators\n&, |\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\n\nOperators have their own rankings. & is ranked higher than |.\n\n\n\n\n\n\n\n\nQuiz 1\n\n\n\n\n\nIdentify the boolean value of the following expression:\n(5 &lt; 7) | (6 * 7 == 42) & (5 &lt; 7) & (6 * 7 != 42)\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nTo avoid confusion, what would be a better way to write this script?",
+    "text": "Logical Operators\n&, |\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\n\nOperators have their own rankings. & is ranked higher than |.\n\n\n\n\n\n\n\n\nPractice 1\n\n\n\n\n\nIdentify the boolean value of the following expression:\n(5 &lt; 7) | (6 * 7 == 42) & (5 &lt; 7) & (6 * 7 != 42)\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nTo avoid confusion, what would be a better way to write this script?",
     "crumbs": [
       "1. Introduction"
     ]
@@ -54,7 +54,7 @@
     "href": "workshop_1.html#vectors",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
     "section": "Vectors",
-    "text": "Vectors\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nQuiz 2\n\n\n\n\n\nCreate a vector y, write code to obtain z such that \\(y = \\max(z, 0)\\), where \\(\\max(\\cdot)\\) is defined element-wise.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nAny subtle issue?",
+    "text": "Vectors\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 2\n\n\n\n\n\nCreate a vector y, write code to obtain z such that \\(y = \\max(z, 0)\\), where \\(\\max(\\cdot)\\) is defined element-wise.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nAny subtle issue?",
     "crumbs": [
       "1. Introduction"
     ]
@@ -84,7 +84,7 @@
     "href": "workshop_1.html#control-flow",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
     "section": "Control Flow",
-    "text": "Control Flow\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nQuiz 3\n\n\n\n\n\nWrite code to display the following if-else logic: If a patient’s age is between 26 and 35 (left inclusive, same after), then he/she is “young”; if a patient’s age is between 36 and 50, then he/she is “middle aged”; if a patient’s age is older than 50, then he/she is “old”.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nIs this a good encoding?",
+    "text": "Control Flow\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 3\n\n\n\n\n\nWrite code to display the following if-else logic: If a patient’s age is between 26 and 35 (left inclusive, same after), then he/she is “young”; if a patient’s age is between 36 and 50, then he/she is “middle aged”; if a patient’s age is older than 50, then he/she is “old”.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nIs this a good encoding?",
     "crumbs": [
       "1. Introduction"
     ]
@@ -94,7 +94,7 @@
     "href": "workshop_1.html#iteration",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
     "section": "Iteration",
-    "text": "Iteration\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\n\nWhat is while(TRUE)?\n\n\n\n\n\n\n\n\nQuiz 4\n\n\n\n\n\nWrite code to calculate \\(\\sum_{x = 1}^5 x^2\\). Please come up with two different approaches.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nWhich one is better?",
+    "text": "Iteration\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\n\nWhat is while(TRUE)?\n\n\n\n\n\n\n\n\nPractice 4\n\n\n\n\n\nWrite code to calculate \\(\\sum_{x = 1}^5 x^2\\). Please come up with two different approaches.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nWhich one is better?",
     "crumbs": [
       "1. Introduction"
     ]
@@ -104,7 +104,7 @@
     "href": "workshop_1.html#data-frame-basics",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
     "section": "Data Frame Basics",
-    "text": "Data Frame Basics\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nQuiz 5\n\n\n\n\n\nIn the dataset df,\n\nsubset all white patients, how many?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nsubset all patients taking the treatment (instead of taking the control).\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Data Frame Basics\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 5\n\n\n\n\n\nIn the dataset df,\n\nsubset all white patients, how many?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nsubset all patients taking the treatment (instead of taking the control).\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "1. Introduction"
     ]
@@ -114,7 +114,57 @@
     "href": "workshop_1.html#filter",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
     "section": "filter",
-    "text": "filter\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "filter\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 6\n\n\n\n\n\nIn the dataset df, use tidyverse grammar,\n\nsubset all white patients, how many?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nsubset all patients taking the treatment (instead of taking the control).\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "1. Introduction"
+    ]
+  },
+  {
+    "objectID": "workshop_1.html#select",
+    "href": "workshop_1.html#select",
+    "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
+    "section": "select",
+    "text": "select\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 7\n\n\n\n\n\nAssume that you have a dataset with thousands of columns (which is often the case!), and you want to select the information related to Treatment, how to do that?\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "1. Introduction"
+    ]
+  },
+  {
+    "objectID": "workshop_1.html#pull",
+    "href": "workshop_1.html#pull",
+    "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
+    "section": "pull",
+    "text": "pull\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 8\n\n\n\n\n\nFind the race components of df. Hint: table()\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "1. Introduction"
+    ]
+  },
+  {
+    "objectID": "workshop_1.html#mutate-case_when",
+    "href": "workshop_1.html#mutate-case_when",
+    "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
+    "section": "mutate, case_when",
+    "text": "mutate, case_when\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 9\n\n\n\n\n\nYour PI wants to see the level of eGFR for each patient, instead of a number. Please change the corresponding column based on the follows: PI thinks\n\nit is good if \\(eGFR &gt; 90\\)\nit is acceptable if \\(60 &lt; eGFR &lt;= 90\\)\nit is bad if otherwise\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "1. Introduction"
+    ]
+  },
+  {
+    "objectID": "workshop_1.html#group_by-related-summarizations",
+    "href": "workshop_1.html#group_by-related-summarizations",
+    "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
+    "section": "group_by related summarizations",
+    "text": "group_by related summarizations\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 10\n\n\n\n\n\nNational Institute of Health (NIH) requires an annual-renewed cumulative patient report grouping by some basic demographics. Try to provide such summary information to the NIH grouping by Age, Sex and Race, with Age changed to nominal levels by the following rules: old if \\(Age &gt;= 60\\), young if \\(Age &lt;= 30\\), middle_age if otherwise.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "1. Introduction"
+    ]
+  },
+  {
+    "objectID": "workshop_1.html#arrange",
+    "href": "workshop_1.html#arrange",
+    "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
+    "section": "arrange",
+    "text": "arrange",
     "crumbs": [
       "1. Introduction"
     ]
