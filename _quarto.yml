@@ -15,7 +15,7 @@ website:
       - href: index.qmd
         text: Welcome!
       - href: workshop_1.qmd
-        text: 1. Introduction
+        text: 1. R Basics, Tidyverse
       
 format:
   html:

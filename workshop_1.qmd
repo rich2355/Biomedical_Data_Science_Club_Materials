@@ -1,5 +1,5 @@
 ---
-title: "Biomedical Data Science (BDS) Workshop 1: \n Basic R operations, tidyverse (Part 1)"
+title: "Biomedical Data Science (BDS) Workshop 1: \n Basic R operations, tidyverse"
 format: html
 engine: knitr
 filters:
@@ -24,12 +24,6 @@ Credited to Richard Liu and Emily Zhang from the Biomedical Data Science (BDS) c
 # Disclaimer
 
 The datasets provided here are all synthetically generated for demonstration and educational purposes only. It does not represent real patient data and should not be used for clinical decision-making, medical research, or policy development. Any resemblance to real persons, conditions, or outcomes is purely coincidental. The values and relationships were generated using statistical simulation techniques and do not reflect actual medical situations.
-
-# Table of Contents
-
-- 
--
--
 
 # Basic R Operations 
 
@@ -80,7 +74,7 @@ Operators have their own rankings. `&` is ranked higher than `|`.
 :::
 
 ::: {.callout-caution collapse="true"}
-## Quiz 1
+## Practice 1
 Identify the boolean value of the following expression:
 
 `(5 < 7) | (6 * 7 == 42) & (5 < 7) & (6 * 7 != 42)`
@@ -122,7 +116,7 @@ x[places]
 ```
 
 ::: {.callout-caution collapse="true"}
-## Quiz 2
+## Practice 2
 
 Create a vector `y`, write code to obtain `z` such that $y = \max(z, 0)$, where $\max(\cdot)$ is defined element-wise.
 
@@ -220,7 +214,7 @@ if (x^2 < 1) {
 ```
 
 ::: {.callout-caution collapse="true"}
-## Quiz 3
+## Practice 3
 
 Write code to display the following if-else logic: If a patient's `age` is between 26 and 35 (left inclusive, same after), then he/she is "young"; if a patient's `age` is between 36 and 50, then he/she is "middle aged"; if a patient's `age` is older than 50, then he/she is "old". 
 
@@ -257,7 +251,7 @@ What is `while(TRUE)`?
 :::
 
 ::: {.callout-caution collapse="true"}
-## Quiz 4
+## Practice 4
 
 Write code to calculate $\sum_{x = 1}^5 x^2$. Please come up with two different approaches.
 
@@ -280,6 +274,7 @@ Which one is better?
 df
 head(df)
 ```
+
 ```{webr-r}
 df$Age
 df[,"Age"]
@@ -299,7 +294,7 @@ df[df$Age > 50,]
 ```
 
 ::: {.callout-caution collapse="true"}
-## Quiz 5
+## Practice 5
 In the dataset `df`,
 
 1. subset all white patients, how many?
@@ -319,6 +314,181 @@ In the dataset `df`,
 # Read the data using readr package.
 ```
 
+# Tidyverse Family
+
+Before you started, make sure you installed and imported all necessary packages
+
+```{webr-r}
+# Don't run on the web, run it in the R script/R markdown
+#install.packages("dplyr")
+#install.packages("tidyr")
+#install.packages("readr")
+#install.packages("tidyverse")
+#library(dplyr)
+#library(tidyr)
+#library(readr)
+#library(tidyverse)
+```
+
+## `filter`
+
+```{webr-r}
+df %>% filter(Baseline_eGFR > 60)
+df %>% filter(Baseline_eGFR > 60 & Sex == "Female")
+```
+
+::: {.callout-caution collapse="true"}
+## Practice 6
+In the dataset `df`, use tidyverse grammar,
+
+1. subset all white patients, how many?
+
+```{webr-r}
+# Code
+```
+2. subset all patients taking the treatment (instead of taking the control).
+
+```{webr-r}
+# Code
+```
+
+:::
+
+## `select`
+
+```{webr-r}
+df %>% select(Age)
+df %>% select(Age, Race)
+df %>% select(Trt)
+```
+
+::: {.callout-caution collapse="true"}
+## Practice 7
+Assume that you have a dataset with thousands of columns (which is often the case!), and you want to select the information related to `Treatment`, how to do that? 
+
+```{webr-r}
+# Code
+# For me, I choose to ask GPT.
+```
+
+:::
+
+## `pull`
+
+```{webr-r}
+df %>% pull(Treatment)
+# Try this? df %>% pull(Treatment, Treatment)
+```
+
+::: {.callout-caution collapse="true"}
+## Practice 8
+Find the race components of `df`. Hint: `table()`
+
+```{webr-r}
+# Code
+```
+
+:::
+
+## `mutate`, `case_when`
+
+```{webr-r}
+df2 <- df %>% mutate(Creatinine_Albuminuria = Creatinine + Albuminuria)
+df2
+```
+
+```{webr-r}
+df2 <- df %>% mutate(Baseline_eGFR = Baseline_eGFR - 10)
+df2
+```
+
+```{webr-r}
+df2 <- df %>% mutate(Sex_Index = case_when(Sex == "Female" ~ 1, Sex == "Male" ~ 2))
+df2
+```
+
+::: {.callout-caution collapse="true"}
+## Practice 9
+Your PI wants to see the **level** of eGFR for each patient, instead of a number. Please change the corresponding column based on the follows: PI thinks
+
+- it is good if $eGFR > 90$
+- it is acceptable if $60 < eGFR <= 90$
+- it is bad if otherwise
+
+```{webr-r}
+# Code
+```
+
+:::
+
+## `group_by` related summarizations
+
+```{webr-r}
+df %>% group_by(Sex) %>% summarise(mean_eGFR = mean(Baseline_eGFR))
+df %>% group_by(Sex) %>% count(Treatment)
+```
+
+::: {.callout-caution collapse="true"}
+## Practice 10
+National Institute of Health (NIH) requires an annual-renewed cumulative patient report grouping by some basic demographics. Try to provide such summary information to the NIH grouping by `Age`, `Sex` and `Race`, with `Age` changed to nominal levels by the following rules: old if $Age >= 60$, young if $Age <= 30$, middle_age if otherwise. 
+
+```{webr-r}
+# Code
+```
+
+:::
+
+## `drop_na`
+
+```{webr-r}
+df_longi %>% drop_na()
+df_longi %>% drop_na(Creatinine_A)
+```
+
+::: {.callout-note}
+Always be cautious if you want to remove any row with missing values.
+:::
+
+
+## `arrange`
+
+This will be useful when you want to **order** the data. For example, when you have a *date* for each patient.
+
+```{webr-r}
+head(df_longi)
+View(df_longi %>% arrange(Date_A))
+```
+
+::: {.callout-note}
+Is there any problem in the code patch above? 
+:::
+
+::: {.callout-caution collapse="true"}
+## Practice 11
+1. Create a new dataset `df_long`, which is a long-format of `df_longi`. In a long-format, each row corresponds to one measurement, instead of one patient. Hint: `rbind() / bind_rows()`
+
+```{webr-r}
+# Code
+```
+
+2. After that, use `arrange`, so that for each patient, their observation is ordered by date. 
+
+```{webr-r}
+# Code
+```
+
+You can try using GPT here (and in any practice problem) to see whether GPT has a better solution.
+:::
+
+## `pivot_wider`, `pivot_longer`
+
+Try using GPT to self-learn these two functions. 
+
+## What we learned?
+
+```{webr-r}
+# Put a dictionary here?
+```
 
 # References
 
@@ -359,5 +529,69 @@ df <- data.frame(
   Creatinine = creatinine,
   Albuminuria = albuminuria,
   Progression = progression
+)
+-->
+<!--
+set.seed(123)
+
+# Number of patients
+n <- 500
+
+# Baseline demographics
+id <- 1:n
+age <- round(rnorm(n, mean = 60, sd = 12))
+sex <- sample(c("Male", "Female"), n, replace = TRUE)
+race <- sample(c("White", "Black", "Asian", "Hispanic", "Other"),
+               n, replace = TRUE, prob = c(0.5, 0.2, 0.15, 0.1, 0.05))
+
+# Consent to join the trial
+consent <- rbinom(n, 1, 0.9)  # 90% consent
+
+# Substudy participation (only for those who consented)
+subA <- ifelse(consent == 1, rbinom(n, 1, 0.6), 0)
+subB <- ifelse(consent == 1, rbinom(n, 1, 0.5), 0)
+subC <- ifelse(consent == 1, rbinom(n, 1, 0.4), 0)
+subD <- ifelse(consent == 1, rbinom(n, 1, 0.3), 0)
+subE <- ifelse(consent == 1, rbinom(n, 1, 0.2), 0)
+
+# Function to simulate creatinine (mg/dL) and dates
+simulate_measurements <- function(participation, mean_creat = 1.0, sd_creat = 0.3) {
+  creat <- ifelse(participation == 1, rnorm(n, mean_creat, sd_creat), NA)
+  date <- ifelse(participation == 1,
+                 as.character(sample(seq.Date(as.Date("2023-01-01"),
+                                              as.Date("2023-12-31"), by="day"), n, replace = TRUE)),
+                 NA)
+  return(list(creatinine = creat, date = date))
+}
+
+# Generate creatinine + dates for each substudy
+A <- simulate_measurements(subA)
+B <- simulate_measurements(subB)
+C <- simulate_measurements(subC)
+D <- simulate_measurements(subD)
+E <- simulate_measurements(subE)
+
+# Build data frame
+df_longi <- data.frame(
+  ID = id,
+  Age = age,
+  Sex = sex,
+  Race = race,
+  Consent = consent,
+  Substudy_A = subA,
+  Creatinine_A = A$creatinine,
+  Date_A = A$date,
+  Substudy_B = subB,
+  Creatinine_B = B$creatinine,
+  Date_B = B$date,
+  Substudy_C = subC,
+  Creatinine_C = C$creatinine,
+  Date_C = C$date,
+  Substudy_D = subD,
+  Creatinine_D = D$creatinine,
+  Date_D = D$date,
+  Substudy_E = subE,
+  Creatinine_E = E$creatinine,
+  Date_E = E$date
 )
 -->
