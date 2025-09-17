@@ -160,11 +160,31 @@
     ]
   },
   {
+    "objectID": "workshop_1.html#drop_na",
+    "href": "workshop_1.html#drop_na",
+    "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
+    "section": "drop_na",
+    "text": "drop_na\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\n\nAlways be cautious if you want to remove any row with missing values.",
+    "crumbs": [
+      "1. Introduction"
+    ]
+  },
+  {
     "objectID": "workshop_1.html#arrange",
     "href": "workshop_1.html#arrange",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
     "section": "arrange",
-    "text": "arrange",
+    "text": "arrange\nThis will be useful when you want to order the data. For example, when you have a date for each patient.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\n\nIs there any problem in the code patch above?\n\n\n\n\n\n\n\n\nPractice 11\n\n\n\n\n\n\nCreate a new dataset df_long, which is a long-format of df_longi. In a long-format, each row corresponds to one measurement, instead of one patient. Hint: rbind() / bind_rows()\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nAfter that, use arrange, so that for each patient, their observation is ordered by date.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nYou can try using GPT here (and in any practice problem) to see whether GPT has a better solution.",
+    "crumbs": [
+      "1. Introduction"
+    ]
+  },
+  {
+    "objectID": "workshop_1.html#pivot_wider-pivot_longer",
+    "href": "workshop_1.html#pivot_wider-pivot_longer",
+    "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse (Part 1)",
+    "section": "pivot_wider, pivot_longer",
+    "text": "pivot_wider, pivot_longer\nTry using GPT to self-learn these two functions.",
     "crumbs": [
       "1. Introduction"
     ]
