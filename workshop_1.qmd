@@ -11,15 +11,20 @@ webr:
 ```{webr-r}
 #| context: setup
 # Load hoffman toy data
-download.file("https://raw.githubusercontent.com/rich2355/Biomedical_Data_Science_Club_Materials/main/test_data.csv", "test_data.csv")
+download.file("https://raw.githubusercontent.com/rich2355/Biomedical_Data_Science_Club_Materials/main/data/test_data.csv", "test_data.csv")
 df <- read.csv("test_data.csv")
-```
 
-This is a webR-enabled code cell in a Quarto HTML document.
+download.file("https://raw.githubusercontent.com/rich2355/Biomedical_Data_Science_Club_Materials/main/data/test_data_2.csv", "test_data_2.csv")
+df_longi <- read.csv("test_data_2.csv")
+```
 
 # Credits
 
 Credited to Richard Liu and Emily Zhang from the Biomedical Data Science (BDS) club in NYU Langone Health. 
+
+# References
+
+- [CMU Statistics 36-350: Statistical Computing](https://www.stat.cmu.edu/~ryantibs/statcomp/) Lecture 1-3
 
 # Disclaimer
 
@@ -489,10 +494,6 @@ Try using GPT to self-learn these two functions.
 ```{webr-r}
 # Put a dictionary here?
 ```
-
-# References
-
-- [CMU Statistics 36-350: Statistical Computing](https://www.stat.cmu.edu/~ryantibs/statcomp/) Lecture 1-3
 
 <!-- set.seed(42)
 
