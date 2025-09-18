@@ -1,1 +1,0 @@
-Sitemap: https://rich2355.github.io/Biomedical_Data_Science_Club_Materials/sitemap.xml

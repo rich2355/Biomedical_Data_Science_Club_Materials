@@ -11,11 +11,14 @@ webr:
 ```{webr-r}
 #| context: setup
 # Load hoffman toy data
-download.file("https://raw.githubusercontent.com/rich2355/Biomedical_Data_Science_Club_Materials/main/data/test_data.csv", "test_data.csv")
+download.file("https://raw.githubusercontent.com/rich2355/Biomedical_Data_Science_Club_Materials/main/data/df.csv", "test_data.csv")
 df <- read.csv("test_data.csv")
 
-download.file("https://raw.githubusercontent.com/rich2355/Biomedical_Data_Science_Club_Materials/main/data/test_data_2.csv", "test_data_2.csv")
+download.file("https://raw.githubusercontent.com/rich2355/Biomedical_Data_Science_Club_Materials/main/data/df_longi.csv", "test_data_2.csv")
 df_longi <- read.csv("test_data_2.csv")
+
+download.file("https://raw.githubusercontent.com/rich2355/Biomedical_Data_Science_Club_Materials/main/data/sim_data.csv", "sim_data.csv")
+sim_data <- read.csv("sim_data.csv")
 ```
 
 # Credits
