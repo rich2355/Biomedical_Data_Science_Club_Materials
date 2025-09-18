@@ -10,16 +10,6 @@
     ]
   },
   {
-    "objectID": "workshop_1.html",
-    "href": "workshop_1.html",
-    "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
-    "section": "",
-    "text": "This is a webR-enabled code cell in a Quarto HTML document.",
-    "crumbs": [
-      "1. R Basics, Tidyverse"
-    ]
-  },
-  {
     "objectID": "workshop_1.html#math-operators",
     "href": "workshop_1.html#math-operators",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
