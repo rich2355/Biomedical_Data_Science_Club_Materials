@@ -498,6 +498,97 @@ Try using GPT to self-learn these two functions.
 # Put a dictionary here?
 ```
 
+## Data example using tidyverse
+
+Quesiton of interest: Are current smokers at higher risk of experiencing a CHD event compared to never-smokers, and how does this relationship vary by sex?
+```{webr-r}
+sim <- sim_data
+head(sim)
+```
+
+Check missing values
+```{webr-r}
+sim %>%
+  summarise(
+    missing_bmi = sum(is.na(bmi)),
+    missing_cholesterol = sum(is.na(cholesterol)),
+    missing_hdl = sum(is.na(hdl)),
+    missing_triglycerides = sum(is.na(triglycerides))
+  )
+```
+
+Detect negative values or extreme values
+```{webr-r}
+sim %>% filter(bmi < 0)
+sim %>% filter(cholesterol >= 300)
+```
+
+Count participants by sex and race
+```{webr-r}
+sim %>% group_by(sex, race) %>% summarise(n = n())
+```
+
+CHD events
+```{webr-r}
+sim %>% summarise(total_chd = sum(chd_event == 1, na.rm = TRUE))
+```
+
+CHD events by sex
+```{webr-r}
+sim %>% group_by(sex) %>% summarise(chd = sum(chd_event == 1, na.rm = TRUE))
+```
+
+Count CHD events by smoking status and sex
+```{webr-r}
+sim %>% 
+  group_by(smoking, sex) %>%
+  summarise(
+    n = n(),
+    chd_events = sum(chd_event == 1, na.rm = TRUE),
+    event_rate = mean(chd_event == 1, na.rm = TRUE)
+  ) %>%
+  arrange(sex, smoking)
+```
+
+Create a binary variable for current smoker vs never
+```{webr-r}
+sim <- sim %>%
+  mutate(current_smoker = case_when(
+    smoking == "Current" ~ 1,
+    smoking == "Never" ~ 0,
+    TRUE ~ NA_real_
+  ))
+
+sim$current_smoker
+```
+
+Summarize risk by sex
+```{webr-r}
+sim %>%
+  filter(!is.na(current_smoker)) %>%
+  group_by(sex) %>%
+  summarise(
+    n_smokers = sum(current_smoker == 1),
+    n_non_smokers = sum(current_smoker == 0),
+    event_rate_smokers = mean(chd_event[current_smoker == 1], na.rm = TRUE),
+    event_rate_non_smokers = mean(chd_event[current_smoker == 0], na.rm = TRUE)
+  )
+```
+
+Compute the risk difference
+```{webr-r}
+sim %>%
+  filter(!is.na(current_smoker)) %>%
+  group_by(sex) %>%
+  summarise(
+    risk_diff = mean(chd_event[current_smoker == 1], na.rm = TRUE) - 
+      mean(chd_event[current_smoker == 0], na.rm = TRUE)
+  )
+```
+
+
+
+
 <!-- set.seed(42)
 
 # Sample size
