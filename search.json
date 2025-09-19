@@ -188,5 +188,15 @@
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
+  },
+  {
+    "objectID": "workshop_1.html#data-example-using-tidyverse",
+    "href": "workshop_1.html#data-example-using-tidyverse",
+    "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
+    "section": "Data example using tidyverse",
+    "text": "Data example using tidyverse\nQuesiton of interest: Are current smokers at higher risk of experiencing a CHD event compared to never-smokers, and how does this relationship vary by sex?\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nCheck missing values\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nDetect negative values or extreme values\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nCount participants by sex and race\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nCHD events\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nCHD events by sex\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nCount CHD events by smoking status and sex\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nCreate a binary variable for current smoker vs never\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nSummarize risk by sex\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nCompute the risk difference\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "1. R Basics, Tidyverse"
+    ]
   }
 ]
