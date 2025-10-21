@@ -16,6 +16,8 @@ website:
         text: Welcome!
       - href: workshop_1.qmd
         text: 1. R Basics, Tidyverse
+      - href: workshop_2.qmd
+        text: 1. Data visualization in basic R
       
 format:
   html:

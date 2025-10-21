@@ -1,0 +1,66 @@
+---
+title: "Biomedical Data Science (BDS) Workshop 2: \n Data Visualization in R"
+format: html
+engine: knitr
+filters:
+  - webr
+webr:
+  packages: ['dplyr', 'tidyr', 'tidyverse']
+---
+  
+```{webr-r}
+#| context: setup
+# Load hoffman toy data
+download.file("https://raw.githubusercontent.com/rich2355/Biomedical_Data_Science_Club_Materials/main/data/sim_data.csv", "sim_data.csv")
+sim_data <- read.csv("sim_data.csv")
+```
+
+
+# Credits
+
+Credited to Richard Liu and Emily Zhang from the Biomedical Data Science (BDS) club in NYU Langone Health. 
+
+# References
+
+- 
+
+# Disclaimer
+
+The datasets provided here are all synthetically generated for demonstration and educational purposes only. It does not represent real patient data and should not be used for clinical decision-making, medical research, or policy development. Any resemblance to real persons, conditions, or outcomes is purely coincidental. The values and relationships were generated using statistical simulation techniques and do not reflect actual medical situations.
+
+
+## Univariate Visualization
+
+A straightforward way to describe the distribution of a continuous variable is histogram
+```{webr-r}
+hist(sim_data$age_baseline, main = "Distribution of Age", xlab = "Age",
+     col = "skyblue", border = "white")
+```
+
+We can add more descriptive statistics to the plot
+```{webr-r}
+hist(sim_data$age_baseline, main = "Distribution of Age", xlab = "Age",
+     col = "skyblue", border = "white")
+mean_age <- mean(sim_data$age_baseline)
+abline(v = mean_age, col = "red", lwd = 2, lty = 2)
+mtext(paste0("Mean = ", round(mean_age, 1)), side = 3, col = "red")
+```
+
+
+```{webr-r}
+boxplot(sim_data$bmi, main = "Distribution of BMI", ylab = "BMI",
+        col = "lightgreen")
+```
+```{webr-r}
+plot(density(sim_data$sbp), main = "Density of Systolic BP",
+     xlab = "SBP", col = "red", lwd = 2)
+```
+
+```{webr-r}
+barplot(table(sim_data$center), col = "lightblue", main = "Participants by center")
+```
+
+```{webr-r}
+pie(table(sim_data$physical_activity), main = "Physical Activity Distribution")
+```
+

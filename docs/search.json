@@ -198,5 +198,25 @@
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
+  },
+  {
+    "objectID": "workshop_2.html#math-operators",
+    "href": "workshop_2.html#math-operators",
+    "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
+    "section": "Math Operators",
+    "text": "Math Operators\n+, -, *, /, ^, %%\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "1. Data visualization in basic R"
+    ]
+  },
+  {
+    "objectID": "workshop_2.html#univariate-visualization",
+    "href": "workshop_2.html#univariate-visualization",
+    "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
+    "section": "Univariate Visualization",
+    "text": "Univariate Visualization\nA straightforward way to describe the distribution of a continuous variable is histogram\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nWe can add more descriptive statistics to the plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "1. Data visualization in basic R"
+    ]
   }
 ]
