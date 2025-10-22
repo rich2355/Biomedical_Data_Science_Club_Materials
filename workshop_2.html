@@ -368,7 +368,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"# Load hoffman toy data\ndownload.file(\"https://raw.githubusercontent.com/rich2355/Biomedical_Data_Science_Club_Materials/main/data/sim_data.csv\", \"sim_data.csv\")\nsim_data <- read.csv(\"sim_data.csv\")","id":1,"options":{"autorun":"true","classes":"","comment":"","context":"setup","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"hist(sim_data$age_baseline, main = \"Distribution of Age\", xlab = \"Age\",\n     col = \"skyblue\", border = \"white\")","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"hist(sim_data$age_baseline, main = \"Distribution of Age\", xlab = \"Age\",\n     col = \"skyblue\", border = \"white\")\nmean_age <- mean(sim_data$age_baseline)\nabline(v = mean_age, col = \"red\", lwd = 2, lty = 2)\nmtext(paste0(\"Mean = \", round(mean_age, 1)), side = 3, col = \"red\")","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"boxplot(sim_data$bmi, main = \"Distribution of BMI\", ylab = \"BMI\",\n        col = \"lightgreen\")","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"plot(density(sim_data$sbp), main = \"Density of Systolic BP\",\n     xlab = \"SBP\", col = \"red\", lwd = 2)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"barplot(table(sim_data$center), col = \"lightblue\", main = \"Participants by center\")","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"pie(table(sim_data$physical_activity), main = \"Physical Activity Distribution\")","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"# Load hoffman toy data\ndownload.file(\"https://raw.githubusercontent.com/rich2355/Biomedical_Data_Science_Club_Materials/main/data/sim_data.csv\", \"sim_data.csv\")\nsim_data <- read.csv(\"sim_data.csv\")","id":1,"options":{"autorun":"true","classes":"","comment":"","context":"setup","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"hist(sim_data$age_baseline, main = \"Distribution of Age\", xlab = \"Age\",\n     col = \"skyblue\", border = \"white\")","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"hist(sim_data$age_baseline, main = \"Distribution of Age\", xlab = \"Age\",\n     col = \"skyblue\", border = \"white\")\nmean_age <- mean(sim_data$age_baseline)\nabline(v = mean_age, col = \"red\", lwd = 2, lty = 2)\nmtext(paste0(\"Mean = \", round(mean_age, 1)), side = 3, col = \"red\")","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"boxplot(sim_data$bmi, main = \"Distribution of BMI\", ylab = \"BMI\",\n        col = \"lightgreen\")","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"plot(density(sim_data$sbp), main = \"Density of Systolic BP\",\n     xlab = \"SBP\", col = \"red\", lwd = 2)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"barplot(table(sim_data$race), col = \"lightblue\", main = \"Participants by race\")","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"pie(table(sim_data$physical_activity), main = \"Physical Activity Distribution\")","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"plot(sim_data$sbp, sim_data$dbp,\n     main = \"SBP vs DBP\",\n     xlab = \"Systolic BP\", ylab = \"Diastolic BP\",\n     pch = 19, col = rgb(0,0,1,0.4))","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"plot(sim_data$sbp, sim_data$dbp,\n     main = \"SBP vs DBP\",\n     xlab = \"Systolic BP\", ylab = \"Diastolic BP\",\n     pch = 19, col = rgb(0,0,1,0.4))\n\n# What happens if I remove above plot() and directly add the line on the plot from previous chunck?\nfit <- lm(dbp ~ sbp, data = sim_data)\nabline(fit, col = \"red\", lwd = 2) \n\n# Extract R²\nr2 <- summary(fit)$r.squared\n# Add R² as text in the plot\nlegend(\"topright\", legend = paste(\"R² =\", round(r2, 5)), \n       bty = \"n\", text.col = \"red\", cex = 1.2)","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"boxplot(bmi ~ sex, data = sim_data,\n        main = \"BMI by Sex\", ylab = \"BMI\",\n        col = c(\"pink\", \"lightblue\"))","id":13,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-13","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"tab <- table(sim_data$sex, sim_data$smoking)\nbarplot(tab, beside = FALSE, col = c(\"pink\", \"lightblue\"),\n        main = \"Smoking Status by Sex\", legend.text = TRUE)","id":14,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-14","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":15,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-15","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"pairs(~ age_baseline + sbp + dbp + bmi + cholesterol, data = sim_data,\n      main = \"Pairs Plot of Key Variables\")","id":16,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-16","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"panel.cor <- function(x, y, digits = 2, prefix = \"R = \", cex.cor, ...) {\n  usr <- par(\"usr\"); on.exit(par(usr))\n  par(usr = c(0, 1, 0, 1))\n  r <- cor(x, y, use = \"complete.obs\")\n  txt <- paste0(prefix, formatC(r, digits = digits))\n  text(0.5, 0.5, txt, cex = 1.2)\n}\n\npairs(~ age_baseline + sbp + dbp + bmi + cholesterol, data = sim_data,\n      main = \"Pairs Plot of Key Variables\",\n      lower.panel = panel.smooth,\n      upper.panel = panel.cor)","id":17,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-17","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"plot(sim_data$age, sim_data$bmi,\n     col = ifelse(sim_data$sex == \"Male\", \"lightblue\", \"pink\"),\n     pch = 19,\n     main = \"BMI vs Age by Sex\",\n     xlab = \"Age\",\n     ylab = \"BMI\")\nlegend(\"topright\", legend = c(\"Male\", \"Female\"),\n       col = c(\"lightblue\", \"pink\"), pch = 19)","id":18,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-18","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"par(mfrow = c(1, 2)) # 1 row, 2 columns\nhist(sim_data$age_baseline, col = \"skyblue\", main = \"Age Distribution\", xlab = \"Age\")\nboxplot(sim_data$bmi, col = \"lightgreen\", main = \"BMI Distribution\", ylab = \"BMI\")\npar(mfrow = c(1, 1)) # reset layout","id":19,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-19","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":20,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-20","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"getwd()\nsetwd() # setwd(\"/Users/yourname/Documents/BDS_Workshop2/plots\")","id":21,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-21","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# png(\"SBP_vs_DBP_plot.png\", width = 800, height = 600)\n# \n# plot(sim_data$sbp, sim_data$dbp,\n# main = \"SBP vs DBP\",\n# xlab = \"Systolic BP\",\n# ylab = \"Diastolic BP\",\n# pch = 19, col = rgb(0,0,1,0.4))\n# \n# dev.off()","id":22,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-22","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":23,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-23","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# plot(sim_data$sbp, sim_data$dbp,\n#      main = \"SBP vs DBP\",\n#      xlab = \"Systolic BP\",\n#      ylab = \"Diastolic BP\",\n#      pch = 19,\n#      col = rgb(0, 0, 1, 0.4))\n# \n# # Record the plot\n# p <- recordPlot()\n# \n# # Save it as an R object\n# saveRDS(p, \"my_plot.rds\")\n# \n# # Later: reload and replay it\n# p_loaded <- readRDS(\"my_plot.rds\")\n# replayPlot(p_loaded)","id":24,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-24","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script>
 <script type="module">
@@ -1674,7 +1674,7 @@ globalThis.qwebrExecuteCode = async function (
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./workshop_2.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">1. Data visualization in basic R</span></a>
+ <span class="menu-text">2. Data visualization in basic R</span></a>
   </div>
 </li>
     </ul>
@@ -1692,6 +1692,15 @@ globalThis.qwebrExecuteCode = async function (
   <li><a href="#disclaimer" id="toc-disclaimer" class="nav-link" data-scroll-target="#disclaimer">Disclaimer</a>
   <ul class="collapse">
   <li><a href="#univariate-visualization" id="toc-univariate-visualization" class="nav-link" data-scroll-target="#univariate-visualization">Univariate Visualization</a></li>
+  <li><a href="#bivariate-visualizations---2-numerical-variables" id="toc-bivariate-visualizations---2-numerical-variables" class="nav-link" data-scroll-target="#bivariate-visualizations---2-numerical-variables">Bivariate visualizations - 2 numerical variables</a></li>
+  <li><a href="#bivariate-visualizations---numerical-categorical-variabels" id="toc-bivariate-visualizations---numerical-categorical-variabels" class="nav-link" data-scroll-target="#bivariate-visualizations---numerical-categorical-variabels">Bivariate visualizations - numerical + categorical variabels</a></li>
+  <li><a href="#bivariate-visualizations---categorical-categorical" id="toc-bivariate-visualizations---categorical-categorical" class="nav-link" data-scroll-target="#bivariate-visualizations---categorical-categorical">Bivariate visualizations - categorical + categorical</a></li>
+  <li><a href="#multivariate-visualizations" id="toc-multivariate-visualizations" class="nav-link" data-scroll-target="#multivariate-visualizations">Multivariate visualizations</a></li>
+  </ul></li>
+  <li><a href="#pairs-plot-with-correlations" id="toc-pairs-plot-with-correlations" class="nav-link" data-scroll-target="#pairs-plot-with-correlations">Pairs plot with correlations</a>
+  <ul class="collapse">
+  <li><a href="#align-multiple-plots-side-by-side-layouts" id="toc-align-multiple-plots-side-by-side-layouts" class="nav-link" data-scroll-target="#align-multiple-plots-side-by-side-layouts">Align Multiple Plots (Side-by-Side Layouts)</a></li>
+  <li><a href="#saving-images" id="toc-saving-images" class="nav-link" data-scroll-target="#saving-images">Saving images</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -2032,6 +2041,161 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <div id="qwebr-insertion-location-6"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div id="qwebr-insertion-location-7"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Practice 1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Histogram of bmi with a line at the mean.</p>
+<div id="qwebr-insertion-location-8"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Practice 2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Boxplot of cholesterol with light yellow color.</p>
+<div id="qwebr-insertion-location-9"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Practice 3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Density plot of dbp with vertical line at the median.</p>
+<div id="qwebr-insertion-location-10"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</div>
+</div>
+</div>
+</section>
+<section id="bivariate-visualizations---2-numerical-variables" class="level2">
+<h2 class="anchored" data-anchor-id="bivariate-visualizations---2-numerical-variables">Bivariate visualizations - 2 numerical variables</h2>
+<div id="qwebr-insertion-location-11"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-12"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="bivariate-visualizations---numerical-categorical-variabels" class="level2">
+<h2 class="anchored" data-anchor-id="bivariate-visualizations---numerical-categorical-variabels">Bivariate visualizations - numerical + categorical variabels</h2>
+<div id="qwebr-insertion-location-13"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="bivariate-visualizations---categorical-categorical" class="level2">
+<h2 class="anchored" data-anchor-id="bivariate-visualizations---categorical-categorical">Bivariate visualizations - categorical + categorical</h2>
+<div id="qwebr-insertion-location-14"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Practice 4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Scatterplot of bmi vs cholestral colored by sex, with legend on the top left corner</p>
+<div id="qwebr-insertion-location-15"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</div>
+</div>
+</div>
+</section>
+<section id="multivariate-visualizations" class="level2">
+<h2 class="anchored" data-anchor-id="multivariate-visualizations">Multivariate visualizations</h2>
+<div id="qwebr-insertion-location-16"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+</section>
+<section id="pairs-plot-with-correlations" class="level1">
+<h1>Pairs plot with correlations</h1>
+<p>Note that GPT wrote this code. There is a simplier way to do it by library(GGally) and using function <code>ggpairs</code>. Here is just an exampple to show you about what you could do so you can ask GPT by youself.</p>
+<div id="qwebr-insertion-location-17"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-18"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<section id="align-multiple-plots-side-by-side-layouts" class="level2">
+<h2 class="anchored" data-anchor-id="align-multiple-plots-side-by-side-layouts">Align Multiple Plots (Side-by-Side Layouts)</h2>
+<div id="qwebr-insertion-location-19"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Practice 5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Arrange histograms of age_baseline and cholesterol side by side.</p>
+<div id="qwebr-insertion-location-20"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</div>
+</div>
+</div>
+</section>
+<section id="saving-images" class="level2">
+<h2 class="anchored" data-anchor-id="saving-images">Saving images</h2>
+<p>First, we want to check and change current directly to the exact folder you want to plots to be located at</p>
+<div id="qwebr-insertion-location-21"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>Open a PNG device and recreate the plot between png() and dev.off()</p>
+<div id="qwebr-insertion-location-22"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Practice 6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Some medical journals require JPEG as the submission format with square-shaped. Please save the same plot</p>
+<div id="qwebr-insertion-location-23"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</div>
+</div>
+</div>
+<p>If I want to save and reload my plot</p>
+<div id="qwebr-insertion-location-24"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 
 

@@ -4,9 +4,69 @@
     "href": "workshop_2.html#univariate-visualization",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Univariate Visualization",
-    "text": "Univariate Visualization\nA straightforward way to describe the distribution of a continuous variable is histogram\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nWe can add more descriptive statistics to the plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Univariate Visualization\nA straightforward way to describe the distribution of a continuous variable is histogram\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nWe can add more descriptive statistics to the plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 1\n\n\n\n\n\nHistogram of bmi with a line at the mean.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\n\n\n\nCautionPractice 2\n\n\n\n\n\nBoxplot of cholesterol with light yellow color.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\n\n\n\nCautionPractice 3\n\n\n\n\n\nDensity plot of dbp with vertical line at the median.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "1. Data visualization in basic R"
+      "2. Data visualization in basic R"
+    ]
+  },
+  {
+    "objectID": "workshop_2.html#bivariate-visualizations---2-numerical-variables",
+    "href": "workshop_2.html#bivariate-visualizations---2-numerical-variables",
+    "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
+    "section": "Bivariate visualizations - 2 numerical variables",
+    "text": "Bivariate visualizations - 2 numerical variables\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "2. Data visualization in basic R"
+    ]
+  },
+  {
+    "objectID": "workshop_2.html#bivariate-visualizations---numerical-categorical-variabels",
+    "href": "workshop_2.html#bivariate-visualizations---numerical-categorical-variabels",
+    "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
+    "section": "Bivariate visualizations - numerical + categorical variabels",
+    "text": "Bivariate visualizations - numerical + categorical variabels\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "2. Data visualization in basic R"
+    ]
+  },
+  {
+    "objectID": "workshop_2.html#bivariate-visualizations---categorical-categorical",
+    "href": "workshop_2.html#bivariate-visualizations---categorical-categorical",
+    "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
+    "section": "Bivariate visualizations - categorical + categorical",
+    "text": "Bivariate visualizations - categorical + categorical\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 4\n\n\n\n\n\nScatterplot of bmi vs cholestral colored by sex, with legend on the top left corner\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "2. Data visualization in basic R"
+    ]
+  },
+  {
+    "objectID": "workshop_2.html#multivariate-visualizations",
+    "href": "workshop_2.html#multivariate-visualizations",
+    "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
+    "section": "Multivariate visualizations",
+    "text": "Multivariate visualizations\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "2. Data visualization in basic R"
+    ]
+  },
+  {
+    "objectID": "workshop_2.html#align-multiple-plots-side-by-side-layouts",
+    "href": "workshop_2.html#align-multiple-plots-side-by-side-layouts",
+    "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
+    "section": "Align Multiple Plots (Side-by-Side Layouts)",
+    "text": "Align Multiple Plots (Side-by-Side Layouts)\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 5\n\n\n\n\n\nArrange histograms of age_baseline and cholesterol side by side.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "2. Data visualization in basic R"
+    ]
+  },
+  {
+    "objectID": "workshop_2.html#saving-images",
+    "href": "workshop_2.html#saving-images",
+    "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
+    "section": "Saving images",
+    "text": "Saving images\nFirst, we want to check and change current directly to the exact folder you want to plots to be located at\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nOpen a PNG device and recreate the plot between png() and dev.off()\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 6\n\n\n\n\n\nSome medical journals require JPEG as the submission format with square-shaped. Please save the same plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\nIf I want to save and reload my plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "2. Data visualization in basic R"
     ]
   },
   {
