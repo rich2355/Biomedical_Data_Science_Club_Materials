@@ -140,6 +140,16 @@
     ]
   },
   {
+    "objectID": "workshop_2.html#step-8-add-a-histogram-new-variable",
+    "href": "workshop_2.html#step-8-add-a-histogram-new-variable",
+    "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
+    "section": "Step 8 – add a histogram (new variable)",
+    "text": "Step 8 – add a histogram (new variable)\nNow we’ll make a new plot but continue the same workflow.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "2. Data visualization in basic R"
+    ]
+  },
+  {
     "objectID": "workshop_2.html#step-9-add-density-overlay-to-the-histogram",
     "href": "workshop_2.html#step-9-add-density-overlay-to-the-histogram",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
