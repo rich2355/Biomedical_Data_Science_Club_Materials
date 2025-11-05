@@ -20,11 +20,11 @@
     ]
   },
   {
-    "objectID": "workshop_2.html#bivariate-visualizations---numerical-categorical-variabels",
-    "href": "workshop_2.html#bivariate-visualizations---numerical-categorical-variabels",
+    "objectID": "workshop_2.html#bivariate-visualizations---numerical-categorical-variables",
+    "href": "workshop_2.html#bivariate-visualizations---numerical-categorical-variables",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
-    "section": "Bivariate visualizations - numerical + categorical variabels",
-    "text": "Bivariate visualizations - numerical + categorical variabels\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "section": "Bivariate visualizations - numerical + categorical variables",
+    "text": "Bivariate visualizations - numerical + categorical variables\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "2. Data visualization in basic R"
     ]
@@ -34,7 +34,7 @@
     "href": "workshop_2.html#bivariate-visualizations---categorical-categorical",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Bivariate visualizations - categorical + categorical",
-    "text": "Bivariate visualizations - categorical + categorical\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 4\n\n\n\n\n\nScatterplot of bmi vs cholestral colored by sex, with legend on the top left corner\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Bivariate visualizations - categorical + categorical\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 4\n\n\n\n\n\nScatterplot of bmi vs cholesterol colored by sex, with legend on the top left corner\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "2. Data visualization in basic R"
     ]
@@ -64,7 +64,7 @@
     "href": "workshop_2.html#saving-images",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Saving images",
-    "text": "Saving images\nFirst, we want to check and change current directly to the exact folder you want to plots to be located at\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nOpen a PNG device and recreate the plot between png() and dev.off()\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 6\n\n\n\n\n\nSome medical journals require JPEG as the submission format with square-shaped. Please save the same plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\nIf I want to save and reload my plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Saving images\nFirst, we want to check and change current directory to the exact folder you want your plots to be located at\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nOpen a PNG device and recreate the plot between png() and dev.off()\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 6\n\n\n\n\n\nSome medical journals require JPEG as the submission format with square-shaped. Please save the same plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\nIf I want to save and reload my plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "2. Data visualization in basic R"
     ]
@@ -74,7 +74,7 @@
     "href": "workshop_2.html#step-1-create-a-blank-ggplot-object",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Step 1 – create a blank ggplot object",
-    "text": "Step 1 – create a blank ggplot object\nStart with ggplot() and aes() to define what variables you’re plotting and load in the data. This serve as a base for any plot with ggplot()\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Step 1 – create a blank ggplot object\nStart with ggplot() and aes() to define what variables you’re plotting and load in the data. This serves as a base for any plot with ggplot()\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "2. Data visualization in basic R"
     ]
@@ -94,7 +94,7 @@
     "href": "workshop_2.html#step-3-add-categorical-color-and-transparency",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Step 3 – add categorical color and transparency",
-    "text": "Step 3 – add categorical color and transparency\nMap color to a categorical variable. The alpha parameter in ggplot2 controls transparency of plot elements (points, lines, bars, etc.). alpha = 1 → fully opaque (solid color) alpha = 0 → fully transparent (invisible)\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Step 3 – add categorical color and transparency\nMap color to a categorical variable. The alpha parameter in ggplot2 controls transparency of plot elements (points, lines, bars, etc.). alpha = 1 means solid color alpha = 0 means transparent\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "2. Data visualization in basic R"
     ]
@@ -104,7 +104,7 @@
     "href": "workshop_2.html#step-4-add-a-smooth-trend-line",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Step 4 – add a smooth trend line",
-    "text": "Step 4 – add a smooth trend line\nUse geom_smooth() to see the overall relationship.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 7\n\n\n\n\n\nWhat does se paramter represents here? Try se = True and interpret.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Step 4 – add a smooth trend line\nUse geom_smooth() to see the overall relationship.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 7\n\n\n\n\n\nWhat does se parameter represent here? Try se = TRUE and interpret.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "2. Data visualization in basic R"
     ]
@@ -114,7 +114,7 @@
     "href": "workshop_2.html#step-5-add-titles-and-axis-labels",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Step 5 – add titles and axis labels",
-    "text": "Step 5 – add titles and axis labels\nUse labs() to name your plot and axes.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 8\n\n\n\n\n\nSee the message - the plot is using the Y ~ X linear relationship because we let. geom_smooth(method = \"lm\"). Can you try LOESS smoothing (Locally Estimated Scatterplot Smoothing) by setting the method to loess?\nAlso, there is a parameter called span. This controls how much of the data is used to fit each local curve segment in the LOESS algorithm.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Step 5 – add titles and axis labels\nUse labs() to name your plot and axes.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 8\n\n\n\n\n\nDid you notice the message above colored in red? The plot is using the Y ~ X linear relationship because we set geom_smooth(method = \"lm\"). Can you try LOESS smoothing (Locally Estimated Scatterplot Smoothing) by setting the method to loess?\nAlso, there is a parameter called span. This controls how much of the data is used to fit each local curve segment in the LOESS algorithm.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "2. Data visualization in basic R"
     ]
@@ -154,7 +154,7 @@
     "href": "workshop_2.html#step-9-add-density-overlay-to-the-histogram",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Step 9 – add density overlay to the histogram",
-    "text": "Step 9 – add density overlay to the histogram\nAdd a smoothed density curve on top of the histogram.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nNote that y = ..count.. refers to the count of observations in each bin. Here is an alternative example if you want to show the density plots instead of a histogram for plots.\nSome additional references based on Google: Density plot is a graph that use probability density to illustrate where data points are concentrated and where they are sparse. Note that the Y-axis IS NOT A PROBABILITY of the corresponding X value (instead it has a 0 probability for X to be a single value - can you think of why?).\nHere we show the density plot using aes(y = ..density..) (by default)\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Step 9 – add density overlay to the histogram\nAdd a smoothed density curve on top of the histogram.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nNote that y = ..count.. refers to the count of observations in each bin. Here’s an alternative example if you want to show density plots instead of a histogram.\nSome additional references based on Google: Density plot is a graph that uses probability density to illustrate where data points are concentrated and where they are sparse.\nNote that the Y-axis IS NOT A PROBABILITY of the corresponding X value (instead it has a 0 probability of X taking a single value - can you think of why?).\nHere we show the density plot using aes(y = ..density..) (by default)\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "2. Data visualization in basic R"
     ]
@@ -204,7 +204,7 @@
     "href": "workshop_2.html#step-14-save-your-final-plot",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Step 14 – save your final plot",
-    "text": "Step 14 – save your final plot\nSave the final version to a PNG file.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nNote that if you want to combine plots to a single layout, you need to use the patchwork package. https://patchwork.data-imaginist.com/",
+    "text": "Step 14 – save your final plot\nSave the final version to a PNG file.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nNote that if you want to combine plots into a single layout, you need to use the patchwork package. https://patchwork.data-imaginist.com/",
     "crumbs": [
       "2. Data visualization in basic R"
     ]
