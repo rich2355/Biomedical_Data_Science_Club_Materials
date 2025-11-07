@@ -94,7 +94,7 @@
     "href": "workshop_2.html#step-3-add-categorical-color-and-transparency",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Step 3 – add categorical color and transparency",
-    "text": "Step 3 – add categorical color and transparency\nMap color to a categorical variable. The alpha parameter in ggplot2 controls transparency of plot elements (points, lines, bars, etc.). alpha = 1 means solid color alpha = 0 means transparent\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Step 3 – add categorical color and transparency\nMap color to a categorical variable. The alpha parameter in ggplot2 controls transparency of plot elements (points, lines, bars, etc.). alpha = 1 means solid color and alpha = 0 means transparent.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "2. Data visualization in basic R"
     ]
