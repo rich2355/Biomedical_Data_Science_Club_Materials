@@ -476,13 +476,19 @@ Is there any problem in the code patch above?
 1. Create a new dataset `df_long`, which is a long-format of `df_longi`. In a long-format, each row corresponds to one measurement, instead of one patient. Hint: `rbind() / bind_rows()`
 
 ```{webr-r}
-# Code
+df_long <- dplyr::bind_rows(
+  df_longi %>% dplyr::select(ID, Date = Date_A, Creatinine = Creatinine_A),
+  df_longi %>% dplyr::select(ID, Date = Date_B, Creatinine = Creatinine_B),
+  df_longi %>% dplyr::select(ID, Date = Date_C, Creatinine = Creatinine_C),
+  df_longi %>% dplyr::select(ID, Date = Date_D, Creatinine = Creatinine_D),
+  df_longi %>% dplyr::select(ID, Date = Date_E, Creatinine = Creatinine_E)
+)
 ```
 
 2. After that, use `arrange`, so that for each patient, their observation is ordered by date. 
 
 ```{webr-r}
-# Code
+df_long <- df_long %>% arrange(Date)
 ```
 
 You can try using GPT here (and in any practice problem) to see whether GPT has a better solution.

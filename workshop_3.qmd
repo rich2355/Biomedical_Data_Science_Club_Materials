@@ -1,0 +1,473 @@
+---
+title: "Biomedical Data Science (BDS) Workshop 3: Data Visualization for Research Project"
+format: html
+engine: knitr
+filters:
+  - webr
+webr:
+  packages: ['tidyverse', 'patchwork']
+---
+  
+
+
+# Credits
+
+Credited to Richard Liu and Emily Zhang from the Biomedical Data Science (BDS) club in NYU Langone Health. 
+
+
+# Disclaimer
+
+The datasets provided here are all synthetically generated for demonstration and educational purposes only. It does not represent real patient data and should not be used for clinical decision-making, medical research, or policy development. Any resemblance to real persons, conditions, or outcomes is purely coincidental. The values and relationships were generated using statistical simulation techniques and do not reflect actual medical situations.
+
+# Reference
+GPT helped with recreating images. 
+
+# Scatterplot with a smoothed regression line (LOESS)
+
+A LOESS (Locally Estimated Scatterplot Smoothing) curve is added to summarize the underlying trend without assuming a specific model. LOESS fits many small, weighted regressions across the x-range, allowing the line to follow nonlinear patterns. The shaded band shows the **95% confidence interval**, indicating uncertainty in the estimated trend.
+
+<div style="text-align: center;">
+  <img src="images/scatter_loess.png" width="600">
+</div>
+
+*Teitelbaum, Claire S., et al. "North American wintering mallards infected with highly pathogenic avian influenza show few signs of altered local or migratory movements." Scientific Reports 13.1 (2023): 14473.*
+
+
+
+:::{.callout-caution collapse="true"}
+```{webr-r}
+# Generate Data
+set.seed(123)
+n <- 800
+days <- runif(n, 0, 20)
+group <- sample(c("HPAI+", "HPAI-"), n, replace = TRUE)
+
+sim_metric <- function(base, slope, noise) {
+  exp(base + slope * days + rnorm(n, 0, noise))
+}
+
+df <- tibble(
+  days = days,
+  group = group,
+  mcp  = sim_metric(-2.3, 0.06, 0.55),
+  step = sim_metric(-2.7, 0.08, 0.50),
+  disp = sim_metric(-1.0, 0.05, 0.60)
+)
+
+```
+:::
+
+```{webr-r}
+pA <- ggplot(df, aes(x = days, y = mcp, color = group)) +
+  geom_point(alpha = 0.45, size = 2.5) +
+  geom_smooth(se = TRUE, method = "loess", span = 0.5, linewidth = 1.5) +  
+  scale_y_log10() +
+  scale_color_manual(values = c("HPAI+" = "red", "HPAI-" = "black")) +
+  labs(x = "Days since sampling", y = "MCP area (sq. km)", title = "A") +
+  theme_bw(base_size = 12)
+pA
+```
+
+
+# Stacked Bar Chart
+
+Each bar is composed of several segments stacked vertically (different age-discordance categories).
+
+<div style="text-align: center;">
+  <img src="images/stacked_bar.png" width="700">
+</div>
+
+*Krishnan, Vaishnavi, et al. "PREVENT risk age equations and population distribution in US adults." JAMA cardiology 10.9 (2025): 962-964.*
+
+
+:::{.callout-caution collapse="true"}
+```{webr-r}
+set.seed(123)
+
+# Age groups
+age_groups <- c("30-34","35-39","40-44","45-49","50-54",
+                "55-59","60-64","65-69","70-74","75-79")
+
+# Define categories
+categories <- c(">5 y younger", "Within 5 y", "5-10 y older", ">10 y older")
+
+# Function to simulate stacked proportions that sum to a target total
+simulate_panel <- function(sex_label) {
+  totals <- c(8.5, 8.3, 8.0, 8.7, 9.0, 8.6, 8.3, 7.5, 5.5, 3.0)  # approx millions
+  
+  df <- expand.grid(
+    age = age_groups,
+    category = categories,
+    keep = TRUE
+  ) %>% select(-keep)
+  
+  df <- df %>%
+    mutate(base = rep(totals, each = length(categories)),
+           prop = runif(n(), 0.5, 1.5)) %>%
+    group_by(age) %>%
+    mutate(prop = prop / sum(prop)) %>%
+    ungroup() %>%
+    mutate(count = base * prop,
+           sex = sex_label)
+  
+  df
+}
+
+```
+:::
+
+```{webr-r}
+
+df_women <- simulate_panel("Women")
+df_men   <- simulate_panel("Men")
+
+df_all <- bind_rows(df_women, df_men)
+```
+
+```{webr-r}
+cols <- c(
+  ">5 y younger" = "#355f75",
+  "Within 5 y"   = "#7ea3b1",
+  "5-10 y older" = "#b8cdd6",
+  ">10 y older"  = "#e4ebee"
+)
+
+make_plot <- function(df, title_label) {
+  ggplot(df, aes(x = age, y = count, fill = category)) +
+    geom_col() +
+    scale_fill_manual(values = cols, name = "Mean age discordance") +
+    labs(x = "Age group, y", y = "Individuals, No. (millions)", title = title_label) +
+    theme_minimal(base_size = 13) +
+    theme(
+      legend.position = "right",
+      axis.text.x = element_text(angle = 45, hjust = 1),
+      plot.title = element_text(face = "bold", size = 16)
+    )
+}
+
+pA <- make_plot(df_women, "A   Women")
+pB <- make_plot(df_men,   "B   Men")
+
+# Combine
+pA | pB
+```
+
+# Side-by-Side Bar Chart
+
+We are able to comprehensively compare across groups at different X values.
+Standard errors and confidence intervals tells you how much the estimate would change if you repeated the sampling many times.
+
+<div style="text-align: center;">
+  <img src="images/side_bar.png" width="700">
+</div>
+
+*Barron, Emma, et al. "Association between the English National Health Service Diabetes Prevention Programme and incident multiple long-term conditions." Nature Medicine (2025): 1-7.*
+
+:::{.callout-caution collapse="true"}
+```{webr-r}
+df <- tibble(
+  cohort = factor(c("6 months", "12 months", "18 months", "24 months"),
+                  levels = c("6 months","12 months","18 months","24 months")),
+  control = c(4.6, 8.8, 12.9, 16.7),
+  intervention = c(2.8, 6.3, 9.9, 13.4),
+  se_control = c(0.3, 0.4, 0.5, 0.6),
+  se_intervention = c(0.25, 0.35, 0.45, 0.55)
+)
+
+# Convert to long form
+df_long <- df %>%
+  pivot_longer(cols = c(control, intervention),
+               names_to = "group", values_to = "percent") %>%
+  mutate(
+    se = ifelse(group == "control", se_control, se_intervention),
+    group = recode(group,
+                   control = "Control",
+                   intervention = "Intervention")
+  )
+```
+:::
+
+Build the bars + error bars showing standard error
+```{webr-r}
+p <- ggplot(df_long, aes(x = cohort, y = percent, fill = group)) +
+  geom_col(position = position_dodge(width = 0.9), width = 0.75) +
+  geom_errorbar(
+    aes(ymin = percent - se, ymax = percent + se),
+    position = position_dodge(width = 0.9),
+    width = 0.2
+  )
+p
+```
+
+Add text labels + color + axis formatting
+```{webr-r}
+p <- p +
+  geom_text(
+    aes(label = sprintf("%.1f%%", percent), y = percent + 0.8),
+    position = position_dodge(width = 0.9),
+    size = 4
+  ) +
+  scale_fill_manual(
+    values = c("Control" = "grey85", "Intervention" = "grey50")
+  ) +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.1)),
+    limits = c(0, 20),
+    labels = function(x) paste0(x, "%")
+  )
+p
+```
+
+Add labels + theme
+```{webr-r}
+p <- p +
+  labs(
+    x = "Cohort",
+    y = "Percentage",
+    fill = ""
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "top",
+    panel.grid.minor = element_blank()
+  )
+p
+```
+
+
+# Line Chart for Trends
+
+The three panels display the predicted trajectories of physical activity outcomes over three years, separately for the Intervention and Control groups, with error bars representing the standard error of the estimates.
+
+<div style="text-align: center;">
+  <img src="images/line.png" width="700">
+</div>
+
+Research briefing from [`nature medicine`](https://www.nature.com/articles/s41591-025-04081-z)
+
+:::{.callout-caution collapse="true"}
+```{webr-r}
+set.seed(123)
+
+# Time points
+time <- c(0:3)
+
+# Simulated means
+mean_int  <- c(1920000, 1850000, 1800000, 1750000)
+mean_ctrl <- c(1890000, 1835000, 1790000, 1748000)
+
+# Simulated SEs
+se_int  <- c(30000, 35000, 40000, 45000)
+se_ctrl <- c(32000, 36000, 42000, 48000)
+
+df <- tibble(
+  time  = c(time, time),                            # length 8
+  group = rep(c("Intervention", "Control"), each=4),# length 8
+  mean  = c(mean_int, mean_ctrl),                   # length 8
+  se    = c(se_int, se_ctrl)                        # length 8
+)
+```
+:::
+
+```{webr-r}
+p <- ggplot(df, aes(x = time, y = mean, color = group)) +
+  geom_line(linewidth = 1) +
+  geom_point(linwidth = 3) +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.15)
+p
+```
+
+```{webr-r}
+p <- p + scale_color_manual(values = c(
+    "Intervention" = "#2C7BE5",
+    "Control" = "#D6336C"
+  )) +
+  labs(
+    x = "Years from Baseline",
+    y = "Predicted Daily Activity Counts",
+    color = ""
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "right"
+  )
+p
+```
+
+# Distribution Plots
+
+Population reporting mental health symptoms (WASSS) 7days or more in the past 2 weeks by key strata. a: Sex, b: Age group, c: Geographical region, and, d: Prior mental health diagnosis
+
+<div style="text-align: center;">
+  <img src="images/stat_plot.png" width="600">
+</div>
+
+*Antiporta, Daniel A., et al. "Depressive symptoms among Peruvian adult residents amidst a National Lockdown during the COVID-19 pandemic." BMC psychiatry 21.1 (2021): 111.*
+
+:::{.callout-caution collapse="true"}
+```{webr-r}
+symptoms <- c("Fear", "Anger", "Uninterested", "Hopelessness", "Impaired functioning")
+sim_prev <- function(n, mean, sd = 2) {
+  pmax(0.5, rnorm(n, mean, sd))  # keep positive
+}
+
+# -------------------------------------------------
+# Panel A: Sex
+# -------------------------------------------------
+
+sex_data <- tibble(
+  symptom = rep(symptoms, each = 2),
+  group   = rep(c("Female", "Male"), times = length(symptoms)),
+  value   = c(
+    sim_prev(1, 12), sim_prev(1, 7),
+    sim_prev(1, 11), sim_prev(1, 6),
+    sim_prev(1, 14), sim_prev(1, 9),
+    sim_prev(1, 13), sim_prev(1, 8),
+    sim_prev(1, 10), sim_prev(1, 6)
+  )
+)
+
+# -------------------------------------------------
+# Panel B: Age Group
+# -------------------------------------------------
+
+age_groups <- c("18–24", "25–34", "35–44", "45–54", "55+")
+
+age_data <- expand_grid(
+  symptom = symptoms,
+  group = age_groups
+) %>%
+  mutate(value = sim_prev(n(), runif(1, 7, 15), sd = 2))
+
+# -------------------------------------------------
+# Panel C: Region
+# -------------------------------------------------
+
+regions <- c("Lima", "Rest Coastal", "Andean", "Amazonian")
+
+region_data <- expand_grid(
+  symptom = symptoms,
+  group = regions
+) %>%
+  mutate(value = sim_prev(n(), runif(1, 7, 15), sd = 2))
+
+# -------------------------------------------------
+# Panel D: Previous Diagnosis
+# -------------------------------------------------
+
+diag_data <- tibble(
+  symptom = rep(symptoms, each = 2),
+  group = rep(c("Yes", "No"), times = length(symptoms)),
+  value = c(
+    sim_prev(1, 14), sim_prev(1, 10),
+    sim_prev(1, 12), sim_prev(1, 9),
+    sim_prev(1, 16), sim_prev(1, 12),
+    sim_prev(1, 15), sim_prev(1, 11),
+    sim_prev(1, 13), sim_prev(1, 8)
+  )
+)
+
+```
+:::
+
+
+```{webr-r}
+mid_df <- sex_data %>%
+    group_by(symptom) %>%
+    summarise(min_val = min(value), max_val = max(value))
+```
+
+
+```{webr-r}
+p <- ggplot() +
+    geom_segment(
+      data = mid_df,
+      aes(x = min_val, xend = max_val,
+          y = symptom, yend = symptom),
+      color = "black", linewidth = 0.7
+    )
+p
+
+```
+
+```{webr-r}
+p <- p + geom_point(
+      data = sex_data,
+      aes(x = value, y = symptom, color = group),
+      size = 4
+    )
+p
+```
+
+```{webr-r}
+p <- p + scale_color_manual(values = c("Female" = "#f39c73", "Male" = "#0d2a62")) +
+    labs(
+      title = "A   Sex",
+      x = "Prevalence (%)", y = ""
+    ) +
+    theme_minimal(base_size = 13) +
+    theme(
+      legend.position = "right",
+      plot.title = element_text(face = "bold", size = 16),
+      panel.grid.minor = element_blank()
+    )
+p
+```
+
+
+
+Below is an example that you can create all four plots through function calls ``plot_panel``. 
+```{webr-r}
+sex_cols  <- c("Female" = "#f39c73", "Male" = "#0d2a62")
+age_cols  <- c("18–24" = "#a8cee0", "25–34" = "#2774b2", "35–44" = "#9dd17f",
+               "45–54" = "#55a040", "55+" = "#e78ca8")
+region_cols <- c("Lima" = "#00a78d", "Rest Coastal" = "#f18f48",
+                 "Andean" = "#7c74d8", "Amazonian" = "#d6327a")
+diag_cols <- c("Yes" = "#e78ca8", "No" = "#a8cee0")
+```
+
+```{webr-r}
+plot_panel <- function(df, title, colors) {
+  
+  mid_df <- df %>%
+    group_by(symptom) %>%
+    summarise(min_val = min(value), max_val = max(value))
+  
+  ggplot() +
+    # connector line
+    geom_segment(
+      data = mid_df,
+      aes(x = min_val, xend = max_val,
+          y = symptom, yend = symptom),
+      color = "black", linewidth = 0.7
+    ) +
+    # points for groups
+    geom_point(
+      data = df,
+      aes(x = value, y = symptom, color = group),
+      size = 4
+    ) +
+    scale_color_manual(values = colors) +
+    labs(
+      title = title,
+      x = "Prevalence (%)", y = ""
+    ) +
+    theme_minimal(base_size = 13) +
+    theme(
+      legend.position = "right",
+      plot.title = element_text(face = "bold", size = 16),
+      panel.grid.minor = element_blank()
+    )
+}
+pA <- plot_panel(sex_data,   "A   Sex",               sex_cols)
+pB <- plot_panel(age_data,   "B   Age Group",         age_cols)
+pC <- plot_panel(region_data,"C   Region",            region_cols)
+pD <- plot_panel(diag_data,  "D   Previous Diagnosis",diag_cols)
+```
+
+```{webr-r}
+final_plot <- (pA | pB) / (pC | pD)
+final_plot
+```
+
+
