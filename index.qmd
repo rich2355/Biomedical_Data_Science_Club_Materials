@@ -15,7 +15,7 @@ This is the indexing page for all the archived materials from Biomedical Data Sc
 |---------------------------------------------|----------------|
 | Basic R                                     | 1              |
 | Tidyverse: Data Manipulation                | 1-3            |
-| Visualization                               | 4-5            |
+| Visualization                               | 4-6            |
 
 
 ```{webr-r}

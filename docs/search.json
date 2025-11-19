@@ -4,9 +4,9 @@
     "href": "workshop_2.html#univariate-visualization",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Univariate Visualization",
-    "text": "Univariate Visualization\nA straightforward way to describe the distribution of a continuous variable is histogram\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nWe can add more descriptive statistics to the plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 1\n\n\n\n\n\nHistogram of bmi with a line at the mean.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\n\n\n\nCautionPractice 2\n\n\n\n\n\nBoxplot of cholesterol with light yellow color.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\n\n\n\nCautionPractice 3\n\n\n\n\n\nDensity plot of dbp with vertical line at the median.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Univariate Visualization\nA straightforward way to describe the distribution of a continuous variable is histogram\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nWe can add more descriptive statistics to the plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 1\n\n\n\n\n\nHistogram of bmi with a line at the mean.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\n\n\n\nPractice 2\n\n\n\n\n\nBoxplot of cholesterol with light yellow color.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\n\n\n\nPractice 3\n\n\n\n\n\nDensity plot of dbp with vertical line at the median.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -16,7 +16,7 @@
     "section": "Bivariate visualizations - 2 numerical variables",
     "text": "Bivariate visualizations - 2 numerical variables\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -26,7 +26,7 @@
     "section": "Bivariate visualizations - numerical + categorical variables",
     "text": "Bivariate visualizations - numerical + categorical variables\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -34,9 +34,9 @@
     "href": "workshop_2.html#bivariate-visualizations---categorical-categorical",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Bivariate visualizations - categorical + categorical",
-    "text": "Bivariate visualizations - categorical + categorical\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 4\n\n\n\n\n\nScatterplot of bmi vs cholesterol colored by sex, with legend on the top left corner\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Bivariate visualizations - categorical + categorical\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 4\n\n\n\n\n\nScatterplot of bmi vs cholesterol colored by sex, with legend on the top left corner\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -46,7 +46,7 @@
     "section": "Multivariate visualizations",
     "text": "Multivariate visualizations\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -54,9 +54,9 @@
     "href": "workshop_2.html#align-multiple-plots-side-by-side-layouts",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Align Multiple Plots (Side-by-Side Layouts)",
-    "text": "Align Multiple Plots (Side-by-Side Layouts)\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 5\n\n\n\n\n\nArrange histograms of age_baseline and cholesterol side by side.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Align Multiple Plots (Side-by-Side Layouts)\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 5\n\n\n\n\n\nArrange histograms of age_baseline and cholesterol side by side.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -64,9 +64,9 @@
     "href": "workshop_2.html#saving-images",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Saving images",
-    "text": "Saving images\nFirst, we want to check and change current directory to the exact folder you want your plots to be located at\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nOpen a PNG device and recreate the plot between png() and dev.off()\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 6\n\n\n\n\n\nSome medical journals require JPEG as the submission format with square-shaped. Please save the same plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\nIf I want to save and reload my plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Saving images\nFirst, we want to check and change current directory to the exact folder you want your plots to be located at\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nOpen a PNG device and recreate the plot between png() and dev.off()\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 6\n\n\n\n\n\nSome medical journals require JPEG as the submission format with square-shaped. Please save the same plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\nIf I want to save and reload my plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -76,7 +76,7 @@
     "section": "Step 1 – create a blank ggplot object",
     "text": "Step 1 – create a blank ggplot object\nStart with ggplot() and aes() to define what variables you’re plotting and load in the data. This serves as a base for any plot with ggplot()\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -86,7 +86,7 @@
     "section": "Step 2 – add geometric layers",
     "text": "Step 2 – add geometric layers\nAdd geom_point() to display data as dots (a scatterplot).\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -96,7 +96,7 @@
     "section": "Step 3 – add categorical color and transparency",
     "text": "Step 3 – add categorical color and transparency\nMap color to a categorical variable. The alpha parameter in ggplot2 controls transparency of plot elements (points, lines, bars, etc.). alpha = 1 means solid color and alpha = 0 means transparent.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -104,9 +104,9 @@
     "href": "workshop_2.html#step-4-add-a-smooth-trend-line",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Step 4 – add a smooth trend line",
-    "text": "Step 4 – add a smooth trend line\nUse geom_smooth() to see the overall relationship.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 7\n\n\n\n\n\nWhat does se parameter represent here? Try se = TRUE and interpret.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Step 4 – add a smooth trend line\nUse geom_smooth() to see the overall relationship.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 7\n\n\n\n\n\nWhat does se parameter represent here? Try se = TRUE and interpret.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -114,9 +114,9 @@
     "href": "workshop_2.html#step-5-add-titles-and-axis-labels",
     "title": "Biomedical Data Science (BDS) Workshop 2: Data Visualization in R",
     "section": "Step 5 – add titles and axis labels",
-    "text": "Step 5 – add titles and axis labels\nUse labs() to name your plot and axes.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 8\n\n\n\n\n\nDid you notice the message above colored in red? The plot is using the Y ~ X linear relationship because we set geom_smooth(method = \"lm\"). Can you try LOESS smoothing (Locally Estimated Scatterplot Smoothing) by setting the method to loess?\nAlso, there is a parameter called span. This controls how much of the data is used to fit each local curve segment in the LOESS algorithm.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Step 5 – add titles and axis labels\nUse labs() to name your plot and axes.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 8\n\n\n\n\n\nDid you notice the message above colored in red? The plot is using the Y ~ X linear relationship because we set geom_smooth(method = \"lm\"). Can you try LOESS smoothing (Locally Estimated Scatterplot Smoothing) by setting the method to loess?\nAlso, there is a parameter called span. This controls how much of the data is used to fit each local curve segment in the LOESS algorithm.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -126,7 +126,7 @@
     "section": "Step 6 – change the theme",
     "text": "Step 6 – change the theme\nThemes control the overall appearance of the plot.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -136,7 +136,7 @@
     "section": "Step 7 – change color styling",
     "text": "Step 7 – change color styling\nManually choose colors for diabetes groups.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -146,7 +146,7 @@
     "section": "Step 8 – add a histogram (new variable)",
     "text": "Step 8 – add a histogram (new variable)\nNow we’ll make a new plot but continue the same workflow.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -156,7 +156,7 @@
     "section": "Step 9 – add density overlay to the histogram",
     "text": "Step 9 – add density overlay to the histogram\nAdd a smoothed density curve on top of the histogram.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nNote that y = ..count.. refers to the count of observations in each bin. Here’s an alternative example if you want to show density plots instead of a histogram.\nSome additional references based on Google: Density plot is a graph that uses probability density to illustrate where data points are concentrated and where they are sparse.\nNote that the Y-axis IS NOT A PROBABILITY of the corresponding X value (instead it has a 0 probability of X taking a single value - can you think of why?).\nHere we show the density plot using aes(y = ..density..) (by default).\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -166,7 +166,7 @@
     "section": "Step 10 - add grouping to the density",
     "text": "Step 10 - add grouping to the density\nSeparate BMI distributions by diabetes status. You do not have to fill the color manually though, we could label the fill from the start. However, we cannot control which color corresponds to which category.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -176,7 +176,7 @@
     "section": "Step 11 – create a barplot for a new categorical variable",
     "text": "Step 11 – create a barplot for a new categorical variable\nShow the proportion of diabetes by physical activity.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -186,7 +186,7 @@
     "section": "Step 12 – add boxplot for continuous outcome by group",
     "text": "Step 12 – add boxplot for continuous outcome by group\nCompare HDL distributions by diabetes status.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -196,7 +196,7 @@
     "section": "Step 13 – add facet for subgroup comparison",
     "text": "Step 13 – add facet for subgroup comparison\nSplit BMI–SBP relationship by sex using facet_wrap().\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -206,7 +206,7 @@
     "section": "Step 14 – save your final plot",
     "text": "Step 14 – save your final plot\nSave the final version to a PNG file.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nNote that if you want to combine plots into a single layout, use the patchwork package to combine plots.",
     "crumbs": [
-      "2. Data visualization in basic R"
+      "2. Data visualization in basic R, ggplot"
     ]
   },
   {
@@ -214,7 +214,7 @@
     "href": "workshop_3.html",
     "title": "Biomedical Data Science (BDS) Workshop 3: Data Visualization for Research Project",
     "section": "",
-    "text": "Credits\nCredited to Richard Liu and Emily Zhang from the Biomedical Data Science (BDS) club in NYU Langone Health.\n\n\nDisclaimer\nThe datasets provided here are all synthetically generated for demonstration and educational purposes only. It does not represent real patient data and should not be used for clinical decision-making, medical research, or policy development. Any resemblance to real persons, conditions, or outcomes is purely coincidental. The values and relationships were generated using statistical simulation techniques and do not reflect actual medical situations.\n\n\nReference\nGPT helped with recreating images.\n\n\nScatterplot with a smoothed regression line (LOESS)\nA LOESS (Locally Estimated Scatterplot Smoothing) curve is added to summarize the underlying trend without assuming a specific model. LOESS fits many small, weighted regressions across the x-range, allowing the line to follow nonlinear patterns. The shaded band shows the 95% confidence interval, indicating uncertainty in the estimated trend.\n\n\n\nTeitelbaum, Claire S., et al. “North American wintering mallards infected with highly pathogenic avian influenza show few signs of altered local or migratory movements.” Scientific Reports 13.1 (2023): 14473.\n\n\n\n\n\n\nCaution\n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nStacked Bar Chart\nEach bar is composed of several segments stacked vertically (different age-discordance categories).\n\n\n\nKrishnan, Vaishnavi, et al. “PREVENT risk age equations and population distribution in US adults.” JAMA cardiology 10.9 (2025): 962-964.\n\n\n\n\n\n\nCaution\n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nSide-by-Side Bar Chart\nWe are able to comprehensively compare across groups at different X values. Standard errors and confidence intervals tells you how much the estimate would change if you repeated the sampling many times.\n\n\n\nBarron, Emma, et al. “Association between the English National Health Service Diabetes Prevention Programme and incident multiple long-term conditions.” Nature Medicine (2025): 1-7.\n\n\n\n\n\n\nCaution\n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\nBuild the bars + error bars showing standard error\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nAdd text labels + color + axis formatting\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nAdd labels + theme\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nLine Chart for Trends\nThe three panels display the predicted trajectories of physical activity outcomes over three years, separately for the Intervention and Control groups, with error bars representing the standard error of the estimates.\n\n\n\nResearch briefing from nature medicine\n\n\n\n\n\n\nCaution\n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nDistribution Plots\nPopulation reporting mental health symptoms (WASSS) 7days or more in the past 2 weeks by key strata. a: Sex, b: Age group, c: Geographical region, and, d: Prior mental health diagnosis\n\n\n\nAntiporta, Daniel A., et al. “Depressive symptoms among Peruvian adult residents amidst a National Lockdown during the COVID-19 pandemic.” BMC psychiatry 21.1 (2021): 111.\n\n\n\n\n\n\nCaution\n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nBelow is an example that you can create all four plots through function calls plot_panel.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Credits\nCredited to Richard Liu and Emily Zhang from the Biomedical Data Science (BDS) club in NYU Langone Health.\n\n\nDisclaimer\nThe datasets provided here are all synthetically generated for demonstration and educational purposes only. It does not represent real patient data and should not be used for clinical decision-making, medical research, or policy development. Any resemblance to real persons, conditions, or outcomes is purely coincidental. The values and relationships were generated using statistical simulation techniques and do not reflect actual medical situations.\n\n\nReference\nGPT helped with recreating images.\n\n\nScatterplot with a smoothed regression line (LOESS)\nA LOESS (Locally Estimated Scatterplot Smoothing) curve is added to summarize the underlying trend without assuming a specific model. LOESS fits many small, weighted regressions across the x-range, allowing the line to follow nonlinear patterns. The shaded band shows the 95% confidence interval, indicating uncertainty in the estimated trend.\n\n\n\nTeitelbaum, Claire S., et al. “North American wintering mallards infected with highly pathogenic avian influenza show few signs of altered local or migratory movements.” Scientific Reports 13.1 (2023): 14473.\n\n\n\n\n\n\nData Generation\n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nStacked Bar Chart\nEach bar is composed of several segments stacked vertically (different age-discordance categories).\n\n\n\nKrishnan, Vaishnavi, et al. “PREVENT risk age equations and population distribution in US adults.” JAMA cardiology 10.9 (2025): 962-964.\n\n\n\n\n\n\nData Generation\n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nSide-by-Side Bar Chart\nWe are able to comprehensively compare across groups at different X values. Standard errors and confidence intervals tells you how much the estimate would change if you repeated the sampling many times.\n\n\n\nBarron, Emma, et al. “Association between the English National Health Service Diabetes Prevention Programme and incident multiple long-term conditions.” Nature Medicine (2025): 1-7.\n\n\n\n\n\n\nData Generation\n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\nBuild the bars + error bars showing standard error\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nAdd text labels + color + axis formatting\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nAdd labels + theme\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nLine Chart for Trends\nThe three panels display the predicted trajectories of physical activity outcomes over three years, separately for the Intervention and Control groups, with error bars representing the standard error of the estimates.\n\n\n\nResearch briefing from nature medicine\n\n\n\n\n\n\nData Generation\n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nDistribution Plots\nPopulation reporting mental health symptoms (WASSS) 7days or more in the past 2 weeks by key strata. a: Sex, b: Age group, c: Geographical region, and, d: Prior mental health diagnosis\n\n\n\nAntiporta, Daniel A., et al. “Depressive symptoms among Peruvian adult residents amidst a National Lockdown during the COVID-19 pandemic.” BMC psychiatry 21.1 (2021): 111.\n\n\n\n\n\n\nData Generation\n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nBelow is an example that you can create all four plots through function calls plot_panel.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "3. Data Visualization for Research Project"
     ]
@@ -244,7 +244,7 @@
     "href": "workshop_1.html#logical-operators",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
     "section": "Logical Operators",
-    "text": "Logical Operators\n&, |\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\n\nOperators have their own rankings. & is ranked higher than |.\n\n\n\n\n\n\n\n\nCautionPractice 1\n\n\n\n\n\nIdentify the boolean value of the following expression:\n(5 &lt; 7) | (6 * 7 == 42) & (5 &lt; 7) & (6 * 7 != 42)\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nTo avoid confusion, what would be a better way to write this script?",
+    "text": "Logical Operators\n&, |\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\n\nOperators have their own rankings. & is ranked higher than |.\n\n\n\n\n\n\n\n\nPractice 1\n\n\n\n\n\nIdentify the boolean value of the following expression:\n(5 &lt; 7) | (6 * 7 == 42) & (5 &lt; 7) & (6 * 7 != 42)\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nTo avoid confusion, what would be a better way to write this script?",
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
@@ -254,7 +254,7 @@
     "href": "workshop_1.html#vectors",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
     "section": "Vectors",
-    "text": "Vectors\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 2\n\n\n\n\n\nCreate a vector y, write code to obtain z such that \\(y = \\max(z, 0)\\), where \\(\\max(\\cdot)\\) is defined element-wise.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nAny subtle issue?",
+    "text": "Vectors\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 2\n\n\n\n\n\nCreate a vector y, write code to obtain z such that \\(y = \\max(z, 0)\\), where \\(\\max(\\cdot)\\) is defined element-wise.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nAny subtle issue?",
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
@@ -284,7 +284,7 @@
     "href": "workshop_1.html#control-flow",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
     "section": "Control Flow",
-    "text": "Control Flow\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 3\n\n\n\n\n\nWrite code to display the following if-else logic: If a patient’s age is between 26 and 35 (left inclusive, same after), then he/she is “young”; if a patient’s age is between 36 and 50, then he/she is “middle aged”; if a patient’s age is older than 50, then he/she is “old”.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nIs this a good encoding?",
+    "text": "Control Flow\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 3\n\n\n\n\n\nWrite code to display the following if-else logic: If a patient’s age is between 26 and 35 (left inclusive, same after), then he/she is “young”; if a patient’s age is between 36 and 50, then he/she is “middle aged”; if a patient’s age is older than 50, then he/she is “old”.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nIs this a good encoding?",
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
@@ -294,7 +294,7 @@
     "href": "workshop_1.html#iteration",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
     "section": "Iteration",
-    "text": "Iteration\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\n\nWhat is while(TRUE)?\n\n\n\n\n\n\n\n\nCautionPractice 4\n\n\n\n\n\nWrite code to calculate \\(\\sum_{x = 1}^5 x^2\\). Please come up with two different approaches.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nWhich one is better?",
+    "text": "Iteration\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\n\nWhat is while(TRUE)?\n\n\n\n\n\n\n\n\nPractice 4\n\n\n\n\n\nWrite code to calculate \\(\\sum_{x = 1}^5 x^2\\). Please come up with two different approaches.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nWhich one is better?",
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
@@ -304,7 +304,7 @@
     "href": "workshop_1.html#data-frame-basics",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
     "section": "Data Frame Basics",
-    "text": "Data Frame Basics\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 5\n\n\n\n\n\nIn the dataset df,\n\nsubset all white patients, how many?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nsubset all patients taking the treatment (instead of taking the control).\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Data Frame Basics\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 5\n\n\n\n\n\nIn the dataset df,\n\nsubset all white patients, how many?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nsubset all patients taking the treatment (instead of taking the control).\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
@@ -314,7 +314,7 @@
     "href": "workshop_1.html#filter",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
     "section": "filter",
-    "text": "filter\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 6\n\n\n\n\n\nIn the dataset df, use tidyverse grammar,\n\nsubset all white patients, how many?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nsubset all patients taking the treatment (instead of taking the control).\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "filter\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 6\n\n\n\n\n\nIn the dataset df, use tidyverse grammar,\n\nsubset all white patients, how many?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nsubset all patients taking the treatment (instead of taking the control).\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
@@ -324,7 +324,7 @@
     "href": "workshop_1.html#select",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
     "section": "select",
-    "text": "select\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 7\n\n\n\n\n\nAssume that you have a dataset with thousands of columns (which is often the case!), and you want to select the information related to Treatment, how to do that?\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "select\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 7\n\n\n\n\n\nAssume that you have a dataset with thousands of columns (which is often the case!), and you want to select the information related to Treatment, how to do that?\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
@@ -334,7 +334,7 @@
     "href": "workshop_1.html#pull",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
     "section": "pull",
-    "text": "pull\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 8\n\n\n\n\n\nFind the race components of df. Hint: table()\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "pull\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 8\n\n\n\n\n\nFind the race components of df. Hint: table()\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
@@ -344,7 +344,7 @@
     "href": "workshop_1.html#mutate-case_when",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
     "section": "mutate, case_when",
-    "text": "mutate, case_when\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 9\n\n\n\n\n\nYour PI wants to see the level of eGFR for each patient, instead of a number. Please change the corresponding column based on the follows: PI thinks\n\nit is good if \\(eGFR &gt; 90\\)\nit is acceptable if \\(60 &lt; eGFR &lt;= 90\\)\nit is bad if otherwise\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "mutate, case_when\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 9\n\n\n\n\n\nYour PI wants to see the level of eGFR for each patient, instead of a number. Please change the corresponding column based on the follows: PI thinks\n\nit is good if \\(eGFR &gt; 90\\)\nit is acceptable if \\(60 &lt; eGFR &lt;= 90\\)\nit is bad if otherwise\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
@@ -354,7 +354,7 @@
     "href": "workshop_1.html#group_by-related-summarizations",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
     "section": "group_by related summarizations",
-    "text": "group_by related summarizations\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 10\n\n\n\n\n\nNational Institute of Health (NIH) requires an annual-renewed cumulative patient report grouping by some basic demographics. Try to provide such summary information to the NIH grouping by Age, Sex and Race, with Age changed to nominal levels by the following rules: old if \\(Age &gt;= 60\\), young if \\(Age &lt;= 30\\), middle_age if otherwise.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "group_by related summarizations\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 10\n\n\n\n\n\nNational Institute of Health (NIH) requires an annual-renewed cumulative patient report grouping by some basic demographics. Try to provide such summary information to the NIH grouping by Age, Sex and Race, with Age changed to nominal levels by the following rules: old if \\(Age &gt;= 60\\), young if \\(Age &lt;= 30\\), middle_age if otherwise.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
@@ -374,7 +374,7 @@
     "href": "workshop_1.html#arrange",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
     "section": "arrange",
-    "text": "arrange\nThis will be useful when you want to order the data. For example, when you have a date for each patient.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\n\nIs there any problem in the code patch above?\n\n\n\n\n\n\n\n\nCautionPractice 11\n\n\n\n\n\n\nCreate a new dataset df_long, which is a long-format of df_longi. In a long-format, each row corresponds to one measurement, instead of one patient. Hint: rbind() / bind_rows()\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nAfter that, use arrange, so that for each patient, their observation is ordered by date.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nYou can try using GPT here (and in any practice problem) to see whether GPT has a better solution.",
+    "text": "arrange\nThis will be useful when you want to order the data. For example, when you have a date for each patient.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\n\nIs there any problem in the code patch above?\n\n\n\n\n\n\n\n\nPractice 11\n\n\n\n\n\n\nCreate a new dataset df_long, which is a long-format of df_longi. In a long-format, each row corresponds to one measurement, instead of one patient. Hint: rbind() / bind_rows()\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nAfter that, use arrange, so that for each patient, their observation is ordered by date.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nYou can try using GPT here (and in any practice problem) to see whether GPT has a better solution.",
     "crumbs": [
       "1. R Basics, Tidyverse"
     ]
@@ -414,7 +414,7 @@
     "href": "index.html",
     "title": "Biomedical Data Science (BDS) Club Workshop",
     "section": "",
-    "text": "This is the indexing page for all the archived materials from Biomedical Data Science (BDS) Club. Richard Liu and Emily Zhang co-found this club based in NYU Langone Health.\n\n\n\nTopic\nWorkshop\n\n\n\n\nBasic R\n1\n\n\nTidyverse: Data Manipulation\n1-3\n\n\nVisualization\n4-5\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "This is the indexing page for all the archived materials from Biomedical Data Science (BDS) Club. Richard Liu and Emily Zhang co-found this club based in NYU Langone Health.\n\n\n\nTopic\nWorkshop\n\n\n\n\nBasic R\n1\n\n\nTidyverse: Data Manipulation\n1-3\n\n\nVisualization\n4-6\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "Welcome!"
     ]

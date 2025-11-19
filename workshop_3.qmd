@@ -34,7 +34,8 @@ A LOESS (Locally Estimated Scatterplot Smoothing) curve is added to summarize th
 
 
 
-:::{.callout-caution collapse="true"}
+:::{.callout-note collapse="true"}
+## Data Generation
 ```{webr-r}
 # Generate Data
 set.seed(123)
@@ -80,7 +81,8 @@ Each bar is composed of several segments stacked vertically (different age-disco
 *Krishnan, Vaishnavi, et al. "PREVENT risk age equations and population distribution in US adults." JAMA cardiology 10.9 (2025): 962-964.*
 
 
-:::{.callout-caution collapse="true"}
+:::{.callout-note collapse="true"}
+## Data Generation
 ```{webr-r}
 set.seed(123)
 
@@ -163,7 +165,8 @@ Standard errors and confidence intervals tells you how much the estimate would c
 
 *Barron, Emma, et al. "Association between the English National Health Service Diabetes Prevention Programme and incident multiple long-term conditions." Nature Medicine (2025): 1-7.*
 
-:::{.callout-caution collapse="true"}
+:::{.callout-note collapse="true"}
+## Data Generation
 ```{webr-r}
 df <- tibble(
   cohort = factor(c("6 months", "12 months", "18 months", "24 months"),
@@ -245,7 +248,8 @@ The three panels display the predicted trajectories of physical activity outcome
 
 Research briefing from [`nature medicine`](https://www.nature.com/articles/s41591-025-04081-z)
 
-:::{.callout-caution collapse="true"}
+:::{.callout-note collapse="true"}
+## Data Generation
 ```{webr-r}
 set.seed(123)
 
@@ -304,7 +308,8 @@ Population reporting mental health symptoms (WASSS) 7days or more in the past 2 
 
 *Antiporta, Daniel A., et al. "Depressive symptoms among Peruvian adult residents amidst a National Lockdown during the COVID-19 pandemic." BMC psychiatry 21.1 (2021): 111.*
 
-:::{.callout-caution collapse="true"}
+:::{.callout-note collapse="true"}
+## Data Generation
 ```{webr-r}
 symptoms <- c("Fear", "Anger", "Uninterested", "Hopelessness", "Impaired functioning")
 sim_prev <- function(n, mean, sd = 2) {
