@@ -17,7 +17,7 @@ website:
       - href: workshop_1.qmd
         text: 1. R Basics, Tidyverse
       - href: workshop_2.qmd
-        text: 2. Data visualization in basic R
+        text: 2. Data visualization in basic R, ggplot
       - href: workshop_3.qmd
         text: 3. Data Visualization for Research Project
       
