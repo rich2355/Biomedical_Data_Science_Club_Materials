@@ -24,7 +24,16 @@ GPT helped with recreating images.
 
 # Scatterplot with a smoothed regression line (LOESS)
 
-A LOESS (Locally Estimated Scatterplot Smoothing) curve is added to summarize the underlying trend without assuming a specific model. LOESS fits many small, weighted regressions across the x-range, allowing the line to follow nonlinear patterns. The shaded band shows the **95% confidence interval**, indicating uncertainty in the estimated trend.
+LOESS is a nonparametric smoothing method — it does not assume any global functional form (like linear or quadratic).
+
+It works by fitting many small, local regressions across the x-axis, each weighted so that nearby points influence the fit more than distant ones.
+
+This produces a flexible curve that can capture nonlinear or evolving patterns in the data.
+
+The LOESS line summarizes the underlying trend in the scatterplot, reducing noise while retaining local structure.
+
+The shaded 95% confidence band reflects uncertainty in the estimated trend — wider regions indicate areas where the data are sparse or more variable.
+
 
 <div style="text-align: center;">
   <img src="images/scatter_loess.png" width="600">
@@ -60,9 +69,9 @@ df <- tibble(
 
 ```{webr-r}
 pA <- ggplot(df, aes(x = days, y = mcp, color = group)) +
-  geom_point(alpha = 0.45, size = 2.5) +
+  geom_point(alpha = 0.45, size = 2.5) + # For adding dots
   geom_smooth(se = TRUE, method = "loess", span = 0.5, linewidth = 1.5) +  
-  scale_y_log10() +
+  scale_y_log10() + # Log transform of Y
   scale_color_manual(values = c("HPAI+" = "red", "HPAI-" = "black")) +
   labs(x = "Days since sampling", y = "MCP area (sq. km)", title = "A") +
   theme_bw(base_size = 12)
@@ -126,6 +135,8 @@ df_men   <- simulate_panel("Men")
 df_all <- bind_rows(df_women, df_men)
 ```
 
+``element_text()`` is a ggplot2 function used inside theme() to control the appearance of any text element in a plot.
+
 ```{webr-r}
 cols <- c(
   ">5 y younger" = "#355f75",
@@ -139,11 +150,11 @@ make_plot <- function(df, title_label) {
     geom_col() +
     scale_fill_manual(values = cols, name = "Mean age discordance") +
     labs(x = "Age group, y", y = "Individuals, No. (millions)", title = title_label) +
-    theme_minimal(base_size = 13) +
+    theme_minimal(base_size = 13) + # ? What does this mean
     theme(
       legend.position = "right",
-      axis.text.x = element_text(angle = 45, hjust = 1),
-      plot.title = element_text(face = "bold", size = 16)
+      axis.text.x = element_text(angle = 45), # rotates x-axis text
+      plot.title = element_text(face = "bold", size = 16) # Override the theme
     )
 }
 
@@ -153,6 +164,7 @@ pB <- make_plot(df_men,   "B   Men")
 # Combine
 pA | pB
 ```
+
 
 # Side-by-Side Bar Chart
 
@@ -190,12 +202,19 @@ df_long <- df %>%
 ```
 :::
 
-Build the bars + error bars showing standard error
+Build the bars + error bars showing standard error.
+
+``geom_col()`` makes bars whose height = the y value.
+
+``position_dodge()`` moves bars for different groups side-by-side rather than stacked.
+
+``geom_errorbar()`` is a ggplot2 layer used to add vertical error bars to a plot. It is commonly used with bar charts or point estimates to show uncertainty, such as: Standard errors (SE), Confidence intervals (CI), Standard deviations (SD).
 ```{webr-r}
+# df_long
 p <- ggplot(df_long, aes(x = cohort, y = percent, fill = group)) +
   geom_col(position = position_dodge(width = 0.9), width = 0.75) +
   geom_errorbar(
-    aes(ymin = percent - se, ymax = percent + se),
+    aes(ymin = percent - se, ymax = percent + se), # Draws an error bar from percent - se to percent + se
     position = position_dodge(width = 0.9),
     width = 0.2
   )
@@ -206,17 +225,16 @@ Add text labels + color + axis formatting
 ```{webr-r}
 p <- p +
   geom_text(
-    aes(label = sprintf("%.1f%%", percent), y = percent + 0.8),
-    position = position_dodge(width = 0.9),
+    aes(label = sprintf("%.1f%%", percent), y = percent + 0.8), # Moves the label 0.8 units above the bar so it doesn't overlap with the bar.
+    position = position_dodge(width = 0.9), # Ensures labels align correctly with grouped bars.
     size = 4
   ) +
   scale_fill_manual(
     values = c("Control" = "grey85", "Intervention" = "grey50")
   ) +
   scale_y_continuous(
-    expand = expansion(mult = c(0, 0.1)),
-    limits = c(0, 20),
-    labels = function(x) paste0(x, "%")
+    limits = c(0, 20), # Sets y-axis to span 0% to 20%.
+    labels = function(x) paste0(x, "%") # Making y as %
   )
 p
 ```
@@ -276,7 +294,7 @@ df <- tibble(
 ```{webr-r}
 p <- ggplot(df, aes(x = time, y = mean, color = group)) +
   geom_line(linewidth = 1) +
-  geom_point(linwidth = 3) +
+  geom_point() +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.15)
 p
 ```
@@ -300,7 +318,9 @@ p
 
 # Distribution Plots
 
-Population reporting mental health symptoms (WASSS) 7days or more in the past 2 weeks by key strata. a: Sex, b: Age group, c: Geographical region, and, d: Prior mental health diagnosis
+Population reporting mental health symptoms (WASSS) 7days or more in the past 2 weeks by key strata. a: Sex, b: Age group, c: Geographical region, and, d: Prior mental health diagnosis.
+
+Each panel (A–D) is a lollipop chart: a horizontal line connects the group mean to the symptom category and a colored dot marks the estimated prevalence (%)
 
 <div style="text-align: center;">
   <img src="images/stat_plot.png" width="600">
@@ -382,6 +402,15 @@ mid_df <- sex_data %>%
     summarise(min_val = min(value), max_val = max(value))
 ```
 
+``geom_segment()``: Adds horizontal line segments to the plot. Each row in mid_df defines one segment.
+
+``x = min_val``: Starting point on the x-axis
+
+``xend = max_val``: Ending point on the x-axis
+
+``y = symptom``: Vertical position (each symptom gets its own row)
+
+``yend = symptom``: Same y-value → results in a horizontal line
 
 ```{webr-r}
 p <- ggplot() +
@@ -457,10 +486,10 @@ plot_panel <- function(df, title, colors) {
       title = title,
       x = "Prevalence (%)", y = ""
     ) +
-    theme_minimal(base_size = 13) +
+    theme_minimal(base_size = 5) +
     theme(
       legend.position = "right",
-      plot.title = element_text(face = "bold", size = 16),
+      plot.title = element_text(face = "bold", size = 8),
       panel.grid.minor = element_blank()
     )
 }
