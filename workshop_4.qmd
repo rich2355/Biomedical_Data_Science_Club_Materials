@@ -726,7 +726,7 @@ Here, let's think about some strategies casinos implemented to "prevent you winn
 
 
 
-# Why do we care about modeling
+# Statistical Modeling
 
 - In real world, we have questions we want to answer.
 - To help us answer our question, we need resources!
@@ -736,7 +736,7 @@ Here, let's think about some strategies casinos implemented to "prevent you winn
 
 ---
 
-# What is a statistical model
+## What is a statistical model
 
 - A mathematical representation of a real-world process.
 - Combines observed data with assumptions to draw conclusions.
@@ -749,7 +749,7 @@ Here, let's think about some strategies casinos implemented to "prevent you winn
  
 
 
-# Details about Modeling
+## Details about Modeling
 
 - Most modeling process centers on the following:
 
@@ -765,7 +765,7 @@ $$
 
 ---
 
-# Why learning about statistical modeling is so important?
+## Why learning about statistical modeling is so important?
 
 - This may seem straightforward but there are many issues needed to be dealt with:
   - Which predictors $\mathbf{X}$ are most useful for predicting $Y$?
@@ -775,7 +775,7 @@ $$
 
 ---
 
-# Prediction or Inference?
+## Prediction or Inference?
 
 - If our goal is simply predicting the outcome, then we do not care about the form of $f$:
   - We only care how well it minimizes the prediction error.
@@ -787,7 +787,7 @@ $$
 
 ---
 
-# Example
+## Example
 
 - Suppose we have predictors $\mathbf{X}$ that are cancer risk factors, and our outcome $Y$ is whether or not a patient has a particular illness.
   - Clearly, we are interested in fitting a model for **prediction** so we can predict who is most likely to get sick.
@@ -807,7 +807,7 @@ $$
 
 ---
 
-# Why Linear Model is Important
+## Why Linear Model is Important
 
 - It is a root for complex models.
 - We can actually **create quite flexible models just within the scope of linear regression**.
@@ -816,7 +816,7 @@ $$
 
 ---
 
-# Simple Linear Regression Model
+## Simple Linear Regression Model
 
 - Simple linear regression with one predictor $X$:
 
@@ -850,8 +850,6 @@ subtitle = "The fitted line is the regression line (coming up next) ")
 
 ---
 
-# Simple Linear Regression Model
-
 - People sometimes refer to this model as:
 
 $$
@@ -876,7 +874,7 @@ $$
 
 ---
 
-# Interpretations of Parameters of Simple Linear Models
+## Interpretations of Parameters of Simple Linear Models
 
 - $\beta_0$ is the **expected value of the outcome** when $X=0$.
   - Only interpretable when $X$ can reasonably take the value 0 and $Y$ is reasonable in given range.
@@ -900,8 +898,6 @@ coef(fit_centered)
 
 Ans: Expected value of $Y$ when $X$ is at its average value. 
 
-# Simple Linear Regression
-
 - We need to **estimate the unknown parameters**.
 - We want to find estimates $\hat{\beta}_0$ and $\hat{\beta}_1$ that fit the data well.
 - We will use the data given by $(X_i, Y_i)$ for $i = 1, \dots, n$, where $n$ is the number of independent observations.
@@ -910,7 +906,7 @@ Ans: Expected value of $Y$ when $X$ is at its average value.
 
 ---
 
-# How to estimate our parameters?
+## Parameter Estimation
 
 - Define $e_i = Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i$, to be the $i$-th residual.
 - We want $e_i$ to be small, but how do we quantify this?
@@ -928,7 +924,6 @@ $$
 
 ---
 
-# Estimation of parameters
 
 Solution for estimates:
 
@@ -948,13 +943,13 @@ summary(fit_uncentered)
 summary(fit_centered)
 ```
 
-# SE of beta from R output
+## SE of beta from R output
 
 - In R output, you might see a standard error of coefficients.
 - We are not going to give the formulas for the SE here but it is related to the residual variance $\sigma^2$.
 - Keep in mind that we need to approximate the residual variance $\sigma^2$ within the formula of $\mathrm{SE}(\hat{\beta}_{0,1})$, **since it is unknown in real life**.
 
-# Is your predictor significant?
+## Significant Testing
 
 - Standard errors allow us to perform **hypothesis tests**.
 - We are typically interested in whether there is any relationship between $X$ and $Y$.
@@ -974,7 +969,6 @@ $$
 
 ---
 
-# Note on significance test
 
 - The standard error tells us if the difference is sufficiently far from zero to reject the null hypothesis.
 - Specifically, we use the following statistic (Why t-test?):
@@ -1008,7 +1002,7 @@ $$
 
 ---
 
-# Interpret Coefficients of Multiple Linear Regression
+## Interpret Coefficients of Multiple Linear Regression
 
 - The parameters in the multiple linear regression model have a nice interpretation.
 - $\beta_i$ can be interpreted as the **expected change in the outcome** for a one-unit change in $X_i$, **if we fix the values of the remaining predictors**.
@@ -1018,7 +1012,7 @@ $$
 
 ---
 
-# Interpret Coefficients of Multiple Linear Regression (derivation)
+## Interpret Coefficients of Multiple Linear Regression (derivation)
 
 Consider a linear regression model:
 
@@ -1053,7 +1047,7 @@ Thus, $\beta_i$ represents the expected change in $Y$ for a one-unit increase in
 
 ---
 
-# Parameter Estimation
+## Parameter Estimation
 
 - We again take the **least squares approach**.
 - We will aim to minimize:
@@ -1077,7 +1071,7 @@ $$
 
 ---
 
-# Hypothesis Testing for Multiple Linear Regression
+## Hypothesis Testing for Multiple Linear Regression
 
 - One nice feature of linear regression is that there are many different hypotheses we can easily test.
 - Suppose we are interested in whether there is **any relationship** between the predictors and the outcome.
@@ -1095,8 +1089,6 @@ $$
 
 ---
 
-# Hypothesis Testing
-
 - The statistic for this test is given by:
 
 $$
@@ -1109,7 +1101,7 @@ $$
 
 ---
 
-# Supplemental on F test statistics
+## Supplemental on F test statistics
 
 - The denominator satisfies:
 
@@ -1163,7 +1155,7 @@ pred_b - pred_a
 coef(fit_mlr)[["X2"]]
 ```
 
-# Supplemental on F test statistics
+## Supplemental on F test statistics
 
 - **Under the alternative hypothesis**, we expect $RSS$ to get smaller, leading to:
 
@@ -1198,7 +1190,6 @@ $$
 
 ---
 
-# Example on Model Fit
 
 - Show an example on how $R^2$ increases and RSE decreases when adding more variables.
 - Key idea:
@@ -1209,7 +1200,7 @@ $$
 
 ---
 
-# Demo: $R^2$ increases and RSE decreases as we add predictors
+## Demo: $R^2$ increases and RSE decreases as we add predictors
 
 ```{webr-r}
 set.seed(26)
