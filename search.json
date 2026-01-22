@@ -270,6 +270,186 @@
     ]
   },
   {
+    "objectID": "workshop_4.html#what-is-a-statistical-model",
+    "href": "workshop_4.html#what-is-a-statistical-model",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "What is a statistical model",
+    "text": "What is a statistical model\n\nA mathematical representation of a real-world process.\nCombines observed data with assumptions to draw conclusions.\nCan be descriptive (explains data) or predictive (forecasts future data).\n\nDescriptive Models: Summarize and explain patterns in existing data (e.g., mean, median).\nInferential Models: Draw conclusions about a population based on sample data (e.g., t-tests, regression).\nPredictive Models: Forecast future data points based on current data (e.g., regression (again!), decision trees).",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#details-about-modeling",
+    "href": "workshop_4.html#details-about-modeling",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Details about Modeling",
+    "text": "Details about Modeling\n\nMost modeling process centers on the following:\n\n\\[\nY = f(\\mathbf{X}) + \\epsilon\n\\]\n\n\\(\\mathbf{X} = (X_1, X_2, \\dots, X_p)\\) are \\(p\\) distinct variables that potentially associate with \\(Y\\).\n\\(f\\) is an unknown function that people call it model and is generally the quantity of interest.\n\nGiven some predictors \\(\\mathbf{X}\\), what do I expect the outcome \\(Y\\) to be?\n\n\\(\\epsilon\\) is a vector of noise, and we would always have it because the “hypothetical true model” cannot be perfect!\nModeling process: we will use observed data to estimate \\(f\\).",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#why-learning-about-statistical-modeling-is-so-important",
+    "href": "workshop_4.html#why-learning-about-statistical-modeling-is-so-important",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Why learning about statistical modeling is so important?",
+    "text": "Why learning about statistical modeling is so important?\n\nThis may seem straightforward but there are many issues needed to be dealt with:\n\nWhich predictors \\(\\mathbf{X}\\) are most useful for predicting \\(Y\\)?\nWhich model approximates \\(f\\) well?\nDo I care about interpretations of \\(f\\), or only show how well it predicts?\n\nThese goals are different — one estimate of \\(f\\) may be great at prediction but provide very little information about relationships between variables.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#prediction-or-inference",
+    "href": "workshop_4.html#prediction-or-inference",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Prediction or Inference?",
+    "text": "Prediction or Inference?\n\nIf our goal is simply predicting the outcome, then we do not care about the form of \\(f\\):\n\nWe only care how well it minimizes the prediction error.\n\nMany times, we are interested in what \\(f\\) looks like:\n\nIs the relationship linear?\nWhat is the relationship between \\(X_j\\) and \\(Y\\)?\nIs this relationship constant at different levels of the other covariates?\nAre all predictors important, or only some of them?",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#example",
+    "href": "workshop_4.html#example",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Example",
+    "text": "Example\n\nSuppose we have predictors \\(\\mathbf{X}\\) that are cancer risk factors, and our outcome \\(Y\\) is whether or not a patient has a particular illness.\n\nClearly, we are interested in fitting a model for prediction so we can predict who is most likely to get sick.\nWe are also interested in the manner in which the risk factors \\(X_j\\) affect illness rates so we can intervene to reduce future illness.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#why-linear-model-is-important",
+    "href": "workshop_4.html#why-linear-model-is-important",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Why Linear Model is Important",
+    "text": "Why Linear Model is Important\n\nIt is a root for complex models.\nWe can actually create quite flexible models just within the scope of linear regression.\nThe linear model is frequently a good approximation to the true model.\n\nKeep in mind that a complex model is not always better.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#simple-linear-regression-model",
+    "href": "workshop_4.html#simple-linear-regression-model",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Simple Linear Regression Model",
+    "text": "Simple Linear Regression Model\n\nSimple linear regression with one predictor \\(X\\):\n\n\\[\nY = \\beta_0 + \\beta_1 X + \\epsilon\n\\]\n\nAssumes \\(\\epsilon \\sim \\mathcal{N}(0, \\sigma^2)\\) and is independent of \\(X\\).\n\\(\\sigma^2\\) is the residual variance of the model.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nPeople sometimes refer to this model as:\n\n\\[\nY \\approx \\beta_0 + \\beta_1 X\n\\]\n\nIt is more precise to say:\n\n\\[\nE[Y \\mid X] = \\beta_0 + \\beta_1 X\n\\]\n\nThis expression indicates that we are modeling the expected value of \\(Y\\) given \\(X\\).\nThe residual variance is defined as:\n\n\\[\n\\mathrm{Var}[Y \\mid X] = \\sigma^2\n\\]\n\nThis represents the variance of \\(Y\\) around the expected value \\(E[Y\\mid X]\\) and is assumed to be constant for all values of \\(X\\).",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#interpretations-of-parameters-of-simple-linear-models",
+    "href": "workshop_4.html#interpretations-of-parameters-of-simple-linear-models",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Interpretations of Parameters of Simple Linear Models",
+    "text": "Interpretations of Parameters of Simple Linear Models\n\n\\(\\beta_0\\) is the expected value of the outcome when \\(X=0\\).\n\nOnly interpretable when \\(X\\) can reasonably take the value 0 and \\(Y\\) is reasonable in given range.\nFor instance, if \\(X\\) is BMI, it can never be 0.\nWe can always center \\(X\\) to make the intercept interpretable by using \\(X - \\bar{X}\\).\n\n\\(\\beta_1\\) is the expected change in the outcome for a one unit change in the predictor \\(X\\).\n\nQuestion: how do you interpret the intercept after centering X?\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nAns: Expected value of \\(Y\\) when \\(X\\) is at its average value.\n\nWe need to estimate the unknown parameters.\nWe want to find estimates \\(\\hat{\\beta}_0\\) and \\(\\hat{\\beta}_1\\) that fit the data well.\nWe will use the data given by \\((X_i, Y_i)\\) for \\(i = 1, \\dots, n\\), where \\(n\\) is the number of independent observations.\nBefore going into mathematical details, let’s think intuitively about what we want the parameter values to be.\nWe want values \\(\\hat{\\beta}_0\\) and \\(\\hat{\\beta}_1\\) such that \\(Y_i - \\hat{\\beta}_0 - \\hat{\\beta}_1 X_i\\) is small.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#parameter-estimation",
+    "href": "workshop_4.html#parameter-estimation",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Parameter Estimation",
+    "text": "Parameter Estimation\n\nDefine \\(e_i = Y_i - \\hat{\\beta}_0 - \\hat{\\beta}_1 X_i\\), to be the \\(i\\)-th residual.\nWe want \\(e_i\\) to be small, but how do we quantify this?\nThe least squares criterion is the most common approach.\nWe want to find \\(\\beta_0\\) and \\(\\beta_1\\) that minimize:\n\n\\[\n\\sum_{i=1}^n (Y_i - \\beta_0 - \\beta_1 X_i)^2\n= \\sum_{i=1}^n e_i^2\n\\equiv \\mathrm{RSS}\n\\]\n\n\\(\\mathrm{RSS}\\) denotes the Residual Sum of Squares.\nThe least squares estimator is the value \\((\\hat{\\beta}_0, \\hat{\\beta}_1)\\) that minimizes RSS.\n\n\nSolution for estimates:\n\\[\n\\hat{\\beta}_1\n= \\frac{\\sum_{i=1}^n (X_i - \\bar{X})(Y_i - \\bar{Y})}\n{\\sum_{i=1}^n (X_i - \\bar{X})^2}\n\\]\n\\[\n\\hat{\\beta}_0 = \\bar{Y} - \\hat{\\beta}_1 \\bar{X}\n\\] —\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#se-of-beta-from-r-output",
+    "href": "workshop_4.html#se-of-beta-from-r-output",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "SE of beta from R output",
+    "text": "SE of beta from R output\n\nIn R output, you might see a standard error of coefficients.\nWe are not going to give the formulas for the SE here but it is related to the residual variance \\(\\sigma^2\\).\nKeep in mind that we need to approximate the residual variance \\(\\sigma^2\\) within the formula of \\(\\mathrm{SE}(\\hat{\\beta}_{0,1})\\), since it is unknown in real life.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#significant-testing",
+    "href": "workshop_4.html#significant-testing",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Significant Testing",
+    "text": "Significant Testing\n\nStandard errors allow us to perform hypothesis tests.\nWe are typically interested in whether there is any relationship between \\(X\\) and \\(Y\\).\nIn our model, this is represented by the following null and alternative hypotheses:\n\n\\[\nH_0 : \\beta_1 = 0\n\\]\nversus\n\\[\nH_a : \\beta_1 \\neq 0\n\\]\n\nThis test determines if there is some association between \\(X\\) and \\(Y\\).\n\n\n\nThe standard error tells us if the difference is sufficiently far from zero to reject the null hypothesis.\nSpecifically, we use the following statistic (Why t-test?):\n\n\\[\nt = \\frac{\\hat{\\beta}_1}{\\mathrm{SE}(\\hat{\\beta}_1)}\n\\]\n\nThis statistic measures the number of standard deviations \\(\\hat{\\beta}_1\\) is from zero.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#interpret-coefficients-of-multiple-linear-regression",
+    "href": "workshop_4.html#interpret-coefficients-of-multiple-linear-regression",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Interpret Coefficients of Multiple Linear Regression",
+    "text": "Interpret Coefficients of Multiple Linear Regression\n\nThe parameters in the multiple linear regression model have a nice interpretation.\n\\(\\beta_i\\) can be interpreted as the expected change in the outcome for a one-unit change in \\(X_i\\), if we fix the values of the remaining predictors.\n\nThis interpretation conditions on the values of the other covariates.\n\nThe intercept is the average value of the outcome if we set all covariates to zero.\n\nOnly meaningful if zero is a reasonable value for the covariates.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#interpret-coefficients-of-multiple-linear-regression-derivation",
+    "href": "workshop_4.html#interpret-coefficients-of-multiple-linear-regression-derivation",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Interpret Coefficients of Multiple Linear Regression (derivation)",
+    "text": "Interpret Coefficients of Multiple Linear Regression (derivation)\nConsider a linear regression model:\n\\[\nY = \\beta_0 + \\beta_1 X_1 + \\beta_2 X_2 + \\cdots + \\beta_p X_p + \\varepsilon\n\\]\nThe expected value of \\(Y\\), given the predictors \\(X_1, X_2, \\ldots, X_p\\), is:\n\\[\nE(Y \\mid X_1, X_2, \\ldots, X_p)\n= \\beta_0 + \\beta_1 X_1 + \\beta_2 X_2 + \\cdots + \\beta_p X_p\n\\]\nTo interpret \\(\\beta_i\\), consider the change in \\(E(Y \\mid X)\\) when \\(X_i\\) increases by 1 unit while keeping all other variables \\(X_j\\) (\\(j \\neq i\\)) constant:\n\\[\nE(Y \\mid X_1, \\ldots, X_i + 1, \\ldots, X_p)\n- E(Y \\mid X_1, \\ldots, X_i, \\ldots, X_p)\n\\]\n\\[\n= \\big( \\beta_0 + \\beta_1 X_1 + \\cdots + \\beta_i (X_i + 1) + \\cdots + \\beta_p X_p \\big)\n- \\big( \\beta_0 + \\beta_1 X_1 + \\cdots + \\beta_i X_i + \\cdots + \\beta_p X_p \\big)\n\\]\n\\[\n= \\beta_i\n\\]\nThus, \\(\\beta_i\\) represents the expected change in \\(Y\\) for a one-unit increase in \\(X_i\\), assuming all other variables \\(X_j\\) (\\(j \\neq i\\)) are held constant.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#parameter-estimation-1",
+    "href": "workshop_4.html#parameter-estimation-1",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Parameter Estimation",
+    "text": "Parameter Estimation\n\nWe again take the least squares approach.\nWe will aim to minimize:\n\n\\[\n\\sum_{i=1}^n (Y_i - \\mathbf{X}_i \\beta)^2\n= (\\mathbf{Y} - \\mathbf{X}\\beta)^T(\\mathbf{Y} - \\mathbf{X}\\beta)\n\\]\n\nWe can use calculus to show that the least squares estimate is:\n\n\\[\n\\hat{\\beta} = (\\mathbf{X}^T \\mathbf{X})^{-1} \\mathbf{X}^T \\mathbf{Y}\n\\]\n\nWe can also show that the variance of this estimator is given by:\n\n\\[\n\\mathrm{Var}(\\hat{\\beta}) = \\sigma^2 (\\mathbf{X}^T \\mathbf{X})^{-1}\n\\]",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#hypothesis-testing-for-multiple-linear-regression",
+    "href": "workshop_4.html#hypothesis-testing-for-multiple-linear-regression",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Hypothesis Testing for Multiple Linear Regression",
+    "text": "Hypothesis Testing for Multiple Linear Regression\n\nOne nice feature of linear regression is that there are many different hypotheses we can easily test.\nSuppose we are interested in whether there is any relationship between the predictors and the outcome.\nThis corresponds to testing:\n\n\\[\nH_0 : \\beta_1 = \\beta_2 = \\cdots = \\beta_p = 0\n\\]\nversus\n\\[\nH_a : \\text{At least one } \\beta_j \\text{ is nonzero}\n\\]\n\n\nThe statistic for this test is given by:\n\n\\[\nF = \\frac{(TSS - RSS)/p}{RSS/(n - p - 1)}\n\\]\n\nwhere:\n\n\\(TSS = \\sum_{i=1}^n (Y_i - \\bar{Y})^2\\) is the total sum of squares,\n\\(RSS = \\sum_{i=1}^n (Y_i - \\hat{Y}_i)^2\\) is the residual sum of squares.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#supplemental-on-f-test-statistics",
+    "href": "workshop_4.html#supplemental-on-f-test-statistics",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Supplemental on F test statistics",
+    "text": "Supplemental on F test statistics\n\nThe denominator satisfies:\n\n\\[\nE\\left(\\frac{RSS}{n - p - 1}\\right) = \\sigma^2\n\\]\n\nwhere \\(RSS\\) is the residual sum of squares, and \\(\\sigma^2\\) represents the residual variance.\nUnder \\(H_0\\), the numerator satisfies:\n\n\\[\nE\\left(\\frac{TSS - RSS}{p}\\right) = \\sigma^2\n\\]\n\nThis means that under the null hypothesis, we expect the F-statistic to be close to 1.\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nInterpret Coefficients (quick “hold others fixed” illustration)\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#supplemental-on-f-test-statistics-1",
+    "href": "workshop_4.html#supplemental-on-f-test-statistics-1",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Supplemental on F test statistics",
+    "text": "Supplemental on F test statistics\n\nUnder the alternative hypothesis, we expect \\(RSS\\) to get smaller, leading to:\n\n\\[\nE\\left(\\frac{TSS - RSS}{p}\\right) &gt; \\sigma^2\n\\]\n\nLarge values of the F-statistic provide evidence against the null hypothesis.\nThe required size of the F-statistic for significance depends on sample size, but R provides a p-value for easy interpretation.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
+    "objectID": "workshop_4.html#demo-r2-increases-and-rse-decreases-as-we-add-predictors",
+    "href": "workshop_4.html#demo-r2-increases-and-rse-decreases-as-we-add-predictors",
+    "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
+    "section": "Demo: \\(R^2\\) increases and RSE decreases as we add predictors",
+    "text": "Demo: \\(R^2\\) increases and RSE decreases as we add predictors\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "4. Basics of Statistical Modeling"
+    ]
+  },
+  {
     "objectID": "workshop_1.html#math-operators",
     "href": "workshop_1.html#math-operators",
     "title": "Biomedical Data Science (BDS) Workshop 1: Basic R operations, tidyverse",
