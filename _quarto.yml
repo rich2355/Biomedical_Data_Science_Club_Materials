@@ -20,6 +20,8 @@ website:
         text: 2. Data visualization in basic R, ggplot
       - href: workshop_3.qmd
         text: 3. Data Visualization for Research Project
+      - href: workshop_4.qmd
+        text: 4. Basics of Statistical Modeling
       
 format:
   html:

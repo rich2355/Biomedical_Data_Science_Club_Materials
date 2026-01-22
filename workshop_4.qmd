@@ -1,0 +1,1245 @@
+---
+title: "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling"
+format: html
+engine: knitr
+filters:
+  - webr
+webr:
+  packages: ['tidyverse', 'patchwork']
+---
+  
+
+
+# Credits
+
+Credited to Richard Liu and Emily Zhang from the Biomedical Data Science (BDS) club in NYU Langone Health. 
+
+
+# Disclaimer
+
+The datasets provided here are all synthetically generated for demonstration and educational purposes only. It does not represent real patient data and should not be used for clinical decision-making, medical research, or policy development. Any resemblance to real persons, conditions, or outcomes is purely coincidental. The values and relationships were generated using statistical simulation techniques and do not reflect actual medical situations.
+
+# Reference
+
+
+---
+
+  
+```{webr-r}
+#| context: setup
+
+new_shoe <- function(decks = 6) {
+  rep(c(2:10, 10, 10, 10, 11), times = 4 * decks)
+}
+
+shoe_running_count <- function(shoe){
+  low_card <- sum(shoe >= 2 & shoe <= 6)
+  high_card <- sum(shoe >= 10)
+  count <- - (low_card - high_card)
+  # print(count)
+  deck <- round(length(shoe) / 52)
+  # print(deck)
+  round(count / deck) - 1
+}
+
+draw_card <- function(shoe) {
+  idx <- sample(seq_along(shoe), 1)
+  list(card = shoe[idx], shoe = shoe[-idx])
+}
+
+hand_value <- function(hand) {
+  total <- sum(hand)
+  aces <- sum(hand == 11)
+  while (total > 21 && aces > 0) {
+    total <- total - 10
+    aces <- aces - 1
+  }
+  total
+}
+
+is_soft <- function(hand) {
+  sum(hand) <= 21 && any(hand == 11)
+}
+
+basic_strategy <- function(hand, dealer_up) {
+  total <- hand_value(hand)
+  soft <- is_soft(hand)
+  
+  # Pair splitting
+  if (length(hand) == 2 && hand[1] == hand[2]) {
+    pair <- hand[1]
+    if (pair %in% c(11, 8)) return("split")
+    if (pair == 2 || pair == 3) return(ifelse(dealer_up <= 7, "split", "hit"))
+    if (pair == 6) return(ifelse(dealer_up <= 6, "split", "hit"))
+    if (pair == 7) return(ifelse(dealer_up <= 7, "split", "hit"))
+    if (pair == 9) return(ifelse(dealer_up %in% c(2:6,8,9), "split", "stand"))
+    if (pair == 4) return(ifelse(dealer_up %in% c(5,6), "split", "hit"))
+    if (pair == 5) return(ifelse(dealer_up <= 9, "double", "hit"))
+    if (pair == 10) return("stand")
+  }
+  
+  # # Surrender
+  # if (!soft && length(hand) == 2 && total == 16 && dealer_up >= 9) return("surrender")
+  # if (!soft && length(hand) == 2 && total == 15 && dealer_up == 10) return("surrender")
+  # 
+  # Soft totals
+  if (soft) {
+    if (total >= 19) return("stand")
+    if (total == 18) {
+      if (dealer_up <= 6) return("double")
+      if (dealer_up <= 8) return("stand")
+      return("hit")
+    }
+    if (total %in% 16:17) return(ifelse(dealer_up <= 6, "double", "hit"))
+    if (total %in% 13:15) return(ifelse(dealer_up %in% 5:6, "double", "hit"))
+  }
+  
+  # Hard totals
+  if (total >= 17) return("stand")
+  if (total >= 13 && dealer_up <= 6) return("stand")
+  if (total == 12 && dealer_up %in% 4:6) return("stand")
+  if (total == 11) return("double")
+  if (total == 10 && dealer_up <= 9) return("double")
+  if (total == 9 && dealer_up %in% 3:6) return("double")
+  
+  "hit"
+}
+play_player_hand <- function(hand, dealer_up, shoe, bet = 1, depth = 1) {
+  # if (depth > 4) return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))
+  
+  repeat {
+    # print("dealer is")
+    # print(dealer_up)
+    # print("Your hand is")
+    # print(hand)
+    # print("Please make your decision: hit, double, split, stand")
+    # move <- readline()
+    move <- basic_strategy(hand, dealer_up)
+    
+    if (move == "surrender") {
+      return(list(results = list(list(hand = NULL, bet = -0.5 * bet)), shoe = shoe))
+    }
+    
+    if (move == "split") {
+      h1 <- c(hand[1])
+      h2 <- c(hand[2])
+      
+      d1 <- draw_card(shoe); h1 <- c(h1, d1$card); shoe <- d1$shoe
+      d2 <- draw_card(shoe); h2 <- c(h2, d2$card); shoe <- d2$shoe
+      
+      r1 <- play_player_hand(h1, dealer_up, shoe, bet, depth + 1)
+      r2 <- play_player_hand(h2, dealer_up, r1$shoe, bet, depth + 1)
+      
+      return(list(
+        results = c(r1$results, r2$results),
+        shoe = r2$shoe
+      ))
+    }
+    
+    if (move == "double") {
+      d <- draw_card(shoe)
+      hand <- c(hand, d$card)
+      shoe <- d$shoe
+      # print("Your hand is")
+      # print(hand)
+      return(list(results = list(list(hand = hand, bet = 2 * bet)), shoe = shoe))
+    }
+    
+    if (move == "hit") {
+      d <- draw_card(shoe)
+      hand <- c(hand, d$card)
+      shoe <- d$shoe
+      if (hand_value(hand) > 21)
+        return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))
+    }
+    
+    if (move == "stand")
+      return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))
+  }
+}
+
+play_dealer <- function(hand, shoe) {
+  repeat {
+    # print("The dealer's hand is")
+    # print(hand)
+    total <- hand_value(hand)
+    soft <- is_soft(hand)
+    
+    if (total < 17 || (total == 17 && soft)) {
+      d <- draw_card(shoe)
+      hand <- c(hand, d$card)
+      shoe <- d$shoe
+    } else {
+      break
+    }
+  }
+  list(hand = hand, shoe = shoe)
+}
+
+settle_hand <- function(player, dealer, bet, winning_status) {
+  if (player$total > 21) {
+    # print("You LOSE!")
+    winning_status = "N"
+    return(list(bet = -bet, winning_status = winning_status))
+    }
+  if (dealer$total > 21) {
+    # print("You WIN!")
+    winning_status = "Y"
+    return(list(bet = bet, winning_status = winning_status))
+  }
+  if (player$total > dealer$total){
+    # print("You WIN!")
+    winning_status = "Y"
+    return(list(bet = bet, winning_status = winning_status))
+  } 
+  if (player$total < dealer$total) {
+    # print("You LOSE!")
+    winning_status = "N"
+    return(list(bet = -bet, winning_status = winning_status))
+  }
+  return(list(bet = 0, winning_status = "P"))
+}
+
+simulate_blackjack <- function(n = 100000, decks = 6, counting_cards = FALSE, bankroll = NULL) {
+  dealer_total_list <- c()
+  player_total_list <- c()
+  running_count_list <- c()
+  winning_list <- c()
+  profit_list <- c()
+  shoe <- new_shoe(decks)
+  profit <- 0
+  num_survive <- 0
+  running_count <- 0
+  running_count_value <- 0
+  
+  for (i in 1:n) {
+    # if(i %% 5 == 0){
+    # print("quit? Y/N")
+    # x = readline()
+    # if(x == "Y"){
+    #   print("history of dealer:")
+    #   print(dealer_total_list)
+    #   print("history of player:")
+    #   print(player_total_list)
+    #   print("Final profit")
+    #   print(profit)
+    #   return(list(edge = profit / n, dealer_total_list = dealer_total_list, player_total_list = player_total_list, num_survive = num_survive))
+    # }
+    if (length(shoe) < 0.25 * 52 * decks){
+      shoe <- new_shoe(decks)
+      running_count <- 0
+    }
+    # }
+    
+    running_count <- shoe_running_count(shoe)
+    
+    running_count_value <- 0
+    if(counting_cards){
+    if(running_count == 1){
+      running_count_value <- 1
+    }
+    if(running_count == 2){
+      running_count_value <- 2
+    }
+    if(running_count == 3){
+      running_count_value <- 4
+    }
+    if(running_count == 4){
+      running_count_value <- 8
+    }
+    if(running_count >= 5){
+      running_count_value <- 16
+    }
+    # if(running_count == 6){
+    #   running_count_value <- 8
+    # }
+    # if(running_count >= 7){
+    #   running_count_value <- 16
+    # }
+    if(running_count < 0){
+      running_count_value <- -1
+    }
+    }
+    
+    # Initial deal
+    d <- draw_card(shoe); p1 <- d$card; shoe <- d$shoe
+    d <- draw_card(shoe); d1 <- d$card; shoe <- d$shoe
+    d <- draw_card(shoe); p2 <- d$card; shoe <- d$shoe
+    d <- draw_card(shoe); d2 <- d$card; shoe <- d$shoe
+    
+    player <- c(p1, p2)
+    dealer <- c(d1, d2)
+    
+    winning_status = "Y"
+    # Blackjack check
+    if (hand_value(player) == 21 && hand_value(dealer) != 21) {
+      profit <- profit + 1.5 + 1.5 * running_count_value
+      profit_list <- c(profit_list, profit)
+      winning_status = "Y"
+      winning_list <- c(winning_list, winning_status)
+      running_count_list <- c(running_count_list, running_count)
+      dealer_total_list <- c(dealer_total_list, hand_value(dealer))
+      player_total_list <- c(player_total_list, hand_value(player))
+      next
+    }
+    if (hand_value(dealer) == 21) {
+      profit <- profit - 1 - running_count_value
+      profit_list <- c(profit_list, profit)
+      winning_status = "N"
+      winning_list <- c(winning_list, winning_status)
+      running_count_list <- c(running_count_list, running_count)
+      dealer_total_list <- c(dealer_total_list, hand_value(dealer))
+      player_total_list <- c(player_total_list, hand_value(player))
+      next
+    }
+    
+    # Player hands
+    ph <- play_player_hand(player, dealer[1], shoe)
+    shoe <- ph$shoe
+    
+    # Dealer
+    # print(dealer)
+    # print(shoe)
+    dealer_play <- play_dealer(dealer, shoe)
+    dealer <- dealer_play$hand
+    shoe <- dealer_play$shoe
+    dealer_total <- hand_value(dealer)
+    
+    dealer_total_list <- c(dealer_total_list, dealer_total)
+    
+    for (h in ph$results) {
+      if (is.null(h$hand)) {
+        profit_list <- c(profit_list, h$bet + h$bet * running_count_value)
+        profit <- profit + h$bet + h$bet * running_count_value
+        winning_status = "Y"
+      } else {
+        player_total <- hand_value(h$hand)
+        player_total_list <- c(player_total_list, player_total)
+        settle_list <- settle_hand(
+          list(total = player_total),
+          list(total = dealer_total),
+          h$bet + h$bet * running_count_value,
+          winning_status
+        )
+        winning <- settle_list$bet
+        winning_status <- settle_list$winning_status
+        profit <- profit + winning
+        profit_list <- c(profit_list,profit)
+      }
+      winning_list <- c(winning_list, winning_status)
+      running_count_list <- c(running_count_list, running_count)
+    }
+    
+    if(!is.null(bankroll)){
+      if(profit < -bankroll){
+        num_survive = i
+        break
+      }
+    }
+    
+    # print("Your profit is")
+    # print(profit)
+    # print("Running count: ")
+    # print(running_count)
+    #print(profit)
+    # if(profit < -6){
+    #   num_survive = i
+    #   break
+    # }
+  }
+  
+  list(edge = profit / n, dealer_total_list = dealer_total_list, player_total_list = player_total_list, 
+       winning_list = winning_list, num_survive = num_survive, running_count_list = running_count_list,
+       profit_list = profit_list)
+}
+
+```
+
+# Languages in Statistics
+
+## Probability
+
+## Distribution
+
+## Expectation 
+
+## Project: Blackjack
+
+- *Blackjack* (formerly black jack or vingt-un) is a casino banking game. It is the most widely played casino banking game in the world. It uses decks of 52 cards and descends from a global family of casino banking games known as "twenty-one". The game is a comparing card game where players compete against the dealer. 
+
+- **Card Values**: J, Q, and K are 10; A can be 1 or 11; 2-9 depend on their face values. Examples: (A, 6) is 7 or 17, (8, 4) is 12. 
+- **Objective**: Be as close to 21 as possible, but never be over 21 (never busted!) 
+
+- **Dealer**: One variation is: The dealer will draw cards until the summation of all cards reach to a hard 17 (i.e. a card hand with total value **only** possible to be 17). 
+
+- **Player**: The player has the following options: 
+
+-- *Hit*: Ask a card. 
+
+-- *Stand/Stay*: Finish and the player's card values are counted. 
+
+-- *Split*: Split two cards with the same card values (one hand to two hands) and decide separately. 
+
+-- *Double*: Ask for only one more card and doubling the bet. 
+
+-- *Surrender*: Surrender and get half of the bet back if the dealer has the face-up card A (We do not enable it here).
+
+- **Set Up** 
+
+-- The player gets the first card (face up). 
+
+-- The dealer gets the first card (face down). 
+
+-- The player gets the second card (face up). 
+
+-- The dealer gets the second card (face up). 
+
+-- If the dealer gets a blackjack (21 the first two cards), and the player does not get a blackjack, the player automatically loses. 
+
+-- If the dealer gets a blackjack (21 the first two cards), and the player also gets a blackjack, the player either pushes (ties) or wins an even money. 
+
+-- If the dealer does not get a blackjack (21 the first two cards), and the player gets a blackjack, the player 
+automatically wins with a reward of blackjack odds (pays 3 to 2).
+
+-- The game starts. 
+
+Some blackjacks offered in casinos may have varying rules, but now we stick to this. In this project, you will use a blackjack simulator to answer the following data science questions, which helps understanding much better about why this game CANNOT be beaten without advanced strategies. 
+
+You can preview this simulator by the following R script. The player's decision is based on [Perfect Basic Strategy](https://en.wikipedia.org/wiki/Blackjack#Basic_strategy).
+
+```{webr-r}
+simulate_blackjack(n = 10)
+```
+
+### Project Disclaimer
+
+This project uses the game of blackjack solely as an educational and analytical case study. The purpose is to explore concepts such as probability, decision-making under uncertainty, simulation, algorithmic strategy, and statistical inference.
+
+This workshop does not promote gambling, wagering, or casino participation in any form. No real money is used, discussed, or encouraged. Blackjack is employed only because it provides a well-defined, rule-based environment that is widely studied in mathematics, statistics, computer science, and operations research.
+
+Participants are required to view the game strictly as an abstract model for learning quantitative reasoning and should not interpret any content as advice or endorsement for gambling activities.
+
+### Part 1: Everything is Normal
+
+::: {.callout-caution collapse="true"}
+## Practice 1 (The Dealer)
+
+You need to know your enemy very well so that you can beat it. 
+
+Create a list `res` with containing information from $10^4$ rounds of blackjack.
+
+1. In a simulation with $10^4$ rounds, pull out values of each dealer hand.
+
+```{webr-r}
+# Code
+```
+
+2. Find the estimated expectation of those values, excluding the rounds dealer busted (dealer goes over 21). 
+
+```{webr-r}
+# Code
+```
+
+3. Find the probability of dealer getting a blackjack. 
+
+```{webr-r}
+# Code
+```
+
+4. Find the probability of dealer getting busted .
+
+```{webr-r}
+# Code
+```
+:::
+
+::: {.callout-caution collapse="true"}
+## Practice 2 (The Player)
+
+In this practice you can use the same `res` list created in Practice 1.
+
+1. Create a data frame containing all information related to the player's performance. 
+
+```{webr-r}
+# Code
+```
+
+2. Find the proportion of the player wins, loses and pushes. 
+
+```{webr-r}
+# Code
+```
+
+3. Find the expectation of the player's hand values, excluding the busted hands. 
+
+```{webr-r}
+# Code
+```
+
+4. Find the probability of the player getting a blackjack.
+
+```{webr-r}
+# Code
+```
+
+5. Visualize the "winning curve" of the player.
+
+```{webr-r}
+# Code
+```
+
+6. (open question) Try your own strategy and redo the analysis. The related code is shown below:
+
+```{r}
+basic_strategy <- function(hand, dealer_up) {
+  total <- hand_value(hand)
+  soft <- is_soft(hand)
+  
+  # Pair splitting
+  if (length(hand) == 2 && hand[1] == hand[2]) {
+    pair <- hand[1]
+    if (pair %in% c(11, 8)) return("split")
+    if (pair == 2 || pair == 3) return(ifelse(dealer_up <= 7, "split", "hit"))
+    if (pair == 6) return(ifelse(dealer_up <= 6, "split", "hit"))
+    if (pair == 7) return(ifelse(dealer_up <= 7, "split", "hit"))
+    if (pair == 9) return(ifelse(dealer_up %in% c(2:6,8,9), "split", "stand"))
+    if (pair == 4) return(ifelse(dealer_up %in% c(5,6), "split", "hit"))
+    if (pair == 5) return(ifelse(dealer_up <= 9, "double", "hit"))
+    if (pair == 10) return("stand")
+  }
+  
+  # # Surrender
+  # if (!soft && length(hand) == 2 && total == 16 && dealer_up >= 9) return("surrender")
+  # if (!soft && length(hand) == 2 && total == 15 && dealer_up == 10) return("surrender")
+  # 
+  # Soft totals
+  if (soft) {
+    if (total >= 19) return("stand")
+    if (total == 18) {
+      if (dealer_up <= 6) return("double")
+      if (dealer_up <= 8) return("stand")
+      return("hit")
+    }
+    if (total %in% 16:17) return(ifelse(dealer_up <= 6, "double", "hit"))
+    if (total %in% 13:15) return(ifelse(dealer_up %in% 5:6, "double", "hit"))
+  }
+  
+  # Hard totals
+  if (total >= 17) return("stand")
+  if (total >= 13 && dealer_up <= 6) return("stand")
+  if (total == 12 && dealer_up %in% 4:6) return("stand")
+  if (total == 11) return("double")
+  if (total == 10 && dealer_up <= 9) return("double")
+  if (total == 9 && dealer_up %in% 3:6) return("double")
+  
+  "hit"
+}
+
+play_player_hand <- function(hand, dealer_up, shoe, bet = 1, depth = 1) {
+  # if (depth > 4) return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))
+  
+  repeat {
+    # print("dealer is")
+    # print(dealer_up)
+    # print("Your hand is")
+    # print(hand)
+    # print("Please make your decision: hit, double, split, stand")
+    # move <- readline()
+    move <- basic_strategy(hand, dealer_up) # CHANGE HERE
+    
+    if (move == "surrender") {
+      return(list(results = list(list(hand = NULL, bet = -0.5 * bet)), shoe = shoe))
+    }
+    
+    if (move == "split") {
+      h1 <- c(hand[1])
+      h2 <- c(hand[2])
+      
+      d1 <- draw_card(shoe); h1 <- c(h1, d1$card); shoe <- d1$shoe
+      d2 <- draw_card(shoe); h2 <- c(h2, d2$card); shoe <- d2$shoe
+      
+      r1 <- play_player_hand(h1, dealer_up, shoe, bet, depth + 1)
+      r2 <- play_player_hand(h2, dealer_up, r1$shoe, bet, depth + 1)
+      
+      return(list(
+        results = c(r1$results, r2$results),
+        shoe = r2$shoe
+      ))
+    }
+    
+    if (move == "double") {
+      d <- draw_card(shoe)
+      hand <- c(hand, d$card)
+      shoe <- d$shoe
+      # print("Your hand is")
+      # print(hand)
+      return(list(results = list(list(hand = hand, bet = 2 * bet)), shoe = shoe))
+    }
+    
+    if (move == "hit") {
+      d <- draw_card(shoe)
+      hand <- c(hand, d$card)
+      shoe <- d$shoe
+      if (hand_value(hand) > 21)
+        return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))
+    }
+    
+    if (move == "stand")
+      return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))
+  }
+}
+
+```
+
+```{webr-r}
+# Code
+
+```
+:::
+
+### Part 2: Hi-Lo Bet Spreading
+
+*Bet Spreading* is a common strategy to "beat" the blackjack dealer. It requires the **true count** of the shoe. When the true count is positive, the game is advantageous to the player. Otherwise, it is advantageous to the dealer. 
+
+- **True count**: An approximation of "the number of high cards (A and all cards with value 10) minus the number of low cards (all cards with value 2-6)" in a shoe with **one** deck. 
+
+- **Hi-Lo Bet spreading**: The bet spreading implemented in this simulator is the following:
+
+-- If true count is less than 0, don't bet.
+
+-- If true count is 0 or 1, bet 1 unit.
+
+-- If true count is 2, bet 2 units.
+
+-- If true count is 3, bet 4 units.
+
+-- If true count is 4, bet 8 units.
+
+-- If true count is greater or equal 5, bet 16 units.
+
+You can enable this bet spreading by setting `counting_cards = TRUE`. 
+
+```{webr-r}
+simulate_blackjack(n = 10, counting_cards = TRUE)
+```
+
+::: {.callout-caution collapse="true"}
+## Practice 3
+
+1. Create a data frame containing all information related to the player's performance in a simulation with $10^4$ rounds. Be sure to include the live (true) running count.
+
+```{webr-r}
+# Code
+```
+
+2. Visualize, again, the player's "winning curve". 
+```{webr-r}
+# Code
+```
+
+3. Find the estimated *edge* of the player. Edge is the share of each bet that someone anticipates it will retain in the long run
+
+```{webr-r}
+# Code
+```
+
+4. Find the estimated edge of the player under different (true) running counts. 
+
+```{webr-r}
+# Code
+```
+
+5. *Insurance* needs to be played as a side bet when the dealer's up card (the card that is faced-up) is an A. Specifically, player needs to bet whether the dealer gets a blackjack. The player will be paid 2 to 1 if yes, and will lose this bet if no. A strategy of insurance using (true) running count is: *Bet the insurance if the (true) running count is at least 3, otherwise do not bet*. Find the statistical intuition behind this. 
+
+```{webr-r}
+# Note
+```
+:::
+
+### Part 3: Be realistic!!
+
+Now, let's be realistic! Everyone's bankroll is limited, and you are "kicked out" if you lose all your money. In this simulator, you can enable this feature by setting `bankroll` to be a specific amount, indicating the money you would like to spend in the game. See below
+
+```{webr-r}
+# Set n to be sufficiently large
+simulate_blackjack(n = 100000, bankroll = 5)
+```
+
+::: {.callout-caution collapse="true"}
+## Practice 4
+
+1. Assume that the player wants to play at most 1000 rounds. For one simulation, extract the information about the player's survival rounds. 
+
+```{webr-r}
+# Code
+```
+
+2. Repeat the simulation for 100 times, find the mean and median of the player's survival rounds. 
+
+```{webr-r}
+# Code
+```
+
+3. Redo 2 but enabling the bet spreading (card counting)
+
+```{webr-r}
+# Code
+```
+
+4. *Progressive betting* is the following bet strategy: *Bet double as the last time's bet if lost at the last time, return to the original bet if won at the last time.* Without coding, thinking about why this CANNOT help you beating the dealer. 
+
+```{webr-r}
+# Note
+```
+
+:::
+
+### Part 4: Casinos' Tricks
+
+Here, let's think about some strategies casinos implemented to "prevent you winning". 
+
+::: {.callout-caution collapse="true"}
+## Practice 5
+
+1. Many casinos use *continuous shuffling machine* (CSM) in the games. Can you see why this prevents you beating the game?
+
+```{webr-r}
+# Note
+```
+
+2. Many casinos do not pay 3 to 2 for player's blackjack, but pay 6 to 5. Can you see why this prevents you beating the game?
+
+```{webr-r}
+# Note
+```
+
+3. Some casinos have a relatively short range of the bet requirement (e.g. minimum 10, maximum 100), can you see why this prevents you beating the game?
+
+
+```{webr-r}
+# Note
+```
+
+:::
+
+**RECAP: In short, casinos can easily win a lot of money by solid math/stats, and by luring people to believe that they are lucky guys :)**
+
+
+
+# Why do we care about modeling
+
+- In real world, we have questions we want to answer.
+- To help us answer our question, we need resources!
+- Of course your smart brain is a great resource.
+- We have data. It will go wasted if we do not have tools to make data as smart as you!
+- Models help us to simplify complex real-world phenomena and identify our answers from data.
+
+---
+
+# What is a statistical model
+
+- A mathematical representation of a real-world process.
+- Combines observed data with assumptions to draw conclusions.
+- Can be descriptive (explains data) or predictive (forecasts future data).
+  - **Descriptive Models**: Summarize and explain patterns in existing data (e.g., mean, median).
+  - **Inferential Models**: Draw conclusions about a population based on sample data (e.g., t-tests, regression).
+  - **Predictive Models**: Forecast future data points based on current data (e.g., regression (again!), decision trees).
+
+---
+ 
+
+
+# Details about Modeling
+
+- Most modeling process centers on the following:
+
+$$
+Y = f(\mathbf{X}) + \epsilon
+$$
+
+- $\mathbf{X} = (X_1, X_2, \dots, X_p)$ are $p$ distinct variables that potentially associate with $Y$.
+- $f$ is an **unknown function that people call it model** and is generally **the quantity of interest**.
+  - Given some predictors $\mathbf{X}$, what do I expect the outcome $Y$ to be?
+- $\epsilon$ is a vector of noise, and we would always have it because the "hypothetical true model" cannot be perfect!
+- Modeling process: we will use observed data to estimate $f$.
+
+---
+
+# Why learning about statistical modeling is so important?
+
+- This may seem straightforward but there are many issues needed to be dealt with:
+  - Which predictors $\mathbf{X}$ are most useful for predicting $Y$?
+  - Which model approximates $f$ well?
+  - Do I care about interpretations of $f$, or only show how well it predicts?
+    - These goals are different — one estimate of $f$ may be great at prediction but provide very little information about relationships between variables.
+
+---
+
+# Prediction or Inference?
+
+- If our goal is simply predicting the outcome, then we do not care about the form of $f$:
+  - We only care how well it minimizes the prediction error.
+- Many times, we are interested in what $f$ looks like:
+  - Is the relationship linear?
+  - What is the relationship between $X_j$ and $Y$?
+  - Is this relationship constant at different levels of the other covariates?
+  - Are all predictors important, or only some of them?
+
+---
+
+# Example
+
+- Suppose we have predictors $\mathbf{X}$ that are cancer risk factors, and our outcome $Y$ is whether or not a patient has a particular illness.
+  - Clearly, we are interested in fitting a model for **prediction** so we can predict who is most likely to get sick.
+  - We are also interested in the manner **in which the risk factors** $X_j$ **affect illness rates** so we can intervene to reduce future illness.
+
+---
+
+# Linear Regression
+
+- Suppose again that we are interested in the following model:
+
+$$
+Y = f(\mathbf{X}) + \epsilon
+$$
+
+- Linear regression broadly refers to methods that assume $f(\cdot)$ to be **linear** in the predictor $\mathbf{X}$.
+
+---
+
+# Why Linear Model is Important
+
+- It is a root for complex models.
+- We can actually **create quite flexible models just within the scope of linear regression**.
+- The linear model is frequently a good approximation to the true model.
+  - Keep in mind that a complex model is not always better.
+
+---
+
+# Simple Linear Regression Model
+
+- Simple linear regression with one predictor $X$:
+
+$$
+Y = \beta_0 + \beta_1 X + \epsilon
+$$
+
+- Assumes $\epsilon \sim \mathcal{N}(0, \sigma^2)$ and is independent of $X$.
+- $\sigma^2$ is the residual variance of the model.
+
+
+```{webr-r}
+set.seed(123)
+n <- 200
+X <- rnorm(n, mean = 25, sd = 4)                
+eps <- rnorm(n, mean = 0, sd = 5) # sigma = 5
+
+# outcome with a linear relationship + noise
+Y <- -10 + 1.8 * X + eps
+
+dat <- tibble(X = X, Y = Y)
+head(dat)
+
+# visualization of the data
+ggplot(dat, aes(x = X, y = Y)) +
+geom_point() +
+geom_smooth(method = "lm", se = TRUE) +
+labs(title = "Synthetic data with a linear trend",
+subtitle = "The fitted line is the regression line (coming up next) ")
+```
+
+---
+
+# Simple Linear Regression Model
+
+- People sometimes refer to this model as:
+
+$$
+Y \approx \beta_0 + \beta_1 X
+$$
+
+- It is more precise to say:
+
+$$
+E[Y \mid X] = \beta_0 + \beta_1 X
+$$
+
+  - This expression indicates that we are modeling the **expected value** of $Y$ given $X$.
+
+- The residual variance is defined as:
+
+$$
+\mathrm{Var}[Y \mid X] = \sigma^2
+$$
+
+  - This represents the variance of $Y$ around the expected value $E[Y\mid X]$ and is assumed to be constant for all values of $X$.
+
+---
+
+# Interpretations of Parameters of Simple Linear Models
+
+- $\beta_0$ is the **expected value of the outcome** when $X=0$.
+  - Only interpretable when $X$ can reasonably take the value 0 and $Y$ is reasonable in given range.
+  - For instance, if $X$ is BMI, it can never be 0.
+  - We can always **center** $X$ to make the intercept interpretable by using $X - \bar{X}$.
+
+- $\beta_1$ is the **expected change** in the outcome for a one unit change in the predictor $X$.
+---
+
+Question: how do you interpret the intercept after centering X?
+
+```{webr-r}
+dat2 <- dat %>% mutate(X_centered = X - mean(X))
+
+fit_uncentered <- lm(Y ~ X, data = dat)
+fit_centered <- lm(Y ~ X_centered, data = dat2)
+
+coef(fit_uncentered)
+coef(fit_centered)
+```
+
+Ans: Expected value of $Y$ when $X$ is at its average value. 
+
+# Simple Linear Regression
+
+- We need to **estimate the unknown parameters**.
+- We want to find estimates $\hat{\beta}_0$ and $\hat{\beta}_1$ that fit the data well.
+- We will use the data given by $(X_i, Y_i)$ for $i = 1, \dots, n$, where $n$ is the number of independent observations.
+- Before going into mathematical details, let’s think intuitively about what we want the parameter values to be.
+- We want values $\hat{\beta}_0$ and $\hat{\beta}_1$ such that $Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i$ is small.
+
+---
+
+# How to estimate our parameters?
+
+- Define $e_i = Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i$, to be the $i$-th residual.
+- We want $e_i$ to be small, but how do we quantify this?
+- The **least squares criterion** is the most common approach.
+- We want to find $\beta_0$ and $\beta_1$ that minimize:
+
+$$
+\sum_{i=1}^n (Y_i - \beta_0 - \beta_1 X_i)^2
+= \sum_{i=1}^n e_i^2
+\equiv \mathrm{RSS}
+$$
+
+  - $\mathrm{RSS}$ denotes the **Residual Sum of Squares**.
+- The **least squares estimator** is the value $(\hat{\beta}_0, \hat{\beta}_1)$ that minimizes RSS.
+
+---
+
+# Estimation of parameters
+
+Solution for estimates:
+
+$$
+\hat{\beta}_1
+= \frac{\sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y})}
+{\sum_{i=1}^n (X_i - \bar{X})^2}
+$$
+
+$$
+\hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{X}
+$$
+---
+
+```{webr-r}
+summary(fit_uncentered)
+summary(fit_centered)
+```
+
+# SE of beta from R output
+
+- In R output, you might see a standard error of coefficients.
+- We are not going to give the formulas for the SE here but it is related to the residual variance $\sigma^2$.
+- Keep in mind that we need to approximate the residual variance $\sigma^2$ within the formula of $\mathrm{SE}(\hat{\beta}_{0,1})$, **since it is unknown in real life**.
+
+# Is your predictor significant?
+
+- Standard errors allow us to perform **hypothesis tests**.
+- We are typically interested in whether there is any relationship between $X$ and $Y$.
+- In our model, this is represented by the following null and alternative hypotheses:
+
+$$
+H_0 : \beta_1 = 0
+$$
+
+versus
+
+$$
+H_a : \beta_1 \neq 0
+$$
+
+- This test determines if there is **some association** between $X$ and $Y$.
+
+---
+
+# Note on significance test
+
+- The standard error tells us if the difference is sufficiently far from zero to reject the null hypothesis.
+- Specifically, we use the following statistic (Why t-test?):
+
+$$
+t = \frac{\hat{\beta}_1}{\mathrm{SE}(\hat{\beta}_1)}
+$$
+
+- This statistic measures the number of standard deviations $\hat{\beta}_1$ is from zero.
+
+---
+
+# Multiple Linear Regression
+
+- Extends simple linear regression to multiple predictors $X_1, X_2, \ldots, X_p$.
+- Model equation:
+
+$$
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_p X_p + \epsilon
+$$
+
+- Useful when analyzing multiple factors simultaneously.
+- Sometimes it will be useful to use **matrix notation**.
+- The model in matrix form is:
+
+$$
+E(Y \mid \mathbf{X}) = \mathbf{X}\boldsymbol{\beta}
+$$
+
+- where $\mathbf{X} = [1, X_1, \dots, X_p]$ represents the matrix of predictors, and $\boldsymbol{\beta}$ is the vector of coefficients.
+
+---
+
+# Interpret Coefficients of Multiple Linear Regression
+
+- The parameters in the multiple linear regression model have a nice interpretation.
+- $\beta_i$ can be interpreted as the **expected change in the outcome** for a one-unit change in $X_i$, **if we fix the values of the remaining predictors**.
+  - This interpretation conditions on the values of the other covariates.
+- The intercept is the **average value of the outcome** if we set all covariates to zero.
+  - Only meaningful if zero is a reasonable value for the covariates.
+
+---
+
+# Interpret Coefficients of Multiple Linear Regression (derivation)
+
+Consider a linear regression model:
+
+$$
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p + \varepsilon
+$$
+
+The expected value of $Y$, given the predictors $X_1, X_2, \ldots, X_p$, is:
+
+$$
+E(Y \mid X_1, X_2, \ldots, X_p)
+= \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p
+$$
+
+To interpret $\beta_i$, consider the change in $E(Y \mid X)$ when $X_i$ increases by 1 unit while keeping all other variables $X_j$ ($j \neq i$) constant:
+
+$$
+E(Y \mid X_1, \ldots, X_i + 1, \ldots, X_p)
+- E(Y \mid X_1, \ldots, X_i, \ldots, X_p)
+$$
+
+$$
+= \big( \beta_0 + \beta_1 X_1 + \cdots + \beta_i (X_i + 1) + \cdots + \beta_p X_p \big)
+- \big( \beta_0 + \beta_1 X_1 + \cdots + \beta_i X_i + \cdots + \beta_p X_p \big)
+$$
+
+$$
+= \beta_i
+$$
+
+Thus, $\beta_i$ represents the expected change in $Y$ for a one-unit increase in $X_i$, assuming all other variables $X_j$ ($j \neq i$) are held constant.
+
+---
+
+# Parameter Estimation
+
+- We again take the **least squares approach**.
+- We will aim to minimize:
+
+$$
+\sum_{i=1}^n (Y_i - \mathbf{X}_i \beta)^2
+= (\mathbf{Y} - \mathbf{X}\beta)^T(\mathbf{Y} - \mathbf{X}\beta)
+$$
+
+- We can use calculus to show that the least squares estimate is:
+
+$$
+\hat{\beta} = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{Y}
+$$
+
+- We can also show that the variance of this estimator is given by:
+
+$$
+\mathrm{Var}(\hat{\beta}) = \sigma^2 (\mathbf{X}^T \mathbf{X})^{-1}
+$$
+
+---
+
+# Hypothesis Testing for Multiple Linear Regression
+
+- One nice feature of linear regression is that there are many different hypotheses we can easily test.
+- Suppose we are interested in whether there is **any relationship** between the predictors and the outcome.
+- This corresponds to testing:
+
+$$
+H_0 : \beta_1 = \beta_2 = \cdots = \beta_p = 0
+$$
+
+versus
+
+$$
+H_a : \text{At least one } \beta_j \text{ is nonzero}
+$$
+
+---
+
+# Hypothesis Testing
+
+- The statistic for this test is given by:
+
+$$
+F = \frac{(TSS - RSS)/p}{RSS/(n - p - 1)}
+$$
+
+- where:
+  - $TSS = \sum_{i=1}^n (Y_i - \bar{Y})^2$ is the total sum of squares,
+  - $RSS = \sum_{i=1}^n (Y_i - \hat{Y}_i)^2$ is the residual sum of squares.
+
+---
+
+# Supplemental on F test statistics
+
+- The denominator satisfies:
+
+$$
+E\left(\frac{RSS}{n - p - 1}\right) = \sigma^2
+$$
+
+  - where $RSS$ is the residual sum of squares, and $\sigma^2$ represents the residual variance.
+
+- Under $H_0$, the numerator satisfies:
+
+$$
+E\left(\frac{TSS - RSS}{p}\right) = \sigma^2
+$$
+
+- This means that under the null hypothesis, we expect the F-statistic to be close to 1.
+
+---
+
+```{webr-r}
+set.seed(456)
+
+dat_mlr <- dat %>% mutate(X1 = X,
+                          X2 = rnorm(n(), mean = 0, sd = 1),
+                          X3 = rbinom(n(), size = 1, prob = 0.4)) %>% select(-X)
+
+dat_mlr <- dat_mlr %>% mutate(Y = 30 + 1.5*X1 + 4*X2 - 6*X3 + rnorm(n(), 0, 5))
+head(dat_mlr)
+```
+
+```{webr-r}
+fit_mlr <- lm(Y ~ X1 + X2 + X3, data = dat_mlr)
+summary(fit_mlr)
+```
+
+
+Interpret Coefficients (quick “hold others fixed” illustration)
+
+```{webr-r}
+# Generate observations where X1 and X2 are constant and X2 has one unit change
+new_a <- tibble(X1 = mean(dat_mlr$X1), X2 = 0, X3 = 0)
+new_b <- tibble(X1 = mean(dat_mlr$X1), X2 = 1, X3 = 0)
+
+pred_a <- predict(fit_mlr, newdata = new_a)
+pred_b <- predict(fit_mlr, newdata = new_b)
+
+# Check if the predicted difference given 1-unit increase in X2
+# while holding others constant is the same as regression coefficient for X2.
+
+pred_b - pred_a
+coef(fit_mlr)[["X2"]]
+```
+
+# Supplemental on F test statistics
+
+- **Under the alternative hypothesis**, we expect $RSS$ to get smaller, leading to:
+
+$$
+E\left(\frac{TSS - RSS}{p}\right) > \sigma^2
+$$
+
+
+- Large values of the F-statistic provide **evidence against the null hypothesis**.
+- The required size of the F-statistic for significance depends on sample size, but R provides a p-value for easy interpretation.
+
+
+---
+
+# Model Fit
+
+- We want to have some **measure of how good our model is**
+  - How well does it fit the observed data
+  - How well does it predict new data points
+
+- We will look at two measures of model fit:
+  - RSE (Residual Standard Error)
+    - It estimates the unknown noise $\sigma$ and measures how far points are from the fitted regression line.
+  - $R^2$
+    - The book says it is the coefficient of determination.
+    - You can also think of it as the **proportion of variance explained** by the given model.
+  - And many others (AIC, BIC, MSE)
+
+- These are measures of how well the model fits our observed data
+  - They do not measure how well it predicts new data points
+  - These measures are susceptible to overfitting
+
+---
+
+# Example on Model Fit
+
+- Show an example on how $R^2$ increases and RSE decreases when adding more variables.
+- Key idea:
+  - Adding predictors usually improves *training fit*
+  - So $R^2$ typically goes **up**
+  - RSE typically goes **down**
+- But: this can lead to **overfitting** (better fit does not always mean better prediction).
+
+---
+
+# Demo: $R^2$ increases and RSE decreases as we add predictors
+
+```{webr-r}
+set.seed(26)
+n <- 250
+X1 <- rnorm(n)
+X2 <- rnorm(n, sd = 0.5)
+X3 <- rnorm(n, sd = 1)
+
+# True model f(X) uses only X1 and X2
+Y <- 2 + 3*X1 - 2*X2 + rnorm(n, sd = 2)
+
+dat_fit <- tibble(Y = Y, X1 = X1, X2 = X2, X3 = X3)
+
+# Fit different models by adding covariates in 
+fit1 <- lm(Y ~ X1, data = dat_fit)
+fit2 <- lm(Y ~ X1 + X2, data = dat_fit)
+fit3 <- lm(Y ~ X1 + X2 + X3, data = dat_fit)
+
+# Extract RSE and R^2
+get_metrics <- function(fit){
+  s <- summary(fit)
+  tibble(RSE = s$sigma, R_squared = s$r.squared)
+}
+
+metrics <- bind_rows(
+  `Model 1: Y ~ X1` = get_metrics(fit1),
+  `Model 2: Y ~ X1 + X2` = get_metrics(fit2),
+  `Model 3: Y ~ X1 + X2 + X3` = get_metrics(fit3),
+  .id = "Model"
+)
+
+metrics
+```
