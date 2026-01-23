@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.24">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -67,15 +67,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ff63373b1067ca6f91cf1456aa1f00a2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a14e3238c51140e99ccc48519b6ed9ce.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -403,7 +402,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"new_shoe <- function(decks = 6) {\n  rep(c(2:10, 10, 10, 10, 11), times = 4 * decks)\n}\n\nshoe_running_count <- function(shoe){\n  low_card <- sum(shoe >= 2 & shoe <= 6)\n  high_card <- sum(shoe >= 10)\n  count <- - (low_card - high_card)\n  # print(count)\n  deck <- round(length(shoe) / 52)\n  # print(deck)\n  round(count / deck) - 1\n}\n\ndraw_card <- function(shoe) {\n  idx <- sample(seq_along(shoe), 1)\n  list(card = shoe[idx], shoe = shoe[-idx])\n}\n\nhand_value <- function(hand) {\n  total <- sum(hand)\n  aces <- sum(hand == 11)\n  while (total > 21 && aces > 0) {\n    total <- total - 10\n    aces <- aces - 1\n  }\n  total\n}\n\nis_soft <- function(hand) {\n  sum(hand) <= 21 && any(hand == 11)\n}\n\nbasic_strategy <- function(hand, dealer_up) {\n  total <- hand_value(hand)\n  soft <- is_soft(hand)\n  \n  # Pair splitting\n  if (length(hand) == 2 && hand[1] == hand[2]) {\n    pair <- hand[1]\n    if (pair %in% c(11, 8)) return(\"split\")\n    if (pair == 2 || pair == 3) return(ifelse(dealer_up <= 7, \"split\", \"hit\"))\n    if (pair == 6) return(ifelse(dealer_up <= 6, \"split\", \"hit\"))\n    if (pair == 7) return(ifelse(dealer_up <= 7, \"split\", \"hit\"))\n    if (pair == 9) return(ifelse(dealer_up %in% c(2:6,8,9), \"split\", \"stand\"))\n    if (pair == 4) return(ifelse(dealer_up %in% c(5,6), \"split\", \"hit\"))\n    if (pair == 5) return(ifelse(dealer_up <= 9, \"double\", \"hit\"))\n    if (pair == 10) return(\"stand\")\n  }\n  \n  # # Surrender\n  # if (!soft && length(hand) == 2 && total == 16 && dealer_up >= 9) return(\"surrender\")\n  # if (!soft && length(hand) == 2 && total == 15 && dealer_up == 10) return(\"surrender\")\n  # \n  # Soft totals\n  if (soft) {\n    if (total >= 19) return(\"stand\")\n    if (total == 18) {\n      if (dealer_up <= 6) return(\"double\")\n      if (dealer_up <= 8) return(\"stand\")\n      return(\"hit\")\n    }\n    if (total %in% 16:17) return(ifelse(dealer_up <= 6, \"double\", \"hit\"))\n    if (total %in% 13:15) return(ifelse(dealer_up %in% 5:6, \"double\", \"hit\"))\n  }\n  \n  # Hard totals\n  if (total >= 17) return(\"stand\")\n  if (total >= 13 && dealer_up <= 6) return(\"stand\")\n  if (total == 12 && dealer_up %in% 4:6) return(\"stand\")\n  if (total == 11) return(\"double\")\n  if (total == 10 && dealer_up <= 9) return(\"double\")\n  if (total == 9 && dealer_up %in% 3:6) return(\"double\")\n  \n  \"hit\"\n}\nplay_player_hand <- function(hand, dealer_up, shoe, bet = 1, depth = 1) {\n  # if (depth > 4) return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))\n  \n  repeat {\n    # print(\"dealer is\")\n    # print(dealer_up)\n    # print(\"Your hand is\")\n    # print(hand)\n    # print(\"Please make your decision: hit, double, split, stand\")\n    # move <- readline()\n    move <- basic_strategy(hand, dealer_up)\n    \n    if (move == \"surrender\") {\n      return(list(results = list(list(hand = NULL, bet = -0.5 * bet)), shoe = shoe))\n    }\n    \n    if (move == \"split\") {\n      h1 <- c(hand[1])\n      h2 <- c(hand[2])\n      \n      d1 <- draw_card(shoe); h1 <- c(h1, d1$card); shoe <- d1$shoe\n      d2 <- draw_card(shoe); h2 <- c(h2, d2$card); shoe <- d2$shoe\n      \n      r1 <- play_player_hand(h1, dealer_up, shoe, bet, depth + 1)\n      r2 <- play_player_hand(h2, dealer_up, r1$shoe, bet, depth + 1)\n      \n      return(list(\n        results = c(r1$results, r2$results),\n        shoe = r2$shoe\n      ))\n    }\n    \n    if (move == \"double\") {\n      d <- draw_card(shoe)\n      hand <- c(hand, d$card)\n      shoe <- d$shoe\n      # print(\"Your hand is\")\n      # print(hand)\n      return(list(results = list(list(hand = hand, bet = 2 * bet)), shoe = shoe))\n    }\n    \n    if (move == \"hit\") {\n      d <- draw_card(shoe)\n      hand <- c(hand, d$card)\n      shoe <- d$shoe\n      if (hand_value(hand) > 21)\n        return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))\n    }\n    \n    if (move == \"stand\")\n      return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))\n  }\n}\n\nplay_dealer <- function(hand, shoe) {\n  repeat {\n    # print(\"The dealer's hand is\")\n    # print(hand)\n    total <- hand_value(hand)\n    soft <- is_soft(hand)\n    \n    if (total < 17 || (total == 17 && soft)) {\n      d <- draw_card(shoe)\n      hand <- c(hand, d$card)\n      shoe <- d$shoe\n    } else {\n      break\n    }\n  }\n  list(hand = hand, shoe = shoe)\n}\n\nsettle_hand <- function(player, dealer, bet, winning_status) {\n  if (player$total > 21) {\n    # print(\"You LOSE!\")\n    winning_status = \"N\"\n    return(list(bet = -bet, winning_status = winning_status))\n    }\n  if (dealer$total > 21) {\n    # print(\"You WIN!\")\n    winning_status = \"Y\"\n    return(list(bet = bet, winning_status = winning_status))\n  }\n  if (player$total > dealer$total){\n    # print(\"You WIN!\")\n    winning_status = \"Y\"\n    return(list(bet = bet, winning_status = winning_status))\n  } \n  if (player$total < dealer$total) {\n    # print(\"You LOSE!\")\n    winning_status = \"N\"\n    return(list(bet = -bet, winning_status = winning_status))\n  }\n  return(list(bet = 0, winning_status = \"P\"))\n}\n\nsimulate_blackjack <- function(n = 100000, decks = 6, counting_cards = FALSE, bankroll = NULL) {\n  dealer_total_list <- c()\n  player_total_list <- c()\n  running_count_list <- c()\n  winning_list <- c()\n  profit_list <- c()\n  shoe <- new_shoe(decks)\n  profit <- 0\n  num_survive <- 0\n  running_count <- 0\n  running_count_value <- 0\n  \n  for (i in 1:n) {\n    # if(i %% 5 == 0){\n    # print(\"quit? Y/N\")\n    # x = readline()\n    # if(x == \"Y\"){\n    #   print(\"history of dealer:\")\n    #   print(dealer_total_list)\n    #   print(\"history of player:\")\n    #   print(player_total_list)\n    #   print(\"Final profit\")\n    #   print(profit)\n    #   return(list(edge = profit / n, dealer_total_list = dealer_total_list, player_total_list = player_total_list, num_survive = num_survive))\n    # }\n    if (length(shoe) < 0.25 * 52 * decks){\n      shoe <- new_shoe(decks)\n      running_count <- 0\n    }\n    # }\n    \n    running_count <- shoe_running_count(shoe)\n    \n    running_count_value <- 0\n    if(counting_cards){\n    if(running_count == 1){\n      running_count_value <- 1\n    }\n    if(running_count == 2){\n      running_count_value <- 2\n    }\n    if(running_count == 3){\n      running_count_value <- 4\n    }\n    if(running_count == 4){\n      running_count_value <- 8\n    }\n    if(running_count >= 5){\n      running_count_value <- 16\n    }\n    # if(running_count == 6){\n    #   running_count_value <- 8\n    # }\n    # if(running_count >= 7){\n    #   running_count_value <- 16\n    # }\n    if(running_count < 0){\n      running_count_value <- -1\n    }\n    }\n    \n    # Initial deal\n    d <- draw_card(shoe); p1 <- d$card; shoe <- d$shoe\n    d <- draw_card(shoe); d1 <- d$card; shoe <- d$shoe\n    d <- draw_card(shoe); p2 <- d$card; shoe <- d$shoe\n    d <- draw_card(shoe); d2 <- d$card; shoe <- d$shoe\n    \n    player <- c(p1, p2)\n    dealer <- c(d1, d2)\n    \n    winning_status = \"Y\"\n    # Blackjack check\n    if (hand_value(player) == 21 && hand_value(dealer) != 21) {\n      profit <- profit + 1.5 + 1.5 * running_count_value\n      profit_list <- c(profit_list, profit)\n      winning_status = \"Y\"\n      winning_list <- c(winning_list, winning_status)\n      running_count_list <- c(running_count_list, running_count)\n      dealer_total_list <- c(dealer_total_list, hand_value(dealer))\n      player_total_list <- c(player_total_list, hand_value(player))\n      next\n    }\n    if (hand_value(dealer) == 21) {\n      profit <- profit - 1 - running_count_value\n      profit_list <- c(profit_list, profit)\n      winning_status = \"N\"\n      winning_list <- c(winning_list, winning_status)\n      running_count_list <- c(running_count_list, running_count)\n      dealer_total_list <- c(dealer_total_list, hand_value(dealer))\n      player_total_list <- c(player_total_list, hand_value(player))\n      next\n    }\n    \n    # Player hands\n    ph <- play_player_hand(player, dealer[1], shoe)\n    shoe <- ph$shoe\n    \n    # Dealer\n    # print(dealer)\n    # print(shoe)\n    dealer_play <- play_dealer(dealer, shoe)\n    dealer <- dealer_play$hand\n    shoe <- dealer_play$shoe\n    dealer_total <- hand_value(dealer)\n    \n    dealer_total_list <- c(dealer_total_list, dealer_total)\n    \n    for (h in ph$results) {\n      if (is.null(h$hand)) {\n        profit_list <- c(profit_list, h$bet + h$bet * running_count_value)\n        profit <- profit + h$bet + h$bet * running_count_value\n        winning_status = \"Y\"\n      } else {\n        player_total <- hand_value(h$hand)\n        player_total_list <- c(player_total_list, player_total)\n        settle_list <- settle_hand(\n          list(total = player_total),\n          list(total = dealer_total),\n          h$bet + h$bet * running_count_value,\n          winning_status\n        )\n        winning <- settle_list$bet\n        winning_status <- settle_list$winning_status\n        profit <- profit + winning\n        profit_list <- c(profit_list,profit)\n      }\n      winning_list <- c(winning_list, winning_status)\n      running_count_list <- c(running_count_list, running_count)\n    }\n    \n    if(!is.null(bankroll)){\n      if(profit < -bankroll){\n        num_survive = i\n        break\n      }\n    }\n    \n    # print(\"Your profit is\")\n    # print(profit)\n    # print(\"Running count: \")\n    # print(running_count)\n    #print(profit)\n    # if(profit < -6){\n    #   num_survive = i\n    #   break\n    # }\n  }\n  \n  list(edge = profit / n, dealer_total_list = dealer_total_list, player_total_list = player_total_list, \n       winning_list = winning_list, num_survive = num_survive, running_count_list = running_count_list,\n       profit_list = profit_list)\n}","id":1,"options":{"autorun":"true","classes":"","comment":"","context":"setup","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"simulate_blackjack(n = 10)","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"simulate_blackjack(n = 10, counting_cards = TRUE)","id":13,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-13","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":14,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-14","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":15,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-15","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":16,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-16","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":17,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-17","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Note","id":18,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-18","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Set n to be sufficiently large\nsimulate_blackjack(n = 100000, bankroll = 5)","id":19,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-19","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":20,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-20","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":21,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-21","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":22,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-22","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Note","id":23,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-23","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Note","id":24,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-24","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Note","id":25,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-25","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Note","id":26,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-26","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"set.seed(123)\nn <- 200\nX <- rnorm(n, mean = 25, sd = 4)                \neps <- rnorm(n, mean = 0, sd = 5) # sigma = 5\n\n# outcome with a linear relationship + noise\nY <- -10 + 1.8 * X + eps\n\ndat <- tibble(X = X, Y = Y)\nhead(dat)\n\n# visualization of the data\nggplot(dat, aes(x = X, y = Y)) +\ngeom_point() +\ngeom_smooth(method = \"lm\", se = TRUE) +\nlabs(title = \"Synthetic data with a linear trend\",\nsubtitle = \"The fitted line is the regression line (coming up next) \")","id":27,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-27","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"dat2 <- dat %>% mutate(X_centered = X - mean(X))\n\nfit_uncentered <- lm(Y ~ X, data = dat)\nfit_centered <- lm(Y ~ X_centered, data = dat2)\n\ncoef(fit_uncentered)\ncoef(fit_centered)","id":28,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-28","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"summary(fit_uncentered)\nsummary(fit_centered)","id":29,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-29","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"set.seed(456)\n\ndat_mlr <- dat %>% mutate(X1 = X,\n                          X2 = rnorm(n(), mean = 0, sd = 1),\n                          X3 = rbinom(n(), size = 1, prob = 0.4)) %>% select(-X)\n\ndat_mlr <- dat_mlr %>% mutate(Y = 30 + 1.5*X1 + 4*X2 - 6*X3 + rnorm(n(), 0, 5))\nhead(dat_mlr)","id":30,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-30","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"fit_mlr <- lm(Y ~ X1 + X2 + X3, data = dat_mlr)\nsummary(fit_mlr)","id":31,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-31","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Generate observations where X1 and X2 are constant and X2 has one unit change\nnew_a <- tibble(X1 = mean(dat_mlr$X1), X2 = 0, X3 = 0)\nnew_b <- tibble(X1 = mean(dat_mlr$X1), X2 = 1, X3 = 0)\n\npred_a <- predict(fit_mlr, newdata = new_a)\npred_b <- predict(fit_mlr, newdata = new_b)\n\n# Check if the predicted difference given 1-unit increase in X2\n# while holding others constant is the same as regression coefficient for X2.\n\npred_b - pred_a\ncoef(fit_mlr)[[\"X2\"]]","id":32,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-32","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"set.seed(26)\nn <- 250\nX1 <- rnorm(n)\nX2 <- rnorm(n, sd = 0.5)\nX3 <- rnorm(n, sd = 1)\n\n# True model f(X) uses only X1 and X2\nY <- 2 + 3*X1 - 2*X2 + rnorm(n, sd = 2)\n\ndat_fit <- tibble(Y = Y, X1 = X1, X2 = X2, X3 = X3)\n\n# Fit different models by adding covariates in \nfit1 <- lm(Y ~ X1, data = dat_fit)\nfit2 <- lm(Y ~ X1 + X2, data = dat_fit)\nfit3 <- lm(Y ~ X1 + X2 + X3, data = dat_fit)\n\n# Extract RSE and R^2\nget_metrics <- function(fit){\n  s <- summary(fit)\n  tibble(RSE = s$sigma, R_squared = s$r.squared)\n}\n\nmetrics <- bind_rows(\n  `Model 1: Y ~ X1` = get_metrics(fit1),\n  `Model 2: Y ~ X1 + X2` = get_metrics(fit2),\n  `Model 3: Y ~ X1 + X2 + X3` = get_metrics(fit3),\n  .id = \"Model\"\n)\n\nmetrics","id":33,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-33","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"new_shoe <- function(decks = 6) {\n  rep(c(2:10, 10, 10, 10, 11), times = 4 * decks)\n}\n\nshoe_running_count <- function(shoe){\n  low_card <- sum(shoe >= 2 & shoe <= 6)\n  high_card <- sum(shoe >= 10)\n  count <- - (low_card - high_card)\n  # print(count)\n  deck <- round(length(shoe) / 52)\n  # print(deck)\n  round(count / deck) - 1\n}\n\ndraw_card <- function(shoe) {\n  idx <- sample(seq_along(shoe), 1)\n  list(card = shoe[idx], shoe = shoe[-idx])\n}\n\nhand_value <- function(hand) {\n  total <- sum(hand)\n  aces <- sum(hand == 11)\n  while (total > 21 && aces > 0) {\n    total <- total - 10\n    aces <- aces - 1\n  }\n  total\n}\n\nis_soft <- function(hand) {\n  sum(hand) <= 21 && any(hand == 11)\n}\n\nbasic_strategy <- function(hand, dealer_up) {\n  total <- hand_value(hand)\n  soft <- is_soft(hand)\n  \n  # Pair splitting\n  if (length(hand) == 2 && hand[1] == hand[2]) {\n    pair <- hand[1]\n    if (pair %in% c(11, 8)) return(\"split\")\n    if (pair == 2 || pair == 3) return(ifelse(dealer_up <= 7, \"split\", \"hit\"))\n    if (pair == 6) return(ifelse(dealer_up <= 6, \"split\", \"hit\"))\n    if (pair == 7) return(ifelse(dealer_up <= 7, \"split\", \"hit\"))\n    if (pair == 9) return(ifelse(dealer_up %in% c(2:6,8,9), \"split\", \"stand\"))\n    if (pair == 4) return(ifelse(dealer_up %in% c(5,6), \"split\", \"hit\"))\n    if (pair == 5) return(ifelse(dealer_up <= 9, \"double\", \"hit\"))\n    if (pair == 10) return(\"stand\")\n  }\n  \n  # # Surrender\n  # if (!soft && length(hand) == 2 && total == 16 && dealer_up >= 9) return(\"surrender\")\n  # if (!soft && length(hand) == 2 && total == 15 && dealer_up == 10) return(\"surrender\")\n  # \n  # Soft totals\n  if (soft) {\n    if (total >= 19) return(\"stand\")\n    if (total == 18) {\n      if (dealer_up <= 6) return(\"double\")\n      if (dealer_up <= 8) return(\"stand\")\n      return(\"hit\")\n    }\n    if (total %in% 16:17) return(ifelse(dealer_up <= 6, \"double\", \"hit\"))\n    if (total %in% 13:15) return(ifelse(dealer_up %in% 5:6, \"double\", \"hit\"))\n  }\n  \n  # Hard totals\n  if (total >= 17) return(\"stand\")\n  if (total >= 13 && dealer_up <= 6) return(\"stand\")\n  if (total == 12 && dealer_up %in% 4:6) return(\"stand\")\n  if (total == 11) return(\"double\")\n  if (total == 10 && dealer_up <= 9) return(\"double\")\n  if (total == 9 && dealer_up %in% 3:6) return(\"double\")\n  \n  \"hit\"\n}\nplay_player_hand <- function(hand, dealer_up, shoe, bet = 1, depth = 1) {\n  # if (depth > 4) return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))\n  \n  repeat {\n    # print(\"dealer is\")\n    # print(dealer_up)\n    # print(\"Your hand is\")\n    # print(hand)\n    # print(\"Please make your decision: hit, double, split, stand\")\n    # move <- readline()\n    move <- basic_strategy(hand, dealer_up)\n    \n    if (move == \"surrender\") {\n      return(list(results = list(list(hand = NULL, bet = -0.5 * bet)), shoe = shoe))\n    }\n    \n    if (move == \"split\") {\n      h1 <- c(hand[1])\n      h2 <- c(hand[2])\n      \n      d1 <- draw_card(shoe); h1 <- c(h1, d1$card); shoe <- d1$shoe\n      d2 <- draw_card(shoe); h2 <- c(h2, d2$card); shoe <- d2$shoe\n      \n      r1 <- play_player_hand(h1, dealer_up, shoe, bet, depth + 1)\n      r2 <- play_player_hand(h2, dealer_up, r1$shoe, bet, depth + 1)\n      \n      return(list(\n        results = c(r1$results, r2$results),\n        shoe = r2$shoe\n      ))\n    }\n    \n    if (move == \"double\") {\n      d <- draw_card(shoe)\n      hand <- c(hand, d$card)\n      shoe <- d$shoe\n      # print(\"Your hand is\")\n      # print(hand)\n      return(list(results = list(list(hand = hand, bet = 2 * bet)), shoe = shoe))\n    }\n    \n    if (move == \"hit\") {\n      d <- draw_card(shoe)\n      hand <- c(hand, d$card)\n      shoe <- d$shoe\n      if (hand_value(hand) > 21)\n        return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))\n    }\n    \n    if (move == \"stand\")\n      return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))\n  }\n}\n\nplay_dealer <- function(hand, shoe) {\n  repeat {\n    # print(\"The dealer's hand is\")\n    # print(hand)\n    total <- hand_value(hand)\n    soft <- is_soft(hand)\n    \n    if (total < 17 || (total == 17 && soft)) {\n      d <- draw_card(shoe)\n      hand <- c(hand, d$card)\n      shoe <- d$shoe\n    } else {\n      break\n    }\n  }\n  list(hand = hand, shoe = shoe)\n}\n\nsettle_hand <- function(player, dealer, bet, winning_status) {\n  if (player$total > 21) {\n    # print(\"You LOSE!\")\n    winning_status = \"N\"\n    return(list(bet = -bet, winning_status = winning_status))\n    }\n  if (dealer$total > 21) {\n    # print(\"You WIN!\")\n    winning_status = \"Y\"\n    return(list(bet = bet, winning_status = winning_status))\n  }\n  if (player$total > dealer$total){\n    # print(\"You WIN!\")\n    winning_status = \"Y\"\n    return(list(bet = bet, winning_status = winning_status))\n  } \n  if (player$total < dealer$total) {\n    # print(\"You LOSE!\")\n    winning_status = \"N\"\n    return(list(bet = -bet, winning_status = winning_status))\n  }\n  return(list(bet = 0, winning_status = \"P\"))\n}\n\nsimulate_blackjack <- function(n = 100000, decks = 6, counting_cards = FALSE, bankroll = NULL) {\n  dealer_total_list <- c()\n  player_total_list <- c()\n  running_count_list <- c()\n  winning_list <- c()\n  profit_list <- c()\n  shoe <- new_shoe(decks)\n  profit <- 0\n  num_survive <- 0\n  running_count <- 0\n  running_count_value <- 0\n  \n  for (i in 1:n) {\n    # if(i %% 5 == 0){\n    # print(\"quit? Y/N\")\n    # x = readline()\n    # if(x == \"Y\"){\n    #   print(\"history of dealer:\")\n    #   print(dealer_total_list)\n    #   print(\"history of player:\")\n    #   print(player_total_list)\n    #   print(\"Final profit\")\n    #   print(profit)\n    #   return(list(edge = profit / n, dealer_total_list = dealer_total_list, player_total_list = player_total_list, num_survive = num_survive))\n    # }\n    if (length(shoe) < 0.25 * 52 * decks){\n      shoe <- new_shoe(decks)\n      running_count <- 0\n    }\n    # }\n    \n    running_count <- shoe_running_count(shoe)\n    \n    running_count_value <- 0\n    if(counting_cards){\n    if(running_count == 1){\n      running_count_value <- 1\n    }\n    if(running_count == 2){\n      running_count_value <- 2\n    }\n    if(running_count == 3){\n      running_count_value <- 4\n    }\n    if(running_count == 4){\n      running_count_value <- 8\n    }\n    if(running_count >= 5){\n      running_count_value <- 16\n    }\n    # if(running_count == 6){\n    #   running_count_value <- 8\n    # }\n    # if(running_count >= 7){\n    #   running_count_value <- 16\n    # }\n    if(running_count < 0){\n      running_count_value <- -1\n    }\n    }\n    \n    # Initial deal\n    d <- draw_card(shoe); p1 <- d$card; shoe <- d$shoe\n    d <- draw_card(shoe); d1 <- d$card; shoe <- d$shoe\n    d <- draw_card(shoe); p2 <- d$card; shoe <- d$shoe\n    d <- draw_card(shoe); d2 <- d$card; shoe <- d$shoe\n    \n    player <- c(p1, p2)\n    dealer <- c(d1, d2)\n    \n    winning_status = \"Y\"\n    # Blackjack check\n    if (hand_value(player) == 21 && hand_value(dealer) != 21) {\n      profit <- profit + 1.5 + 1.5 * running_count_value\n      profit_list <- c(profit_list, profit)\n      winning_status = \"Y\"\n      winning_list <- c(winning_list, winning_status)\n      running_count_list <- c(running_count_list, running_count)\n      dealer_total_list <- c(dealer_total_list, hand_value(dealer))\n      player_total_list <- c(player_total_list, hand_value(player))\n      next\n    }\n    if (hand_value(dealer) == 21) {\n      profit <- profit - 1 - running_count_value\n      profit_list <- c(profit_list, profit)\n      winning_status = \"N\"\n      winning_list <- c(winning_list, winning_status)\n      running_count_list <- c(running_count_list, running_count)\n      dealer_total_list <- c(dealer_total_list, hand_value(dealer))\n      player_total_list <- c(player_total_list, hand_value(player))\n      next\n    }\n    \n    # Player hands\n    ph <- play_player_hand(player, dealer[1], shoe)\n    shoe <- ph$shoe\n    \n    # Dealer\n    # print(dealer)\n    # print(shoe)\n    dealer_play <- play_dealer(dealer, shoe)\n    dealer <- dealer_play$hand\n    shoe <- dealer_play$shoe\n    dealer_total <- hand_value(dealer)\n    \n    dealer_total_list <- c(dealer_total_list, dealer_total)\n    \n    for (h in ph$results) {\n      if (is.null(h$hand)) {\n        profit_list <- c(profit_list, h$bet + h$bet * running_count_value)\n        profit <- profit + h$bet + h$bet * running_count_value\n        winning_status = \"Y\"\n      } else {\n        player_total <- hand_value(h$hand)\n        player_total_list <- c(player_total_list, player_total)\n        settle_list <- settle_hand(\n          list(total = player_total),\n          list(total = dealer_total),\n          h$bet + h$bet * running_count_value,\n          winning_status\n        )\n        winning <- settle_list$bet\n        winning_status <- settle_list$winning_status\n        profit <- profit + winning\n        profit_list <- c(profit_list,profit)\n      }\n      winning_list <- c(winning_list, winning_status)\n      running_count_list <- c(running_count_list, running_count)\n    }\n    \n    if(!is.null(bankroll)){\n      if(profit < -bankroll){\n        num_survive = i\n        break\n      }\n    }\n    \n    # print(\"Your profit is\")\n    # print(profit)\n    # print(\"Running count: \")\n    # print(running_count)\n    #print(profit)\n    # if(profit < -6){\n    #   num_survive = i\n    #   break\n    # }\n  }\n  \n  list(edge = profit / n, dealer_total_list = dealer_total_list, player_total_list = player_total_list, \n       winning_list = winning_list, num_survive = num_survive, running_count_list = running_count_list,\n       profit_list = profit_list)\n}","id":1,"options":{"autorun":"true","classes":"","comment":"","context":"setup","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Simulation of a dice rolling\ntest_sample <- sample(c(1, 2, 3, 4, 5, 6), size = 100)\n\n# Find the probability of a dice 1\nsum(test_sample == 1) / length(test_sample)","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"test_sample <- rnorm(100)\nplot(test_sample)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# X ~ N(0, 1)\ntest_sample <- rnorm(100)\n\n# E(X)\nmean(test_sample)\n\n# E(X \\mid X > 0.5)\nmean(test_sample[test_sample > 0.5])","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"simulate_blackjack(n = 10)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":13,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-13","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":14,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-14","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":15,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-15","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"simulate_blackjack(n = 10, counting_cards = TRUE)","id":16,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-16","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":17,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-17","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":18,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-18","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":19,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-19","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":20,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-20","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Note","id":21,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-21","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Set n to be sufficiently large\nsimulate_blackjack(n = 100000, bankroll = 5)","id":22,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-22","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":23,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-23","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":24,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-24","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Code","id":25,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-25","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Note","id":26,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-26","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Note","id":27,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-27","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Note","id":28,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-28","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Note","id":29,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-29","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"set.seed(123)\nn <- 200\nX <- rnorm(n, mean = 25, sd = 4)                \neps <- rnorm(n, mean = 0, sd = 5) # sigma = 5\n\n# outcome with a linear relationship + noise\nY <- -10 + 1.8 * X + eps\n\ndat <- tibble(X = X, Y = Y)\nhead(dat)\n\n# visualization of the data\nggplot(dat, aes(x = X, y = Y)) +\ngeom_point() +\ngeom_smooth(method = \"lm\", se = TRUE) +\nlabs(title = \"Synthetic data with a linear trend\",\nsubtitle = \"The fitted line is the regression line (coming up next) \")","id":30,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-30","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"dat2 <- dat %>% mutate(X_centered = X - mean(X))\n\nfit_uncentered <- lm(Y ~ X, data = dat)\nfit_centered <- lm(Y ~ X_centered, data = dat2)\n\ncoef(fit_uncentered)\ncoef(fit_centered)","id":31,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-31","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"summary(fit_uncentered)\nsummary(fit_centered)","id":32,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-32","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"set.seed(456)\n\ndat_mlr <- dat %>% mutate(X1 = X,\n                          X2 = rnorm(n(), mean = 0, sd = 1),\n                          X3 = rbinom(n(), size = 1, prob = 0.4)) %>% select(-X)\n\ndat_mlr <- dat_mlr %>% mutate(Y = 30 + 1.5*X1 + 4*X2 - 6*X3 + rnorm(n(), 0, 5))\nhead(dat_mlr)","id":33,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-33","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"fit_mlr <- lm(Y ~ X1 + X2 + X3, data = dat_mlr)\nsummary(fit_mlr)","id":34,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-34","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Generate observations where X1 and X2 are constant and X2 has one unit change\nnew_a <- tibble(X1 = mean(dat_mlr$X1), X2 = 0, X3 = 0)\nnew_b <- tibble(X1 = mean(dat_mlr$X1), X2 = 1, X3 = 0)\n\npred_a <- predict(fit_mlr, newdata = new_a)\npred_b <- predict(fit_mlr, newdata = new_b)\n\n# Check if the predicted difference given 1-unit increase in X2\n# while holding others constant is the same as regression coefficient for X2.\n\npred_b - pred_a\ncoef(fit_mlr)[[\"X2\"]]","id":35,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-35","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"set.seed(26)\nn <- 250\nX1 <- rnorm(n)\nX2 <- rnorm(n, sd = 0.5)\nX3 <- rnorm(n, sd = 1)\n\n# True model f(X) uses only X1 and X2\nY <- 2 + 3*X1 - 2*X2 + rnorm(n, sd = 2)\n\ndat_fit <- tibble(Y = Y, X1 = X1, X2 = X2, X3 = X3)\n\n# Fit different models by adding covariates in \nfit1 <- lm(Y ~ X1, data = dat_fit)\nfit2 <- lm(Y ~ X1 + X2, data = dat_fit)\nfit3 <- lm(Y ~ X1 + X2 + X3, data = dat_fit)\n\n# Extract RSE and R^2\nget_metrics <- function(fit){\n  s <- summary(fit)\n  tibble(RSE = s$sigma, R_squared = s$r.squared)\n}\n\nmetrics <- bind_rows(\n  `Model 1: Y ~ X1` = get_metrics(fit1),\n  `Model 2: Y ~ X1 + X2` = get_metrics(fit2),\n  `Model 3: Y ~ X1 + X2 + X3` = get_metrics(fit3),\n  .id = \"Model\"\n)\n\nmetrics","id":36,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-36","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script>
 <script type="module">
@@ -1671,7 +1670,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -1713,8 +1712,9 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="./index.html" class="sidebar-logo-link">
-      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Data Science (BDS) Club</a> 
+    </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
@@ -1766,11 +1766,12 @@ window.Quarto = {
   <li><a href="#credits" id="toc-credits" class="nav-link active" data-scroll-target="#credits">Credits</a></li>
   <li><a href="#disclaimer" id="toc-disclaimer" class="nav-link" data-scroll-target="#disclaimer">Disclaimer</a></li>
   <li><a href="#reference" id="toc-reference" class="nav-link" data-scroll-target="#reference">Reference</a></li>
-  <li><a href="#languages-in-statistics" id="toc-languages-in-statistics" class="nav-link" data-scroll-target="#languages-in-statistics">Languages in Statistics</a>
+  <li><a href="#prerequisites-some-languages-in-statistics" id="toc-prerequisites-some-languages-in-statistics" class="nav-link" data-scroll-target="#prerequisites-some-languages-in-statistics">Prerequisites: Some Languages in Statistics</a>
   <ul class="collapse">
   <li><a href="#probability" id="toc-probability" class="nav-link" data-scroll-target="#probability">Probability</a></li>
   <li><a href="#distribution" id="toc-distribution" class="nav-link" data-scroll-target="#distribution">Distribution</a></li>
   <li><a href="#expectation" id="toc-expectation" class="nav-link" data-scroll-target="#expectation">Expectation</a></li>
+  </ul></li>
   <li><a href="#project-blackjack" id="toc-project-blackjack" class="nav-link" data-scroll-target="#project-blackjack">Project: Blackjack</a>
   <ul class="collapse">
   <li><a href="#project-disclaimer" id="toc-project-disclaimer" class="nav-link" data-scroll-target="#project-disclaimer">Project Disclaimer</a></li>
@@ -1778,7 +1779,6 @@ window.Quarto = {
   <li><a href="#part-2-hi-lo-bet-spreading" id="toc-part-2-hi-lo-bet-spreading" class="nav-link" data-scroll-target="#part-2-hi-lo-bet-spreading">Part 2: Hi-Lo Bet Spreading</a></li>
   <li><a href="#part-3-be-realistic" id="toc-part-3-be-realistic" class="nav-link" data-scroll-target="#part-3-be-realistic">Part 3: Be realistic!!</a></li>
   <li><a href="#part-4-casinos-tricks" id="toc-part-4-casinos-tricks" class="nav-link" data-scroll-target="#part-4-casinos-tricks">Part 4: Casinos’ Tricks</a></li>
-  </ul></li>
   </ul></li>
   <li><a href="#statistical-modeling" id="toc-statistical-modeling" class="nav-link" data-scroll-target="#statistical-modeling">Statistical Modeling</a>
   <ul class="collapse">
@@ -2133,19 +2133,29 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="languages-in-statistics" class="level1">
-<h1>Languages in Statistics</h1>
+<section id="prerequisites-some-languages-in-statistics" class="level1">
+<h1>Prerequisites: Some Languages in Statistics</h1>
 <section id="probability" class="level2">
 <h2 class="anchored" data-anchor-id="probability">Probability</h2>
+<p><em>Probability</em> is a measurement of the likelihood of an <strong>event</strong> can happen, written as <span class="math inline">\(P(X)\)</span>.</p>
+<div id="qwebr-insertion-location-2"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="distribution" class="level2">
 <h2 class="anchored" data-anchor-id="distribution">Distribution</h2>
+<p><em>Distribution</em> can be understood as a statistical assumption of the data. E.g. <span class="math inline">\(N(0, 1)\)</span>.</p>
+<div id="qwebr-insertion-location-3"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="expectation" class="level2">
 <h2 class="anchored" data-anchor-id="expectation">Expectation</h2>
+<p><em>Expectation</em> can be understood as the average. <span class="math inline">\(E(X) = \sum_x x P(X = x)\)</span>, <span class="math inline">\(E(X) = \sum_y E(X \mid Y = y) P(Y = y)\)</span>.</p>
+<div id="qwebr-insertion-location-4"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="project-blackjack" class="level2">
-<h2 class="anchored" data-anchor-id="project-blackjack">Project: Blackjack</h2>
+</section>
+<section id="project-blackjack" class="level1">
+<h1>Project: Blackjack</h1>
 <ul>
 <li><p><em>Blackjack</em> (formerly black jack or vingt-un) is a casino banking game. It is the most widely played casino banking game in the world. It uses decks of 52 cards and descends from a global family of casino banking games known as “twenty-one”. The game is a comparing card game where players compete against the dealer.</p></li>
 <li><p><strong>Card Values</strong>: J, Q, and K are 10; A can be 1 or 11; 2-9 depend on their face values. Examples: (A, 6) is 7 or 17, (8, 4) is 12.</p></li>
@@ -2171,23 +2181,23 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <p>– The game starts.</p>
 <p>Some blackjacks offered in casinos may have varying rules, but now we stick to this. In this project, you will use a blackjack simulator to answer the following data science questions, which helps understanding much better about why this game CANNOT be beaten without advanced strategies.</p>
 <p>You can preview this simulator by the following R script. The player’s decision is based on <a href="https://en.wikipedia.org/wiki/Blackjack#Basic_strategy">Perfect Basic Strategy</a>.</p>
-<div id="qwebr-insertion-location-2"></div>
+<div id="qwebr-insertion-location-5"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<section id="project-disclaimer" class="level3">
-<h3 class="anchored" data-anchor-id="project-disclaimer">Project Disclaimer</h3>
+<section id="project-disclaimer" class="level2">
+<h2 class="anchored" data-anchor-id="project-disclaimer">Project Disclaimer</h2>
 <p>This project uses the game of blackjack solely as an educational and analytical case study. The purpose is to explore concepts such as probability, decision-making under uncertainty, simulation, algorithmic strategy, and statistical inference.</p>
 <p>This workshop does not promote gambling, wagering, or casino participation in any form. No real money is used, discussed, or encouraged. Blackjack is employed only because it provides a well-defined, rule-based environment that is widely studied in mathematics, statistics, computer science, and operations research.</p>
 <p>Participants are required to view the game strictly as an abstract model for learning quantitative reasoning and should not interpret any content as advice or endorsement for gambling activities.</p>
 </section>
-<section id="part-1-everything-is-normal" class="level3">
-<h3 class="anchored" data-anchor-id="part-1-everything-is-normal">Part 1: Everything is Normal</h3>
+<section id="part-1-everything-is-normal" class="level2">
+<h2 class="anchored" data-anchor-id="part-1-everything-is-normal">Part 1: Everything is Normal</h2>
 <div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Caution</span>Practice 1 (The Dealer)
+Practice 1 (The Dealer)
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -2198,33 +2208,33 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <ol type="1">
 <li>In a simulation with <span class="math inline">\(10^4\)</span> rounds, pull out values of each dealer hand.</li>
 </ol>
-<div id="qwebr-insertion-location-3"></div>
+<div id="qwebr-insertion-location-6"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="2" type="1">
 <li>Find the estimated expectation of those values, excluding the rounds dealer busted (dealer goes over 21).</li>
 </ol>
-<div id="qwebr-insertion-location-4"></div>
+<div id="qwebr-insertion-location-7"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="3" type="1">
 <li>Find the probability of dealer getting a blackjack.</li>
 </ol>
-<div id="qwebr-insertion-location-5"></div>
+<div id="qwebr-insertion-location-8"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="4" type="1">
 <li>Find the probability of dealer getting busted .</li>
 </ol>
-<div id="qwebr-insertion-location-6"></div>
+<div id="qwebr-insertion-location-9"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 </div>
 </div>
 <div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Caution</span>Practice 2 (The Player)
+Practice 2 (The Player)
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -2234,33 +2244,33 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <ol type="1">
 <li>Create a data frame containing all information related to the player’s performance.</li>
 </ol>
-<div id="qwebr-insertion-location-7"></div>
+<div id="qwebr-insertion-location-10"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="2" type="1">
 <li>Find the proportion of the player wins, loses and pushes.</li>
 </ol>
-<div id="qwebr-insertion-location-8"></div>
+<div id="qwebr-insertion-location-11"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="3" type="1">
 <li>Find the expectation of the player’s hand values, excluding the busted hands.</li>
 </ol>
-<div id="qwebr-insertion-location-9"></div>
+<div id="qwebr-insertion-location-12"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="4" type="1">
 <li>Find the probability of the player getting a blackjack.</li>
 </ol>
-<div id="qwebr-insertion-location-10"></div>
+<div id="qwebr-insertion-location-13"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="5" type="1">
 <li>Visualize the “winning curve” of the player.</li>
 </ol>
-<div id="qwebr-insertion-location-11"></div>
+<div id="qwebr-insertion-location-14"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="6" type="1">
 <li>(open question) Try your own strategy and redo the analysis. The related code is shown below:</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>basic_strategy <span class="ot">&lt;-</span> <span class="cf">function</span>(hand, dealer_up) {</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>basic_strategy <span class="ot">&lt;-</span> <span class="cf">function</span>(hand, dealer_up) {</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  total <span class="ot">&lt;-</span> <span class="fu">hand_value</span>(hand)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  soft <span class="ot">&lt;-</span> <span class="fu">is_soft</span>(hand)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -2356,16 +2366,16 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (move <span class="sc">==</span> <span class="st">"stand"</span>)</span>
 <span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">results =</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">hand =</span> hand, <span class="at">bet =</span> bet)), <span class="at">shoe =</span> shoe))</span>
 <span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="qwebr-insertion-location-12"></div>
+<div id="qwebr-insertion-location-15"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 </div>
 </div>
 </section>
-<section id="part-2-hi-lo-bet-spreading" class="level3">
-<h3 class="anchored" data-anchor-id="part-2-hi-lo-bet-spreading">Part 2: Hi-Lo Bet Spreading</h3>
+<section id="part-2-hi-lo-bet-spreading" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-hi-lo-bet-spreading">Part 2: Hi-Lo Bet Spreading</h2>
 <p><em>Bet Spreading</em> is a common strategy to “beat” the blackjack dealer. It requires the <strong>true count</strong> of the shoe. When the true count is positive, the game is advantageous to the player. Otherwise, it is advantageous to the dealer.</p>
 <ul>
 <li><p><strong>True count</strong>: An approximation of “the number of high cards (A and all cards with value 10) minus the number of low cards (all cards with value 2-6)” in a shoe with <strong>one</strong> deck.</p></li>
@@ -2378,15 +2388,15 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <p>– If true count is 4, bet 8 units.</p>
 <p>– If true count is greater or equal 5, bet 16 units.</p>
 <p>You can enable this bet spreading by setting <code>counting_cards = TRUE</code>.</p>
-<div id="qwebr-insertion-location-13"></div>
+<div id="qwebr-insertion-location-16"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Caution</span>Practice 3
+Practice 3
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -2395,44 +2405,44 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <ol type="1">
 <li>Create a data frame containing all information related to the player’s performance in a simulation with <span class="math inline">\(10^4\)</span> rounds. Be sure to include the live (true) running count.</li>
 </ol>
-<div id="qwebr-insertion-location-14"></div>
+<div id="qwebr-insertion-location-17"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="2" type="1">
 <li>Visualize, again, the player’s “winning curve”.</li>
 </ol>
-<div id="qwebr-insertion-location-15"></div>
+<div id="qwebr-insertion-location-18"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="3" type="1">
 <li>Find the estimated <em>edge</em> of the player. Edge is the share of each bet that someone anticipates it will retain in the long run</li>
 </ol>
-<div id="qwebr-insertion-location-16"></div>
+<div id="qwebr-insertion-location-19"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="4" type="1">
 <li>Find the estimated edge of the player under different (true) running counts.</li>
 </ol>
-<div id="qwebr-insertion-location-17"></div>
+<div id="qwebr-insertion-location-20"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="5" type="1">
 <li><em>Insurance</em> needs to be played as a side bet when the dealer’s up card (the card that is faced-up) is an A. Specifically, player needs to bet whether the dealer gets a blackjack. The player will be paid 2 to 1 if yes, and will lose this bet if no. A strategy of insurance using (true) running count is: <em>Bet the insurance if the (true) running count is at least 3, otherwise do not bet</em>. Find the statistical intuition behind this.</li>
 </ol>
-<div id="qwebr-insertion-location-18"></div>
+<div id="qwebr-insertion-location-21"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 </div>
 </div>
 </section>
-<section id="part-3-be-realistic" class="level3">
-<h3 class="anchored" data-anchor-id="part-3-be-realistic">Part 3: Be realistic!!</h3>
+<section id="part-3-be-realistic" class="level2">
+<h2 class="anchored" data-anchor-id="part-3-be-realistic">Part 3: Be realistic!!</h2>
 <p>Now, let’s be realistic! Everyone’s bankroll is limited, and you are “kicked out” if you lose all your money. In this simulator, you can enable this feature by setting <code>bankroll</code> to be a specific amount, indicating the money you would like to spend in the game. See below</p>
-<div id="qwebr-insertion-location-19"></div>
+<div id="qwebr-insertion-location-22"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Caution</span>Practice 4
+Practice 4
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -2441,37 +2451,37 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <ol type="1">
 <li>Assume that the player wants to play at most 1000 rounds. For one simulation, extract the information about the player’s survival rounds.</li>
 </ol>
-<div id="qwebr-insertion-location-20"></div>
+<div id="qwebr-insertion-location-23"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="2" type="1">
 <li>Repeat the simulation for 100 times, find the mean and median of the player’s survival rounds.</li>
 </ol>
-<div id="qwebr-insertion-location-21"></div>
+<div id="qwebr-insertion-location-24"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="3" type="1">
 <li>Redo 2 but enabling the bet spreading (card counting)</li>
 </ol>
-<div id="qwebr-insertion-location-22"></div>
+<div id="qwebr-insertion-location-25"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="4" type="1">
 <li><em>Progressive betting</em> is the following bet strategy: <em>Bet double as the last time’s bet if lost at the last time, return to the original bet if won at the last time.</em> Without coding, thinking about why this CANNOT help you beating the dealer.</li>
 </ol>
-<div id="qwebr-insertion-location-23"></div>
+<div id="qwebr-insertion-location-26"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 </div>
 </div>
 </section>
-<section id="part-4-casinos-tricks" class="level3">
-<h3 class="anchored" data-anchor-id="part-4-casinos-tricks">Part 4: Casinos’ Tricks</h3>
+<section id="part-4-casinos-tricks" class="level2">
+<h2 class="anchored" data-anchor-id="part-4-casinos-tricks">Part 4: Casinos’ Tricks</h2>
 <p>Here, let’s think about some strategies casinos implemented to “prevent you winning”.</p>
 <div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Caution</span>Practice 5
+Practice 5
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -2480,23 +2490,23 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <ol type="1">
 <li>Many casinos use <em>continuous shuffling machine</em> (CSM) in the games. Can you see why this prevents you beating the game?</li>
 </ol>
-<div id="qwebr-insertion-location-24"></div>
+<div id="qwebr-insertion-location-27"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="2" type="1">
 <li>Many casinos do not pay 3 to 2 for player’s blackjack, but pay 6 to 5. Can you see why this prevents you beating the game?</li>
 </ol>
-<div id="qwebr-insertion-location-25"></div>
+<div id="qwebr-insertion-location-28"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ol start="3" type="1">
 <li>Some casinos have a relatively short range of the bet requirement (e.g.&nbsp;minimum 10, maximum 100), can you see why this prevents you beating the game?</li>
 </ol>
-<div id="qwebr-insertion-location-26"></div>
+<div id="qwebr-insertion-location-29"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 </div>
 </div>
 <p><strong>RECAP: In short, casinos can easily win a lot of money by solid math/stats, and by luring people to believe that they are lucky guys :)</strong></p>
-</section>
+<hr>
 </section>
 </section>
 <section id="statistical-modeling" class="level1">
@@ -2622,7 +2632,7 @@ Y = \beta_0 + \beta_1 X + \epsilon
 <li>Assumes <span class="math inline">\(\epsilon \sim \mathcal{N}(0, \sigma^2)\)</span> and is independent of <span class="math inline">\(X\)</span>.</li>
 <li><span class="math inline">\(\sigma^2\)</span> is the residual variance of the model.</li>
 </ul>
-<div id="qwebr-insertion-location-27"></div>
+<div id="qwebr-insertion-location-30"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <hr>
 <ul>
@@ -2661,7 +2671,7 @@ E[Y \mid X] = \beta_0 + \beta_1 X
 <li><h2 id="beta_1-is-the-expected-change-in-the-outcome-for-a-one-unit-change-in-the-predictor-x." class="anchored"><span class="math inline">\(\beta_1\)</span> is the <strong>expected change</strong> in the outcome for a one unit change in the predictor <span class="math inline">\(X\)</span>.</h2></li>
 </ul>
 <p>Question: how do you interpret the intercept after centering X?</p>
-<div id="qwebr-insertion-location-28"></div>
+<div id="qwebr-insertion-location-31"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>Ans: Expected value of <span class="math inline">\(Y\)</span> when <span class="math inline">\(X\)</span> is at its average value.</p>
 <ul>
@@ -2700,7 +2710,7 @@ E[Y \mid X] = \beta_0 + \beta_1 X
 <p><span class="math display">\[
 \hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{X}
 \]</span> —</p>
-<div id="qwebr-insertion-location-29"></div>
+<div id="qwebr-insertion-location-32"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="se-of-beta-from-r-output" class="level2">
@@ -2877,12 +2887,12 @@ E\left(\frac{TSS - RSS}{p}\right) = \sigma^2
 <li>This means that under the null hypothesis, we expect the F-statistic to be close to 1.</li>
 </ul>
 <hr>
-<div id="qwebr-insertion-location-30"></div>
+<div id="qwebr-insertion-location-33"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<div id="qwebr-insertion-location-31"></div>
+<div id="qwebr-insertion-location-34"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>Interpret Coefficients (quick “hold others fixed” illustration)</p>
-<div id="qwebr-insertion-location-32"></div>
+<div id="qwebr-insertion-location-35"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="supplemental-on-f-test-statistics-1" class="level2">
@@ -2941,7 +2951,7 @@ E\left(\frac{TSS - RSS}{p}\right) &gt; \sigma^2
 <hr>
 <section id="demo-r2-increases-and-rse-decreases-as-we-add-predictors" class="level2">
 <h2 class="anchored" data-anchor-id="demo-r2-increases-and-rse-decreases-as-we-add-predictors">Demo: <span class="math inline">\(R^2\)</span> increases and RSE decreases as we add predictors</h2>
-<div id="qwebr-insertion-location-33"></div>
+<div id="qwebr-insertion-location-36"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 
 
@@ -3000,14 +3010,13 @@ E\left(\frac{TSS - RSS}{p}\right) &gt; \sigma^2
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
