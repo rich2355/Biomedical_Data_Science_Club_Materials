@@ -355,15 +355,45 @@ simulate_blackjack <- function(n = 100000, decks = 6, counting_cards = FALSE, ba
 
 ```
 
-# Languages in Statistics
+# Prerequisites: Some Languages in Statistics
 
 ## Probability
 
+*Probability* is a measurement of the likelihood of an **event** can happen, written as $P(X)$. 
+
+```{webr-r}
+# Simulation of a dice rolling
+test_sample <- sample(c(1, 2, 3, 4, 5, 6), size = 100)
+
+# Find the probability of a dice 1
+sum(test_sample == 1) / length(test_sample)
+```
+
 ## Distribution
+
+*Distribution* can be understood as a statistical assumption of the data. E.g. $N(0, 1)$. 
+
+```{webr-r}
+test_sample <- rnorm(100)
+plot(test_sample)
+```
 
 ## Expectation 
 
-## Project: Blackjack
+*Expectation* can be understood as the average. $E(X) = \sum_x x P(X = x)$, $E(X) = \sum_y E(X \mid Y = y) P(Y = y)$.
+
+```{webr-r}
+# X ~ N(0, 1)
+test_sample <- rnorm(100)
+
+# E(X)
+mean(test_sample)
+
+# E(X \mid X > 0.5)
+mean(test_sample[test_sample > 0.5])
+```
+
+# Project: Blackjack
 
 - *Blackjack* (formerly black jack or vingt-un) is a casino banking game. It is the most widely played casino banking game in the world. It uses decks of 52 cards and descends from a global family of casino banking games known as "twenty-one". The game is a comparing card game where players compete against the dealer. 
 
@@ -411,7 +441,7 @@ You can preview this simulator by the following R script. The player's decision 
 simulate_blackjack(n = 10)
 ```
 
-### Project Disclaimer
+## Project Disclaimer
 
 This project uses the game of blackjack solely as an educational and analytical case study. The purpose is to explore concepts such as probability, decision-making under uncertainty, simulation, algorithmic strategy, and statistical inference.
 
@@ -419,7 +449,7 @@ This workshop does not promote gambling, wagering, or casino participation in an
 
 Participants are required to view the game strictly as an abstract model for learning quantitative reasoning and should not interpret any content as advice or endorsement for gambling activities.
 
-### Part 1: Everything is Normal
+## Part 1: Everything is Normal
 
 ::: {.callout-caution collapse="true"}
 ## Practice 1 (The Dealer)
@@ -597,7 +627,7 @@ play_player_hand <- function(hand, dealer_up, shoe, bet = 1, depth = 1) {
 ```
 :::
 
-### Part 2: Hi-Lo Bet Spreading
+## Part 2: Hi-Lo Bet Spreading
 
 *Bet Spreading* is a common strategy to "beat" the blackjack dealer. It requires the **true count** of the shoe. When the true count is positive, the game is advantageous to the player. Otherwise, it is advantageous to the dealer. 
 
@@ -656,7 +686,7 @@ simulate_blackjack(n = 10, counting_cards = TRUE)
 ```
 :::
 
-### Part 3: Be realistic!!
+## Part 3: Be realistic!!
 
 Now, let's be realistic! Everyone's bankroll is limited, and you are "kicked out" if you lose all your money. In this simulator, you can enable this feature by setting `bankroll` to be a specific amount, indicating the money you would like to spend in the game. See below
 
@@ -694,7 +724,7 @@ simulate_blackjack(n = 100000, bankroll = 5)
 
 :::
 
-### Part 4: Casinos' Tricks
+## Part 4: Casinos' Tricks
 
 Here, let's think about some strategies casinos implemented to "prevent you winning". 
 
@@ -724,7 +754,7 @@ Here, let's think about some strategies casinos implemented to "prevent you winn
 
 **RECAP: In short, casinos can easily win a lot of money by solid math/stats, and by luring people to believe that they are lucky guys :)**
 
-
+---
 
 # Statistical Modeling
 
