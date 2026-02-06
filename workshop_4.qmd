@@ -20,7 +20,7 @@ Credited to Richard Liu and Emily Zhang from the Biomedical Data Science (BDS) c
 The datasets provided here are all synthetically generated for demonstration and educational purposes only. It does not represent real patient data and should not be used for clinical decision-making, medical research, or policy development. Any resemblance to real persons, conditions, or outcomes is purely coincidental. The values and relationships were generated using statistical simulation techniques and do not reflect actual medical situations.
 
 # Reference
-
+Hastie, T., Tibshirani, R. and Friedman, J., 2009. An introduction to statistical learning.
 
 ---
 
@@ -788,10 +788,11 @@ Y = f(\mathbf{X}) + \epsilon
 $$
 
 - $\mathbf{X} = (X_1, X_2, \dots, X_p)$ are $p$ distinct variables that potentially associate with $Y$.
-- $f$ is an **unknown function that people call it model** and is generally **the quantity of interest**.
+- $f$ is an **unknown function that people call it a model** and is generally **the quantity of interest**.
   - Given some predictors $\mathbf{X}$, what do I expect the outcome $Y$ to be?
 - $\epsilon$ is a vector of noise, and we would always have it because the "hypothetical true model" cannot be perfect!
-- Modeling process: we will use observed data to estimate $f$.
+- Modeling process means: we will use observed data to estimate $f$.
+- Common assumptions: $\mathbb{E}[\epsilon \mid X] = 0$ and $Var(\epsilon) = \sigma^2$
 
 ---
 
@@ -804,6 +805,68 @@ $$
     - These goals are different — one estimate of $f$ may be great at prediction but provide very little information about relationships between variables.
 
 ---
+
+## Prediction
+
+- Common metric for prediction is the mean squared error (MSE) and that can be decomposed to 
+
+$$
+\mathbb{E}[(Y - \hat{Y})^2] = \mathbb{E}[(f(X) + \epsilon - \hat{f}(X))^2]
+= (f(X) - \hat{f}(X))^2 + \mathrm{Var}(\epsilon)
+$$
+- We cannot do anything about $Var(\epsilon)$ so our goal is to minimize the first source of error. 
+
+```{webr-r}
+# Simulate reducible vs irreducible error as sample size increases
+set.seed(123)
+
+sigma2 <- 1          # Var(epsilon): irreducible error
+beta0  <- 0
+beta1  <- 2
+
+n_grid <- seq(5, 100, by = 5) 
+R      <- 500                 
+
+mse_bar <- numeric(length(n_grid))
+
+for (j in seq_along(n_grid)) {
+  n <- n_grid[j]
+  mse_rep <- numeric(R)
+
+  for (r in 1:R) {
+    X   <- rnorm(n)
+    eps <- rnorm(n, mean = 0, sd = sqrt(sigma2))
+    Y   <- beta0 + beta1 * X + eps
+
+    fit <- lm(Y ~ X)
+
+    mtest <- 10000
+    Xt   <- rnorm(mtest)
+    et   <- rnorm(mtest, mean = 0, sd = sqrt(sigma2))
+    Yt   <- beta0 + beta1 * Xt + et
+
+    Yhat <- predict(fit, newdata = data.frame(X = Xt))
+    mse_rep[r] <- mean((Yt - Yhat)^2)
+  }
+
+  mse_bar[j] <- mean(mse_rep)
+}
+
+irreducible <- rep(sigma2, length(n_grid))
+reducible   <- pmax(mse_bar - sigma2, 0)  
+
+plot(n_grid, reducible, type = "l", lwd = 3,
+     xlab = "Sample size for model fitting", ylab = "Squared error",
+     main = "Error types", ylim = c(0, max(c(reducible, irreducible)) * 1.2))
+lines(n_grid, irreducible, lwd = 3, col = "red")
+legend("center", legend = c("Reducible", "Irreducible"),
+       lwd = 3, col = c("black", "red"), bty = "o")
+
+
+```
+
+
+
 
 ## Prediction or Inference?
 
@@ -824,6 +887,92 @@ $$
   - We are also interested in the manner **in which the risk factors** $X_j$ **affect illness rates** so we can intervene to reduce future illness.
 
 ---
+
+## Estimating our model $f$
+- Whether we are interested in prediction, inference, or both heavily drives our decision on how we estimate f. 
+- How do we choose which one to use? 
+- There is generally a trade-off between model interpretability and prediction accuracy. 
+
+---
+
+## Parametric models
+- Parametric models make assumptions about the functional form of f. 
+- Example? 
+- Our problem is then simplified to estimating these parameters in f - why we call it parametric.
+
+---
+
+## Nonparametric models
+- Do not make parametric assumptions about f - avoids issue of misspecifying the functional form of f. It can have weaker assumptions such as smoothness. $f(x) \approx f(x + \delta) \quad \text{ for small } \delta.$
+
+- Avoids overfitting
+- Example? Decision trees, random forests, splines, k-Nearest Neighbors
+- Might require a bigger sample size than parametric models - can you think of why? 
+  - Higher flexibility increases variance and leads to slower rates to "converge" to the best model.
+  
+---
+
+## Overfitting
+
+```{webr-r}
+
+# Example highlighting overfitting: true f is linear, fit models from simple to very flexible
+set.seed(123)
+
+n <- 80
+x <- sort(runif(n, -2, 2))
+
+f_true <- function(x) x
+sigma  <- 0.8
+y <- f_true(x) + rnorm(n, 0, sigma)
+
+dat <- data.frame(x = x, y = y)
+
+fit_lin <- lm(y ~ x, data = dat)
+fit_poly3 <- lm(y ~ poly(x, 3, raw = TRUE), data = dat)
+deg_hi <- 20
+fit_poly_hi <- lm(y ~ poly(x, deg_hi, raw = TRUE), data = dat)
+
+xg <- seq(-2, 2, length.out = 400)
+pred_lin    <- predict(fit_lin,    newdata = data.frame(x = xg))
+pred_poly3  <- predict(fit_poly3,  newdata = data.frame(x = xg))
+pred_polyhi <- predict(fit_poly_hi,newdata = data.frame(x = xg))
+truth_g     <- f_true(xg)
+
+plot(dat$x, dat$y,
+     pch = 16, cex = 0.7,
+     xlab = "Predictor", ylab = "Estimate of f",
+     main = "Parametric to nonparametric fits")
+
+lines(xg, truth_g,     lwd = 3, col = "black") # Truth
+lines(xg, pred_lin,    lwd = 3, col = "red")   # Linear
+lines(xg, pred_poly3,  lwd = 3, col = "green") # Somewhat flexible
+lines(xg, pred_polyhi, lwd = 3, col = "blue")  # Highly flexible (overfit)
+
+legend("topleft",
+       legend = c("Truth", "Linear", "Somewhat flexible", "Highly flexible"),
+       col = c("black", "red", "green", "blue"),
+       lwd = 3, bty = "o")
+
+
+```
+
+---
+
+## How to choose a model? 
+- We can tell in previous example linear fit is much closer to the truth than the highly flexible one. 
+- The out of sample error is more relevant to examine. 
+
+Let $X_0$ be new set of data point and the out-of-sample mean squared error can be decomposed as:
+
+$$
+\mathrm{MSE}\big(\hat f(X_0)\big)
+= \mathbb{E}\Big[(Y_0 - \hat f(X_0))^2\Big]
+= \mathrm{Var}\big(\hat f(X_0)\big)
++ \Big[\mathrm{Bias}\big(\hat f(X_0)\big)\Big]^2
++ \mathrm{Var}(\epsilon)
+$$
+
 
 # Linear Regression
 
@@ -872,10 +1021,13 @@ head(dat)
 
 # visualization of the data
 ggplot(dat, aes(x = X, y = Y)) +
-geom_point() +
-geom_smooth(method = "lm", se = TRUE) +
-labs(title = "Synthetic data with a linear trend",
-subtitle = "The fitted line is the regression line (coming up next) ")
+  geom_point() +
+  geom_abline(intercept = -10, slope = 1.8, linewidth = 1) +
+  labs(
+    title = "Synthetic data with true linear relationship",
+    subtitle = "Line shows the true function: Y = -10 + 1.8X"
+  ) +
+  theme_minimal()
 ```
 
 ---
@@ -900,7 +1052,7 @@ $$
 \mathrm{Var}[Y \mid X] = \sigma^2
 $$
 
-  - This represents the variance of $Y$ around the expected value $E[Y\mid X]$ and is assumed to be constant for all values of $X$.
+  - This represents the variance of $Y$ around the expected value $E[Y\mid X]$ and is assumed to be constant for all values of $X$. The scatter of data points around the regression line is roughly the same whether X is small or large.
 
 ---
 
@@ -935,6 +1087,7 @@ Ans: Expected value of $Y$ when $X$ is at its average value.
 - We want values $\hat{\beta}_0$ and $\hat{\beta}_1$ such that $Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i$ is small.
 
 ---
+
 
 ## Parameter Estimation
 
@@ -1131,26 +1284,6 @@ $$
 
 ---
 
-## Supplemental on F test statistics
-
-- The denominator satisfies:
-
-$$
-E\left(\frac{RSS}{n - p - 1}\right) = \sigma^2
-$$
-
-  - where $RSS$ is the residual sum of squares, and $\sigma^2$ represents the residual variance.
-
-- Under $H_0$, the numerator satisfies:
-
-$$
-E\left(\frac{TSS - RSS}{p}\right) = \sigma^2
-$$
-
-- This means that under the null hypothesis, we expect the F-statistic to be close to 1.
-
----
-
 ```{webr-r}
 set.seed(456)
 
@@ -1171,7 +1304,7 @@ summary(fit_mlr)
 Interpret Coefficients (quick “hold others fixed” illustration)
 
 ```{webr-r}
-# Generate observations where X1 and X2 are constant and X2 has one unit change
+# Generate observations where X1 and X3 are constant and X2 has one unit change
 new_a <- tibble(X1 = mean(dat_mlr$X1), X2 = 0, X3 = 0)
 new_b <- tibble(X1 = mean(dat_mlr$X1), X2 = 1, X3 = 0)
 
@@ -1195,7 +1328,7 @@ $$
 
 
 - Large values of the F-statistic provide **evidence against the null hypothesis**.
-- The required size of the F-statistic for significance depends on sample size, but R provides a p-value for easy interpretation.
+- R provides a p-value for easy interpretation.
 
 
 ---
@@ -1208,10 +1341,10 @@ $$
 
 - We will look at two measures of model fit:
   - RSE (Residual Standard Error)
-    - It estimates the unknown noise $\sigma$ and measures how far points are from the fitted regression line.
+    - It estimates the unknown noise $\sigma$ and measures how far true data points points are from the fitted regression line.
   - $R^2$
     - The book says it is the coefficient of determination.
-    - You can also think of it as the **proportion of variance explained** by the given model.
+    - You can also think of it as the **proportion of variance in Y explained by X** given the regression model. 
   - And many others (AIC, BIC, MSE)
 
 - These are measures of how well the model fits our observed data
@@ -1264,3 +1397,103 @@ metrics <- bind_rows(
 
 metrics
 ```
+
+# Discussions
+
+## Covariates on different scales
+Suppose I have variables not on the same scale. Var(X1) = 1/100 and Var(X2) = 100. Is this problematic in regression? 
+
+```{webr-r}
+set.seed(123)
+
+n <- 500
+X1 <- rnorm(n, mean = 0, sd = 0.1)   # Var ~ 0.01 = 1/100
+X2 <- rnorm(n, mean = 0, sd = 10)    # Var ~ 100
+eps <- rnorm(n, mean = 0, sd = 1)
+Y <- 3 + 2*X1 - 0.5*X2 + eps
+dat <- data.frame(Y = Y, X1 = X1, X2 = X2)
+
+
+fit_raw <- lm(Y ~ X1 + X2, data = dat)
+
+# Standardize predictors
+dat$X1s <- scale(dat$X1)
+dat$X2s <- scale(dat$X2)
+
+fit_std <- lm(Y ~ X1s + X2s, data = dat)
+
+max(abs(fitted(fit_raw) - fitted(fit_std))) 
+coef(fit_raw)
+coef(fit_std)
+
+```
+
+What if you are using a penalized regression (did not cover this but serves as a heads up)? We would expect different prediction outcomes.  
+
+```{webr-r}
+library(glmnet)
+
+set.seed(123)
+idx <- sample(1:n, size = round(0.7*n))
+train <- dat[idx, ]
+test  <- dat[-idx, ]
+
+Xtr <- as.matrix(train[, c("X1","X2")])
+ytr <- train$Y
+Xte <- as.matrix(test[, c("X1","X2")])
+yte <- test$Y
+
+# Ridge with standardization
+ridge_raw <- glmnet(Xtr, ytr, alpha = 0, standardize = FALSE)
+pred_raw  <- predict(ridge_raw, newx = Xte)
+mse_raw   <- mean((yte - pred_raw)^2)
+
+# Ridge with standardization
+ridge_std <- glmnet(Xtr, ytr, alpha = 0, lambda = lambda, standardize = TRUE)
+pred_std  <- predict(ridge_std, newx = Xte)
+mse_std   <- mean((yte - pred_std)^2)
+```
+
+## How much data to use?
+
+Suppose I want to build model for my blood pressure for day 30, should I use data from the past 3 days or past 10 days for better predictions? 
+
+```{webr-r}
+set.seed(123)
+
+T <- 50
+true_bp <- seq(120, 130, length.out = T)
+
+# If our prediction function f is "taking the means"
+predict_k <- function(Y, t, k){
+  mean(Y[(t-k):(t-1)])
+}
+
+t0 <- 30
+R <- 1000
+
+pred3  <- numeric(R)
+pred10 <- numeric(R)
+
+for(r in 1:R){
+  
+  noise <- rnorm(T, 0, 3)
+  Y <- true_bp + noise
+  
+  pred3[r]  <- predict_k(Y, t0, 3)
+  pred10[r] <- predict_k(Y, t0, 10)
+}
+
+# Variance of the predictions
+var(pred3)
+var(pred10)
+
+# Bias from the true blood pressure
+mean(pred3)  - true_bp[t0]
+mean(pred10) - true_bp[t0]
+
+```
+
+Intuition: 
+- Using more past data reduces variance by averaging out noise but may introduce bias if the underlying process changes. 
+- Using only recent data reduces bias but increases variance. The optimal prediction balances this bias–variance tradeoff.
