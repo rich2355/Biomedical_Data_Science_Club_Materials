@@ -239,16 +239,16 @@ simulate_blackjack <- function(n = 100000, decks = 6, counting_cards = FALSE, ba
       running_count_value <- 1
     }
     if(running_count == 2){
-      running_count_value <- 2
+      running_count_value <- 3
     }
     if(running_count == 3){
-      running_count_value <- 4
+      running_count_value <- 5
     }
     if(running_count == 4){
-      running_count_value <- 8
+      running_count_value <- 10
     }
     if(running_count >= 5){
-      running_count_value <- 16
+      running_count_value <- 10
     }
     # if(running_count == 6){
     #   running_count_value <- 8
