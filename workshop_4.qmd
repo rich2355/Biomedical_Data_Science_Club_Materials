@@ -39,7 +39,7 @@ shoe_running_count <- function(shoe){
   # print(count)
   deck <- round(length(shoe) / 52)
   # print(deck)
-  round(count / deck) - 1
+  round(count / deck)
 }
 
 draw_card <- function(shoe) {
@@ -239,16 +239,16 @@ simulate_blackjack <- function(n = 100000, decks = 6, counting_cards = FALSE, ba
       running_count_value <- 1
     }
     if(running_count == 2){
-      running_count_value <- 2
+      running_count_value <- 3
     }
     if(running_count == 3){
-      running_count_value <- 4
+      running_count_value <- 5
     }
     if(running_count == 4){
-      running_count_value <- 6
+      running_count_value <- 7
     }
     if(running_count >= 5){
-      running_count_value <- 7
+      running_count_value <- 9
     }
     # if(running_count == 6){
     #   running_count_value <- 8
