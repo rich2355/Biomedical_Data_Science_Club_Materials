@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Biomedical Data Science (BDS) Club Workshop – Biomedical Data Science (BDS) Club</title>
+<title>Biomedical Data Science (BDS) Workshop 6: Machine Learning in R – Biomedical Data Science (BDS) Club</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -346,7 +346,7 @@ iframe.qwebr-output-code-browse {
 // Document level settings ----
 
 // Determine if we need to install R packages
-globalThis.qwebrInstallRPackagesList = ['dplyr', 'tidyr', 'tidyverse'];
+globalThis.qwebrInstallRPackagesList = ['dplyr', 'ggplot2', 'rsample', 'recipes', 'parsnip', 'workflows', 'tune', 'yardstick', 'dials', 'modeldata', 'vip', 'tune'];
 
 // Specify possible locations to search for the repository
 globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
@@ -368,7 +368,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"print(\"Welcome to Biomedical Data Science Club!\")","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"library(tidymodels)\nlibrary(modeldata) # A package of example datasets designed for tidymodels tutorials.\nlibrary(vip) # tool for Variable Importance Plots\nlibrary(doParallel) #Enables parallel computing in R, speeds up cross-validation and hyperparameter tuning\n\n# resolves function name conflicts in favor of the tidymodels ecosystem\ntidymodels_prefer() \n# For example:\n# dplyr::filter() vs stats::filter()\n# Whenever there’s a conflict, prefer the tidymodels-related version (like dplyr, recipes, yardstick, etc.)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"data(cells, package = \"modeldata\")\nglimpse(cells)","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"count(cells, class)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"sum(is.na(cells))\ncolnames(cells)","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"set.seed(123)\n\ncell_split <- initial_split(cells, prop = 0.80, strata = class);cell_split\ncell_train <- training(cell_split)\ncell_test  <- testing(cell_split)\n\ncount(cell_train, class)\ncount(cell_test, class)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"cell_rec <- \n  recipe(class ~ ., data = cell_train) %>%\n  update_role(case, new_role = \"ID\") %>% # case is the identifier variable in the data\n  step_zv(all_predictors()) %>% # Removes predictors with zero variance\n  step_normalize(all_numeric_predictors()) # Standardize\n\ncell_rec","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# prep(): estimates all preprocessing steps using the training data\n# - computes means/SDs for normalization\n# - identifies zero-variance predictors\n# - stores these transformations for later use\ncell_rec_prep <- prep(cell_rec)\n\n# bake(): applies the learned preprocessing steps to data\n# new_data = NULL → apply to the training data itself\n# (in practice, you would also use this to transform test data)\nbaked_train <- bake(cell_rec_prep, new_data = NULL)\nglimpse(baked_train)","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"log_reg_spec <- \n  logistic_reg(\n    penalty = tune(),\n    mixture = 1\n  ) %>%\n  set_engine(\"glmnet\")\n\nlog_reg_spec","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"rf_spec <- \n  rand_forest(\n    mtry = tune(),\n    min_n = tune(),\n    trees = 500\n  ) %>%\n  set_mode(\"classification\") %>%\n  set_engine(\"ranger\", importance = \"impurity\")\n\nrf_spec","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"log_reg_wf <- \n  workflow() %>%\n  add_recipe(cell_rec) %>% # recipe\n  add_model(log_reg_spec) # model\n\nrf_wf <- \n  workflow() %>%\n  add_recipe(cell_rec) %>%\n  add_model(rf_spec)","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"set.seed(2026)\ncell_folds <- vfold_cv(cell_train, v = 5, strata = class)\n\n# strata = class is optional. It ensures that each fold has a similar proportion of the outcome.So instead of random splits, you get balanced folds.\n\ncell_folds","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"class_metrics <- metric_set(roc_auc, accuracy, sens, spec)\nclass_metrics","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"log_grid <- grid_regular(\n  penalty(range = c(-4, 0)),\n  levels = 20\n)\n\nlog_grid","id":13,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-13","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"rf_grid <- grid_regular(\n  mtry(range = c(5L, 20L)),\n  min_n(range = c(5L, 20L)),\n  levels = 2 # keep it run faster for workshop\n)\nrf_grid","id":14,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-14","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"cl <- makePSOCKcluster(parallel::detectCores(logical = FALSE))\nregisterDoParallel(cl)","id":15,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-15","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"set.seed(2026)\nlog_res <- \n  tune_grid(\n    log_reg_wf,\n    resamples = cell_folds,\n    grid = log_grid,\n    metrics = class_metrics,\n    control = control_grid(save_pred = TRUE)\n  )","id":16,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-16","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"collect_metrics(log_res)","id":17,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-17","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"set.seed(2026)\nrf_res <- \n  tune_grid(\n    rf_wf,\n    resamples = cell_folds,\n    grid = rf_grid,\n    metrics = class_metrics,\n    control = control_grid(save_pred = TRUE)\n  )","id":18,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-18","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"collect_metrics(rf_res)","id":19,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-19","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"stopCluster(cl)\nregisterDoSEQ()","id":20,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-20","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"best_log <- select_best(log_res, metric = \"roc_auc\")\nbest_log","id":21,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-21","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"best_rf <- select_best(rf_res, metric = \"roc_auc\")\nbest_rf","id":22,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-22","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"autoplot(log_res)","id":23,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-23","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"autoplot(rf_res)","id":24,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-24","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"final_rf_wf <- finalize_workflow(rf_wf, best_rf)\nfinal_rf_wf","id":25,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-25","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"final_rf_res <- \n  last_fit(\n    final_rf_wf,\n    split = cell_split,\n    metrics = class_metrics\n  )\n\ncollect_metrics(final_rf_res)","id":26,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-26","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"final_preds <- collect_predictions(final_rf_res)\n\nfinal_preds %>%\n  conf_mat(truth = class, estimate = .pred_class)","id":27,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-27","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"final_preds %>%\n  roc_curve(class, .pred_PS) %>%\n  autoplot()","id":28,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-28","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"final_fit_obj <- extract_fit_parsnip(final_rf_res$.workflow[[1]])\n\nvip(final_fit_obj$fit)","id":29,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-29","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"library(tidymodels)\nlibrary(modeldata)\n\n# data\nndata <- your_data_frame\n\n# split\nset.seed(1)\nsplit_obj <- initial_split(ndata, prop = 0.8, strata = outcome)\ntrain_dat <- training(split_obj)\ntest_dat  <- testing(split_obj)\n\n# recipe\nrec <- recipe(outcome ~ ., data = train_dat) %>%\n  step_zv(all_predictors()) %>%\n  step_normalize(all_numeric_predictors())\n\n# model\nmod <- rand_forest(mtry = tune(), min_n = tune(), trees = 500) %>%\n  set_mode(\"classification\") %>%\n  set_engine(\"ranger\")\n\n# workflow\nwf <- workflow() %>%\n  add_recipe(rec) %>%\n  add_model(mod)\n\n# resampling\nset.seed(1)\nfolds <- vfold_cv(train_dat, v = 5, strata = outcome)\n\n# tune\ngrid <- grid_regular(parameters(wf), levels = 4)\nres <- tune_grid(\n  wf,\n  resamples = folds,\n  grid = grid,\n  metrics = metric_set(roc_auc, accuracy)\n)\n\n# finalize and test\nbest_params <- select_best(res, metric = \"roc_auc\")\nfinal_wf <- finalize_workflow(wf, best_params)\nlast_fit(final_wf, split_obj, metrics = metric_set(roc_auc, accuracy))","id":30,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-30","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Give more importance to the rare class and many models support \nset_engine(..., class.weights = ...)","id":31,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-31","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script>
 <script type="module">
@@ -1622,6 +1622,35 @@ globalThis.qwebrExecuteCode = async function (
 
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -1636,7 +1665,7 @@ globalThis.qwebrExecuteCode = async function (
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-          <h1 class="quarto-secondary-nav-title">Biomedical Data Science (BDS) Club Workshop</h1>
+          <h1 class="quarto-secondary-nav-title">Biomedical Data Science (BDS) Workshop 6: Machine Learning in R</h1>
         </a>     
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
@@ -1661,7 +1690,7 @@ globalThis.qwebrExecuteCode = async function (
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Welcome!</span></a>
   </div>
 </li>
@@ -1691,7 +1720,7 @@ globalThis.qwebrExecuteCode = async function (
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./workshop_6.html" class="sidebar-item-text sidebar-link">
+  <a href="./workshop_6.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">5. ML in R</span></a>
   </div>
 </li>
@@ -1700,8 +1729,86 @@ globalThis.qwebrExecuteCode = async function (
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#credits" id="toc-credits" class="nav-link active" data-scroll-target="#credits">Credits</a></li>
+  <li><a href="#disclaimer" id="toc-disclaimer" class="nav-link" data-scroll-target="#disclaimer">Disclaimer</a></li>
+  <li><a href="#reference" id="toc-reference" class="nav-link" data-scroll-target="#reference">Reference</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a>
+  <ul class="collapse">
+  <li><a href="#workshop-goal" id="toc-workshop-goal" class="nav-link" data-scroll-target="#workshop-goal">Workshop goal</a></li>
+  <li><a href="#why-tidymodels" id="toc-why-tidymodels" class="nav-link" data-scroll-target="#why-tidymodels">Why tidymodels?</a></li>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link" data-scroll-target="#learning-objectives">Learning objectives</a></li>
+  </ul></li>
+  <li><a href="#data-and-prediction-problem" id="toc-data-and-prediction-problem" class="nav-link" data-scroll-target="#data-and-prediction-problem">Data and prediction problem</a>
+  <ul class="collapse">
+  <li><a href="#public-dataset" id="toc-public-dataset" class="nav-link" data-scroll-target="#public-dataset">Public dataset</a></li>
+  <li><a href="#statistical-notation" id="toc-statistical-notation" class="nav-link" data-scroll-target="#statistical-notation">Statistical notation</a></li>
+  </ul></li>
+  <li><a href="#load-packages-and-data" id="toc-load-packages-and-data" class="nav-link" data-scroll-target="#load-packages-and-data">Load packages and data</a>
+  <ul class="collapse">
+  <li><a href="#initial-data-checks" id="toc-initial-data-checks" class="nav-link" data-scroll-target="#initial-data-checks">Initial data checks</a></li>
+  </ul></li>
+  <li><a href="#step-1-split-into-training-and-test-sets" id="toc-step-1-split-into-training-and-test-sets" class="nav-link" data-scroll-target="#step-1-split-into-training-and-test-sets">Step 1: Split into training and test sets</a>
+  <ul class="collapse">
+  <li><a href="#why-split-the-data" id="toc-why-split-the-data" class="nav-link" data-scroll-target="#why-split-the-data">Why split the data?</a></li>
+  </ul></li>
+  <li><a href="#step-2-preprocessing-with-recipes" id="toc-step-2-preprocessing-with-recipes" class="nav-link" data-scroll-target="#step-2-preprocessing-with-recipes">Step 2: Preprocessing with recipes</a>
+  <ul class="collapse">
+  <li><a href="#why-preprocess" id="toc-why-preprocess" class="nav-link" data-scroll-target="#why-preprocess">Why preprocess?</a></li>
+  <li><a href="#recipe-notation" id="toc-recipe-notation" class="nav-link" data-scroll-target="#recipe-notation">Recipe notation</a></li>
+  <li><a href="#build-the-recipe" id="toc-build-the-recipe" class="nav-link" data-scroll-target="#build-the-recipe">Build the recipe</a></li>
+  <li><a href="#inspect-the-preprocessed-design" id="toc-inspect-the-preprocessed-design" class="nav-link" data-scroll-target="#inspect-the-preprocessed-design">Inspect the preprocessed design</a></li>
+  </ul></li>
+  <li><a href="#step-3-specify-models-with-parsnip" id="toc-step-3-specify-models-with-parsnip" class="nav-link" data-scroll-target="#step-3-specify-models-with-parsnip">Step 3: Specify models with parsnip</a>
+  <ul class="collapse">
+  <li><a href="#model-1-penalized-logistic-regression" id="toc-model-1-penalized-logistic-regression" class="nav-link" data-scroll-target="#model-1-penalized-logistic-regression">Model 1: Penalized logistic regression</a></li>
+  <li><a href="#model-2-random-forest" id="toc-model-2-random-forest" class="nav-link" data-scroll-target="#model-2-random-forest">Model 2: Random forest</a></li>
+  </ul></li>
+  <li><a href="#step-4-bundle-preprocessing-and-model-in-workflows" id="toc-step-4-bundle-preprocessing-and-model-in-workflows" class="nav-link" data-scroll-target="#step-4-bundle-preprocessing-and-model-in-workflows">Step 4: Bundle preprocessing and model in workflows</a></li>
+  <li><a href="#step-5-cross-validation-on-the-training-set" id="toc-step-5-cross-validation-on-the-training-set" class="nav-link" data-scroll-target="#step-5-cross-validation-on-the-training-set">Step 5: Cross-validation on the training set</a>
+  <ul class="collapse">
+  <li><a href="#why-resampling" id="toc-why-resampling" class="nav-link" data-scroll-target="#why-resampling">Why resampling?</a></li>
+  <li><a href="#metrics-for-classification" id="toc-metrics-for-classification" class="nav-link" data-scroll-target="#metrics-for-classification">Metrics for classification</a></li>
+  </ul></li>
+  <li><a href="#step-6-tune-hyperparameters" id="toc-step-6-tune-hyperparameters" class="nav-link" data-scroll-target="#step-6-tune-hyperparameters">Step 6: Tune hyperparameters</a>
+  <ul class="collapse">
+  <li><a href="#set-up-tuning-grid-for-logistic-regression" id="toc-set-up-tuning-grid-for-logistic-regression" class="nav-link" data-scroll-target="#set-up-tuning-grid-for-logistic-regression">Set-up Tuning grid for logistic regression</a></li>
+  <li><a href="#tuning-grid-for-random-forest" id="toc-tuning-grid-for-random-forest" class="nav-link" data-scroll-target="#tuning-grid-for-random-forest">Tuning grid for random forest</a></li>
+  <li><a href="#parallel-processing-optional-but-useful-if-the-dataset-is-large-and-running-more-complex-models" id="toc-parallel-processing-optional-but-useful-if-the-dataset-is-large-and-running-more-complex-models" class="nav-link" data-scroll-target="#parallel-processing-optional-but-useful-if-the-dataset-is-large-and-running-more-complex-models">Parallel processing (optional but useful if the dataset is large and running more complex models)</a></li>
+  <li><a href="#tune-the-logistic-regression-model" id="toc-tune-the-logistic-regression-model" class="nav-link" data-scroll-target="#tune-the-logistic-regression-model">Tune the logistic regression model</a></li>
+  <li><a href="#tune-the-random-forest-model" id="toc-tune-the-random-forest-model" class="nav-link" data-scroll-target="#tune-the-random-forest-model">Tune the random forest model</a></li>
+  <li><a href="#stop-parallel-backend" id="toc-stop-parallel-backend" class="nav-link" data-scroll-target="#stop-parallel-backend">Stop parallel backend</a></li>
+  </ul></li>
+  <li><a href="#step-7-compare-models-and-choose-the-best-candidate" id="toc-step-7-compare-models-and-choose-the-best-candidate" class="nav-link" data-scroll-target="#step-7-compare-models-and-choose-the-best-candidate">Step 7: Compare models and choose the best candidate</a>
+  <ul class="collapse">
+  <li><a href="#best-logistic-regression-setting" id="toc-best-logistic-regression-setting" class="nav-link" data-scroll-target="#best-logistic-regression-setting">Best logistic regression setting</a></li>
+  <li><a href="#best-random-forest-setting" id="toc-best-random-forest-setting" class="nav-link" data-scroll-target="#best-random-forest-setting">Best random forest setting</a></li>
+  <li><a href="#visualize-tuning-results" id="toc-visualize-tuning-results" class="nav-link" data-scroll-target="#visualize-tuning-results">Visualize tuning results</a></li>
+  </ul></li>
+  <li><a href="#step-8-finalize-the-workflow" id="toc-step-8-finalize-the-workflow" class="nav-link" data-scroll-target="#step-8-finalize-the-workflow">Step 8: Finalize the workflow</a></li>
+  <li><a href="#step-9-fit-on-the-training-set-and-evaluate-on-the-test-set" id="toc-step-9-fit-on-the-training-set-and-evaluate-on-the-test-set" class="nav-link" data-scroll-target="#step-9-fit-on-the-training-set-and-evaluate-on-the-test-set">Step 9: Fit on the training set and evaluate on the test set</a>
+  <ul class="collapse">
+  <li><a href="#confusion-matrix" id="toc-confusion-matrix" class="nav-link" data-scroll-target="#confusion-matrix">Confusion matrix</a></li>
+  <li><a href="#roc-curve" id="toc-roc-curve" class="nav-link" data-scroll-target="#roc-curve">ROC curve</a></li>
+  </ul></li>
+  <li><a href="#step-10-interpret-the-fitted-model" id="toc-step-10-interpret-the-fitted-model" class="nav-link" data-scroll-target="#step-10-interpret-the-fitted-model">Step 10: Interpret the fitted model</a>
+  <ul class="collapse">
+  <li><a href="#variable-importance-of-random-forest-model" id="toc-variable-importance-of-random-forest-model" class="nav-link" data-scroll-target="#variable-importance-of-random-forest-model">Variable importance of random forest model</a></li>
+  </ul></li>
+  <li><a href="#a-compact-reusable-template" id="toc-a-compact-reusable-template" class="nav-link" data-scroll-target="#a-compact-reusable-template">A compact reusable template</a></li>
+  <li><a href="#common-biomedical-extensions" id="toc-common-biomedical-extensions" class="nav-link" data-scroll-target="#common-biomedical-extensions">Common biomedical extensions</a>
+  <ul class="collapse">
+  <li><a href="#class-imbalance" id="toc-class-imbalance" class="nav-link" data-scroll-target="#class-imbalance">1. Class imbalance</a></li>
+  <li><a href="#missing-data-we-will-have-a-workshop" id="toc-missing-data-we-will-have-a-workshop" class="nav-link" data-scroll-target="#missing-data-we-will-have-a-workshop">2. Missing data (We will have a workshop)</a></li>
+  <li><a href="#high-dimensional-omics-data" id="toc-high-dimensional-omics-data" class="nav-link" data-scroll-target="#high-dimensional-omics-data">3. High-dimensional omics data</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -1992,7 +2099,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Biomedical Data Science (BDS) Club Workshop</h1>
+<h1 class="title d-none d-lg-block">Biomedical Data Science (BDS) Workshop 6: Machine Learning in R</h1>
 </div>
 
 
@@ -2009,41 +2116,400 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </header>
 
 
-<p>This is the indexing page for all the archived materials from Biomedical Data Science (BDS) Club. Richard Liu and Emily Zhang co-found this club based in NYU Langone Health.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Topic</th>
-<th>Workshop</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Basic R</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td>Tidyverse: Data Manipulation</td>
-<td>1-3</td>
-</tr>
-<tr class="odd">
-<td>Visualization</td>
-<td>4-6</td>
-</tr>
-<tr class="even">
-<td>Statistical Modeling</td>
-<td>7-8</td>
-</tr>
-<tr class="odd">
-<td>Statistical Learning in R</td>
-<td>9</td>
-</tr>
-</tbody>
-</table>
+<section id="credits" class="level1">
+<h1>Credits</h1>
+<p>Credited to Richard Liu and Emily Zhang from the Biomedical Data Science (BDS) club in NYU Langone Health.</p>
+</section>
+<section id="disclaimer" class="level1">
+<h1>Disclaimer</h1>
+<p>The datasets provided here are all synthetically generated for demonstration and educational purposes only. It does not represent real patient data and should not be used for clinical decision-making, medical research, or policy development. Any resemblance to real persons, conditions, or outcomes is purely coincidental. The values and relationships were generated using statistical simulation techniques and do not reflect actual medical situations.</p>
+</section>
+<section id="reference" class="level1">
+<h1>Reference</h1>
+<ol type="1">
+<li>Tidymodels “Get Started” case study and tutorials: https://www.tidymodels.org/start/</li>
+<li>Tidymodels resampling tutorial using the <code>cells</code> dataset: https://www.tidymodels.org/start/resampling/</li>
+<li>Tidymodels tuning tutorial: https://www.tidymodels.org/start/tuning/</li>
+<li>Tidymodels recipes tutorial: https://www.tidymodels.org/start/recipes/</li>
+</ol>
+</section>
+<section id="overview" class="level1">
+<h1>Overview</h1>
+<section id="workshop-goal" class="level2">
+<h2 class="anchored" data-anchor-id="workshop-goal">Workshop goal</h2>
+<p>In this workshop, we will build a <strong>complete machine learning pipeline</strong> using the <strong>tidymodels</strong> ecosystem in R. The emphasis is not only on fitting a model, but on learning the full modeling workflow:</p>
+<ol type="1">
+<li>define the prediction problem,</li>
+<li>split the data correctly,</li>
+<li>preprocess predictors,</li>
+<li>specify a model,</li>
+<li>combine preprocessing and modeling in a workflow,</li>
+<li>estimate performance using resampling,</li>
+<li>tune hyperparameters,</li>
+<li>finalize the model,</li>
+<li>evaluate on a held-out test set, and</li>
+<li>interpret the fitted model.</li>
+</ol>
+</section>
+<section id="why-tidymodels" class="level2">
+<h2 class="anchored" data-anchor-id="why-tidymodels">Why tidymodels?</h2>
+<p>The <code>tidymodels</code> framework provides a consistent grammar for modeling. Different tasks are separated into packages with clear roles:</p>
+<ul>
+<li><strong>rsample</strong>: train/test split and resampling</li>
+<li><strong>recipes</strong>: preprocessing and feature engineering</li>
+<li><strong>parsnip</strong>: model specification</li>
+<li><strong>workflows</strong>: bundle preprocessing + model</li>
+<li><strong>tune</strong>: hyperparameter tuning</li>
+<li><strong>yardstick</strong>: performance metrics</li>
+<li><strong>dials</strong>: tuning parameter definitions</li>
+</ul>
+</section>
+<section id="learning-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="learning-objectives">Learning objectives</h2>
+<p>By the end of the session, participants should be able to:</p>
+<ul>
+<li>explain the purpose of each stage of a supervised ML pipeline,</li>
+<li>implement a classification workflow in tidymodels,</li>
+<li>understand when to use train/test splitting and cross-validation,</li>
+<li>tune a model without leaking test-set information,</li>
+<li>interpret core classification metrics, and</li>
+<li>reuse this template for their own biomedical data.</li>
+</ul>
+</section>
+</section>
+<section id="data-and-prediction-problem" class="level1">
+<h1>Data and prediction problem</h1>
+<section id="public-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="public-dataset">Public dataset</h2>
+<p>We use the <strong>cell image segmentation</strong> dataset from the <code>modeldata</code> package. This dataset is featured in the official tidymodels resampling tutorial and is especially appropriate for a biomedical audience because the predictors are image-derived cellular features and the outcome is segmentation quality.</p>
+<p>The outcome variable is:</p>
+<ul>
+<li><code>class</code> = whether the cell image segmentation is <strong>PS</strong> or <strong>WS</strong></li>
+</ul>
+<p>For the workshop, we treat this as a <strong>binary classification</strong> problem.</p>
+</section>
+<section id="statistical-notation" class="level2">
+<h2 class="anchored" data-anchor-id="statistical-notation">Statistical notation</h2>
+<p>Let:</p>
+<ul>
+<li><span class="math inline">\(Y_i \in \{0,1\}\)</span> denote the binary outcome for subject or image <span class="math inline">\(i\)</span></li>
+<li><span class="math inline">\(X_i = (X_{i1}, \dots, X_{ip})\)</span> denote the predictor vector</li>
+<li><span class="math inline">\(\hat{f}(X)\)</span> denote the fitted prediction rule</li>
+<li><span class="math inline">\(\hat{p}(X) = P(Y=1 \mid X)\)</span> denote the predicted probability of class 1</li>
+</ul>
+<p>Our goal is to learn a function</p>
+<p><span class="math display">\[
+\hat{f}: X \mapsto Y
+\]</span></p>
+<p>that predicts segmentation quality well on <strong>new, unseen data</strong>.</p>
+<p>In biomedical ML, this same framework applies broadly:</p>
+<ul>
+<li>disease vs no disease,</li>
+<li>responder vs non-responder,</li>
+<li>high-risk vs low-risk,</li>
+<li>poor-quality vs good-quality imaging,</li>
+<li>event vs no event.</li>
+</ul>
+</section>
+</section>
+<section id="load-packages-and-data" class="level1">
+<h1>Load packages and data</h1>
+<p>This dataset comes from a <strong>high-throughput cell imaging experiment</strong>, which is common in biomedical research.</p>
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-2"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<section id="initial-data-checks" class="level2">
+<h2 class="anchored" data-anchor-id="initial-data-checks">Initial data checks</h2>
+<div id="qwebr-insertion-location-3"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-4"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>Before modeling, always check:</p>
+<ul>
+<li>sample size,</li>
+<li>outcome balance,</li>
+<li>missingness,</li>
+<li>variable types,</li>
+<li>possible IDs or leakage variables.</li>
+</ul>
+</section>
+</section>
+<section id="step-1-split-into-training-and-test-sets" class="level1">
+<h1>Step 1: Split into training and test sets</h1>
+<section id="why-split-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="why-split-the-data">Why split the data?</h2>
+<p>We need one portion of the data for <strong>model development</strong> and one untouched portion for <strong>final evaluation</strong>.</p>
+<ul>
+<li><strong>Training set</strong>: used for preprocessing, model fitting, and tuning</li>
+<li><strong>Test set</strong>: used only once at the end for honest performance assessment</li>
+</ul>
+<p>This protects against <strong>optimistic bias</strong>.</p>
+<div id="qwebr-insertion-location-5"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>We stratify by <code>class</code> so the outcome balance is roughly preserved in both sets. This is especially important in biomedical applications when the positive class is uncommon.</p>
+</section>
+</section>
+<section id="step-2-preprocessing-with-recipes" class="level1">
+<h1>Step 2: Preprocessing with recipes</h1>
+<section id="why-preprocess" class="level2">
+<h2 class="anchored" data-anchor-id="why-preprocess">Why preprocess?</h2>
+<p>Many models require predictors to be prepared in a consistent way. Common steps include:</p>
+<ul>
+<li>removing identifiers,</li>
+<li>handling zero-variance predictors,</li>
+<li>imputing missing values,</li>
+<li>transforming skewed variables,</li>
+<li>normalizing continuous predictors,</li>
+<li>encoding categorical predictors.</li>
+</ul>
+<p>A <strong>recipe</strong> stores these steps in order and estimates them using only the training data.</p>
+</section>
+<section id="recipe-notation" class="level2">
+<h2 class="anchored" data-anchor-id="recipe-notation">Recipe notation</h2>
+<p>A recipe defines a transformation</p>
+<p><span class="math display">\[
+X \longrightarrow \widetilde{X}
+\]</span></p>
+<p>where <span class="math inline">\(\widetilde{X}\)</span> is the processed predictor matrix used by the model.</p>
+</section>
+<section id="build-the-recipe" class="level2">
+<h2 class="anchored" data-anchor-id="build-the-recipe">Build the recipe</h2>
+<div id="qwebr-insertion-location-6"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="inspect-the-preprocessed-design" class="level2">
+<h2 class="anchored" data-anchor-id="inspect-the-preprocessed-design">Inspect the preprocessed design</h2>
+<div id="qwebr-insertion-location-7"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>Recipe is <strong>learned on the training set</strong> and then <strong>applied</strong> to new data. This avoids data leakage.</p>
+<p>In real biomedical projects, you might also add:</p>
+<ul>
+<li><code>step_impute_median()</code> or <code>step_impute_knn()</code> for missing predictors,</li>
+<li><code>step_dummy()</code> for nominal predictors,</li>
+<li><code>step_YeoJohnson()</code> or <code>step_log()</code> for skewed biomarkers,</li>
+<li><code>step_corr()</code> to reduce collinearity,</li>
+<li><code>step_pca()</code> for dimension reduction.</li>
+</ul>
+</section>
+</section>
+<section id="step-3-specify-models-with-parsnip" class="level1">
+<h1>Step 3: Specify models with parsnip</h1>
+<p>We will compare two classification models:</p>
+<ol type="1">
+<li><strong>Penalized logistic regression</strong>: interpretable and often a strong baseline</li>
+<li><strong>Random forest</strong>: flexible nonlinear model</li>
+</ol>
+<section id="model-1-penalized-logistic-regression" class="level2">
+<h2 class="anchored" data-anchor-id="model-1-penalized-logistic-regression">Model 1: Penalized logistic regression</h2>
+<p>For binary outcomes, logistic regression models</p>
+<p><span class="math display">\[
+\text{logit}\{P(Y=1 \mid X)\} = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p.
+\]</span></p>
+<p>With regularization, we shrink coefficients to reduce overfitting. In tidymodels, <code>penalty</code> controls shrinkage strength.</p>
+<div id="qwebr-insertion-location-8"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>Here, <code>mixture = 1</code> corresponds to the lasso penalty.</p>
+</section>
+<section id="model-2-random-forest" class="level2">
+<h2 class="anchored" data-anchor-id="model-2-random-forest">Model 2: Random forest</h2>
+<p>Random forests average many trees and can capture nonlinear relationships and interactions.</p>
+<div id="qwebr-insertion-location-9"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+</section>
+<section id="step-4-bundle-preprocessing-and-model-in-workflows" class="level1">
+<h1>Step 4: Bundle preprocessing and model in workflows</h1>
+<p>A <strong>workflow</strong> keeps the recipe and model together so the same preprocessing is used consistently during resampling, tuning, and final fitting.</p>
+<div id="qwebr-insertion-location-10"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>Biggest strengths of tidymodels: preprocessing and modeling are treated as one reproducible object.</p>
+</section>
+<section id="step-5-cross-validation-on-the-training-set" class="level1">
+<h1>Step 5: Cross-validation on the training set</h1>
+<section id="why-resampling" class="level2">
+<h2 class="anchored" data-anchor-id="why-resampling">Why resampling?</h2>
+<p>A single train/validation split can be noisy. Cross-validation gives a more stable estimate of model performance and helps with parameter tuning.</p>
+<p>In <span class="math inline">\(V\)</span>-fold cross-validation:</p>
+<ol type="1">
+<li>split the training data into <span class="math inline">\(V\)</span> folds,</li>
+<li>fit the model on <span class="math inline">\(V-1\)</span> folds,</li>
+<li>evaluate on the held-out fold,</li>
+<li>repeat for each fold,</li>
+<li>average the performance.</li>
+</ol>
+<p>If the fold-level model evaluation metric values are <span class="math inline">\(M_1, \dots, M_V\)</span>, then the cross-validated estimate is</p>
+<p><span class="math display">\[
+\bar{M} = \frac{1}{V}\sum_{v=1}^V M_v.
+\]</span></p>
+<div id="qwebr-insertion-location-11"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>This means each fold contains: 1292 observations for training and 323 observations for validation.</p>
+</section>
+<section id="metrics-for-classification" class="level2">
+<h2 class="anchored" data-anchor-id="metrics-for-classification">Metrics for classification</h2>
+<p>We will use:</p>
+<ul>
+<li><strong>ROC AUC</strong>: discrimination across thresholds</li>
+<li><strong>Accuracy</strong>: overall fraction classified correctly</li>
+<li><strong>Sensitivity</strong>: true positive rate</li>
+<li><strong>Specificity</strong>: true negative rate</li>
+</ul>
+<div id="qwebr-insertion-location-12"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+</section>
+<section id="step-6-tune-hyperparameters" class="level1">
+<h1>Step 6: Tune hyperparameters</h1>
+<section id="set-up-tuning-grid-for-logistic-regression" class="level2">
+<h2 class="anchored" data-anchor-id="set-up-tuning-grid-for-logistic-regression">Set-up Tuning grid for logistic regression</h2>
+<div id="qwebr-insertion-location-13"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="tuning-grid-for-random-forest" class="level2">
+<h2 class="anchored" data-anchor-id="tuning-grid-for-random-forest">Tuning grid for random forest</h2>
+<p>For <code>mtry</code>, it is best to finalize the range after the recipe knows the number of predictors.</p>
+<div id="qwebr-insertion-location-14"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="parallel-processing-optional-but-useful-if-the-dataset-is-large-and-running-more-complex-models" class="level2">
+<h2 class="anchored" data-anchor-id="parallel-processing-optional-but-useful-if-the-dataset-is-large-and-running-more-complex-models">Parallel processing (optional but useful if the dataset is large and running more complex models)</h2>
+<p>Creates multiple R workers (cores).Why using it?</p>
+<p>Example: 5 folds, 10 grid values —-&gt; 50 model fits</p>
+<div id="qwebr-insertion-location-15"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="tune-the-logistic-regression-model" class="level2">
+<h2 class="anchored" data-anchor-id="tune-the-logistic-regression-model">Tune the logistic regression model</h2>
+<div id="qwebr-insertion-location-16"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-17"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="tune-the-random-forest-model" class="level2">
+<h2 class="anchored" data-anchor-id="tune-the-random-forest-model">Tune the random forest model</h2>
+<div id="qwebr-insertion-location-18"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-19"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="stop-parallel-backend" class="level2">
+<h2 class="anchored" data-anchor-id="stop-parallel-backend">Stop parallel backend</h2>
+<div id="qwebr-insertion-location-20"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+</section>
+<section id="step-7-compare-models-and-choose-the-best-candidate" class="level1">
+<h1>Step 7: Compare models and choose the best candidate</h1>
+<section id="best-logistic-regression-setting" class="level2">
+<h2 class="anchored" data-anchor-id="best-logistic-regression-setting">Best logistic regression setting</h2>
+<div id="qwebr-insertion-location-21"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="best-random-forest-setting" class="level2">
+<h2 class="anchored" data-anchor-id="best-random-forest-setting">Best random forest setting</h2>
+<div id="qwebr-insertion-location-22"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="visualize-tuning-results" class="level2">
+<h2 class="anchored" data-anchor-id="visualize-tuning-results">Visualize tuning results</h2>
+<div id="qwebr-insertion-location-23"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-24"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<ul>
+<li>choose a <strong>primary metric</strong> before tuning,</li>
+<li>use the resampling results to select the best hyperparameters,</li>
+<li>keep the test set untouched until the end.</li>
+</ul>
+<p>For many biomedical screening settings, ROC AUC is a sensible primary metric, though sometimes sensitivity, PR AUC, calibration, or decision-analytic metrics may be more clinically relevant.</p>
+</section>
+</section>
+<section id="step-8-finalize-the-workflow" class="level1">
+<h1>Step 8: Finalize the workflow</h1>
+<p>We will finalize the random forest workflow below, but you can switch to logistic regression if it performs better in your run.</p>
+<div id="qwebr-insertion-location-25"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="step-9-fit-on-the-training-set-and-evaluate-on-the-test-set" class="level1">
+<h1>Step 9: Fit on the training set and evaluate on the test set</h1>
+<p>The <code>last_fit()</code> function fits the finalized workflow on the full training set and evaluates it once on the test set.</p>
+<div id="qwebr-insertion-location-26"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<section id="confusion-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="confusion-matrix">Confusion matrix</h2>
+<div id="qwebr-insertion-location-27"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="roc-curve" class="level2">
+<h2 class="anchored" data-anchor-id="roc-curve">ROC curve</h2>
+<div id="qwebr-insertion-location-28"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<ul>
+<li><strong>Cross-validation results</strong> estimate how the model performed during development.</li>
+<li><strong>Test-set results</strong> estimate how the final chosen model performs on held-out data. These are not exactly the same quantity, and test performance may be slightly worse.</li>
+</ul>
+</section>
+</section>
+<section id="step-10-interpret-the-fitted-model" class="level1">
+<h1>Step 10: Interpret the fitted model</h1>
+<section id="variable-importance-of-random-forest-model" class="level2">
+<h2 class="anchored" data-anchor-id="variable-importance-of-random-forest-model">Variable importance of random forest model</h2>
+<div id="qwebr-insertion-location-29"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>Variable importance is often useful for communication, but in biomedical settings it should be interpreted carefully:</p>
+<ul>
+<li>importance is not causation,</li>
+<li>correlated variables can distort rankings,</li>
+<li>different models can give different importance metrics and profiles.</li>
+</ul>
+</section>
+</section>
+<section id="a-compact-reusable-template" class="level1">
+<h1>A compact reusable template</h1>
+<p>Below is the shortest version of the pipeline that participants can adapt later.</p>
+<div id="qwebr-insertion-location-30"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="common-biomedical-extensions" class="level1">
+<h1>Common biomedical extensions</h1>
+<section id="class-imbalance" class="level2">
+<h2 class="anchored" data-anchor-id="class-imbalance">1. Class imbalance</h2>
+<p>If the positive class is rare, consider:</p>
+<ul>
+<li>sensitivity/specificity as metrics,</li>
+<li>class weights</li>
+</ul>
+<div id="qwebr-insertion-location-31"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<ul>
+<li>downsampling or upsampling.</li>
+</ul>
+</section>
+<section id="missing-data-we-will-have-a-workshop" class="level2">
+<h2 class="anchored" data-anchor-id="missing-data-we-will-have-a-workshop">2. Missing data (We will have a workshop)</h2>
+<p>Common options:</p>
+<ul>
+<li>median/mode imputation,</li>
+<li>k-nearest-neighbor imputation,</li>
+<li>model-based imputation,</li>
+<li>multiple imputation outside the predictive pipeline, depending on the scientific question.</li>
+</ul>
+</section>
+<section id="high-dimensional-omics-data" class="level2">
+<h2 class="anchored" data-anchor-id="high-dimensional-omics-data">3. High-dimensional omics data</h2>
+<p>Often add: - penalized regression - sparse PCA, - feature selection nested within resampling.</p>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>A machine learning model is <strong>not just an algorithm</strong>. It is a pipeline:</p>
+<p><span class="math display">\[
+\text{data} \rightarrow \text{preprocessing} \rightarrow \text{model training} \rightarrow \text{validation} \rightarrow \text{final test evaluation}
+\]</span></p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -274,7 +274,7 @@
     "href": "workshop_4.html#part-1-everything-is-normal",
     "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
     "section": "Part 1: Everything is Normal",
-    "text": "Part 1: Everything is Normal\n\n\n\n\n\n\nPractice 1 (The Dealer)\n\n\n\n\n\nYou need to know your enemy very well so that you can beat it.\nCreate a list res with containing information from \\(10^4\\) rounds of blackjack.\n\nIn a simulation with \\(10^4\\) rounds, pull out values of each dealer hand.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the estimated expectation of those values, excluding the rounds dealer busted (dealer goes over 21).\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the probability of dealer getting a blackjack.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the probability of dealer getting busted .\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\n\n\n\nPractice 2 (The Player)\n\n\n\n\n\nIn this practice you can use the same res list created in Practice 1.\n\nCreate a data frame containing all information related to the player’s performance.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the proportion of the player wins, loses and pushes.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the expectation of the player’s hand values, excluding the busted hands.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the probability of the player getting a blackjack.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nVisualize the “winning curve” of the player.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n(open question) Try your own strategy and redo the analysis. The related code is shown below:\n\n\nbasic_strategy &lt;- function(hand, dealer_up) {\n  total &lt;- hand_value(hand)\n  soft &lt;- is_soft(hand)\n  \n  # Pair splitting\n  if (length(hand) == 2 && hand[1] == hand[2]) {\n    pair &lt;- hand[1]\n    if (pair %in% c(11, 8)) return(\"split\")\n    if (pair == 2 || pair == 3) return(ifelse(dealer_up &lt;= 7, \"split\", \"hit\"))\n    if (pair == 6) return(ifelse(dealer_up &lt;= 6, \"split\", \"hit\"))\n    if (pair == 7) return(ifelse(dealer_up &lt;= 7, \"split\", \"hit\"))\n    if (pair == 9) return(ifelse(dealer_up %in% c(2:6,8,9), \"split\", \"stand\"))\n    if (pair == 4) return(ifelse(dealer_up %in% c(5,6), \"split\", \"hit\"))\n    if (pair == 5) return(ifelse(dealer_up &lt;= 9, \"double\", \"hit\"))\n    if (pair == 10) return(\"stand\")\n  }\n  \n  # # Surrender\n  # if (!soft && length(hand) == 2 && total == 16 && dealer_up &gt;= 9) return(\"surrender\")\n  # if (!soft && length(hand) == 2 && total == 15 && dealer_up == 10) return(\"surrender\")\n  # \n  # Soft totals\n  if (soft) {\n    if (total &gt;= 19) return(\"stand\")\n    if (total == 18) {\n      if (dealer_up &lt;= 6) return(\"double\")\n      if (dealer_up &lt;= 8) return(\"stand\")\n      return(\"hit\")\n    }\n    if (total %in% 16:17) return(ifelse(dealer_up &lt;= 6, \"double\", \"hit\"))\n    if (total %in% 13:15) return(ifelse(dealer_up %in% 5:6, \"double\", \"hit\"))\n  }\n  \n  # Hard totals\n  if (total &gt;= 17) return(\"stand\")\n  if (total &gt;= 13 && dealer_up &lt;= 6) return(\"stand\")\n  if (total == 12 && dealer_up %in% 4:6) return(\"stand\")\n  if (total == 11) return(\"double\")\n  if (total == 10 && dealer_up &lt;= 9) return(\"double\")\n  if (total == 9 && dealer_up %in% 3:6) return(\"double\")\n  \n  \"hit\"\n}\n\nplay_player_hand &lt;- function(hand, dealer_up, shoe, bet = 1, depth = 1) {\n  # if (depth &gt; 4) return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))\n  \n  repeat {\n    # print(\"dealer is\")\n    # print(dealer_up)\n    # print(\"Your hand is\")\n    # print(hand)\n    # print(\"Please make your decision: hit, double, split, stand\")\n    # move &lt;- readline()\n    move &lt;- basic_strategy(hand, dealer_up) # CHANGE HERE\n    \n    if (move == \"surrender\") {\n      return(list(results = list(list(hand = NULL, bet = -0.5 * bet)), shoe = shoe))\n    }\n    \n    if (move == \"split\") {\n      h1 &lt;- c(hand[1])\n      h2 &lt;- c(hand[2])\n      \n      d1 &lt;- draw_card(shoe); h1 &lt;- c(h1, d1$card); shoe &lt;- d1$shoe\n      d2 &lt;- draw_card(shoe); h2 &lt;- c(h2, d2$card); shoe &lt;- d2$shoe\n      \n      r1 &lt;- play_player_hand(h1, dealer_up, shoe, bet, depth + 1)\n      r2 &lt;- play_player_hand(h2, dealer_up, r1$shoe, bet, depth + 1)\n      \n      return(list(\n        results = c(r1$results, r2$results),\n        shoe = r2$shoe\n      ))\n    }\n    \n    if (move == \"double\") {\n      d &lt;- draw_card(shoe)\n      hand &lt;- c(hand, d$card)\n      shoe &lt;- d$shoe\n      # print(\"Your hand is\")\n      # print(hand)\n      return(list(results = list(list(hand = hand, bet = 2 * bet)), shoe = shoe))\n    }\n    \n    if (move == \"hit\") {\n      d &lt;- draw_card(shoe)\n      hand &lt;- c(hand, d$card)\n      shoe &lt;- d$shoe\n      if (hand_value(hand) &gt; 21)\n        return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))\n    }\n    \n    if (move == \"stand\")\n      return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))\n  }\n}\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Part 1: Everything is Normal\n\n\n\n\n\n\nCautionPractice 1 (The Dealer)\n\n\n\n\n\nYou need to know your enemy very well so that you can beat it.\nCreate a list res with containing information from \\(10^4\\) rounds of blackjack.\n\nIn a simulation with \\(10^4\\) rounds, pull out values of each dealer hand.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the estimated expectation of those values, excluding the rounds dealer busted (dealer goes over 21).\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the probability of dealer getting a blackjack.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the probability of dealer getting busted .\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\n\n\n\nCautionPractice 2 (The Player)\n\n\n\n\n\nIn this practice you can use the same res list created in Practice 1.\n\nCreate a data frame containing all information related to the player’s performance.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the proportion of the player wins, loses and pushes.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the expectation of the player’s hand values, excluding the busted hands.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the probability of the player getting a blackjack.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nVisualize the “winning curve” of the player.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n(open question) Try your own strategy and redo the analysis. The related code is shown below:\n\n\nbasic_strategy &lt;- function(hand, dealer_up) {\n  total &lt;- hand_value(hand)\n  soft &lt;- is_soft(hand)\n  \n  # Pair splitting\n  if (length(hand) == 2 && hand[1] == hand[2]) {\n    pair &lt;- hand[1]\n    if (pair %in% c(11, 8)) return(\"split\")\n    if (pair == 2 || pair == 3) return(ifelse(dealer_up &lt;= 7, \"split\", \"hit\"))\n    if (pair == 6) return(ifelse(dealer_up &lt;= 6, \"split\", \"hit\"))\n    if (pair == 7) return(ifelse(dealer_up &lt;= 7, \"split\", \"hit\"))\n    if (pair == 9) return(ifelse(dealer_up %in% c(2:6,8,9), \"split\", \"stand\"))\n    if (pair == 4) return(ifelse(dealer_up %in% c(5,6), \"split\", \"hit\"))\n    if (pair == 5) return(ifelse(dealer_up &lt;= 9, \"double\", \"hit\"))\n    if (pair == 10) return(\"stand\")\n  }\n  \n  # # Surrender\n  # if (!soft && length(hand) == 2 && total == 16 && dealer_up &gt;= 9) return(\"surrender\")\n  # if (!soft && length(hand) == 2 && total == 15 && dealer_up == 10) return(\"surrender\")\n  # \n  # Soft totals\n  if (soft) {\n    if (total &gt;= 19) return(\"stand\")\n    if (total == 18) {\n      if (dealer_up &lt;= 6) return(\"double\")\n      if (dealer_up &lt;= 8) return(\"stand\")\n      return(\"hit\")\n    }\n    if (total %in% 16:17) return(ifelse(dealer_up &lt;= 6, \"double\", \"hit\"))\n    if (total %in% 13:15) return(ifelse(dealer_up %in% 5:6, \"double\", \"hit\"))\n  }\n  \n  # Hard totals\n  if (total &gt;= 17) return(\"stand\")\n  if (total &gt;= 13 && dealer_up &lt;= 6) return(\"stand\")\n  if (total == 12 && dealer_up %in% 4:6) return(\"stand\")\n  if (total == 11) return(\"double\")\n  if (total == 10 && dealer_up &lt;= 9) return(\"double\")\n  if (total == 9 && dealer_up %in% 3:6) return(\"double\")\n  \n  \"hit\"\n}\n\nplay_player_hand &lt;- function(hand, dealer_up, shoe, bet = 1, depth = 1) {\n  # if (depth &gt; 4) return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))\n  \n  repeat {\n    # print(\"dealer is\")\n    # print(dealer_up)\n    # print(\"Your hand is\")\n    # print(hand)\n    # print(\"Please make your decision: hit, double, split, stand\")\n    # move &lt;- readline()\n    move &lt;- basic_strategy(hand, dealer_up) # CHANGE HERE\n    \n    if (move == \"surrender\") {\n      return(list(results = list(list(hand = NULL, bet = -0.5 * bet)), shoe = shoe))\n    }\n    \n    if (move == \"split\") {\n      h1 &lt;- c(hand[1])\n      h2 &lt;- c(hand[2])\n      \n      d1 &lt;- draw_card(shoe); h1 &lt;- c(h1, d1$card); shoe &lt;- d1$shoe\n      d2 &lt;- draw_card(shoe); h2 &lt;- c(h2, d2$card); shoe &lt;- d2$shoe\n      \n      r1 &lt;- play_player_hand(h1, dealer_up, shoe, bet, depth + 1)\n      r2 &lt;- play_player_hand(h2, dealer_up, r1$shoe, bet, depth + 1)\n      \n      return(list(\n        results = c(r1$results, r2$results),\n        shoe = r2$shoe\n      ))\n    }\n    \n    if (move == \"double\") {\n      d &lt;- draw_card(shoe)\n      hand &lt;- c(hand, d$card)\n      shoe &lt;- d$shoe\n      # print(\"Your hand is\")\n      # print(hand)\n      return(list(results = list(list(hand = hand, bet = 2 * bet)), shoe = shoe))\n    }\n    \n    if (move == \"hit\") {\n      d &lt;- draw_card(shoe)\n      hand &lt;- c(hand, d$card)\n      shoe &lt;- d$shoe\n      if (hand_value(hand) &gt; 21)\n        return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))\n    }\n    \n    if (move == \"stand\")\n      return(list(results = list(list(hand = hand, bet = bet)), shoe = shoe))\n  }\n}\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "4. Basics of Statistical Modeling"
     ]
@@ -284,7 +284,7 @@
     "href": "workshop_4.html#part-2-hi-lo-bet-spreading",
     "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
     "section": "Part 2: Hi-Lo Bet Spreading",
-    "text": "Part 2: Hi-Lo Bet Spreading\nBet Spreading is a common strategy to “beat” the blackjack dealer. It requires the true count of the shoe. When the true count is positive, the game is advantageous to the player. Otherwise, it is advantageous to the dealer.\n\nTrue count: An approximation of “the number of high cards (A and all cards with value 10) minus the number of low cards (all cards with value 2-6)” in a shoe with one deck.\nHi-Lo Bet spreading: The bet spreading implemented in this simulator is the following:\n\n– If true count is less than 0, don’t bet.\n– If true count is 0 or 1, bet 1 unit.\n– If true count is 2, bet 2 units.\n– If true count is 3, bet 4 units.\n– If true count is 4, bet 8 units.\n– If true count is greater or equal 5, bet 16 units.\nYou can enable this bet spreading by setting counting_cards = TRUE.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 3\n\n\n\n\n\n\nCreate a data frame containing all information related to the player’s performance in a simulation with \\(10^4\\) rounds. Be sure to include the live (true) running count.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nVisualize, again, the player’s “winning curve”.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the estimated edge of the player. Edge is the share of each bet that someone anticipates it will retain in the long run\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the estimated edge of the player under different (true) running counts.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nInsurance needs to be played as a side bet when the dealer’s up card (the card that is faced-up) is an A. Specifically, player needs to bet whether the dealer gets a blackjack. The player will be paid 2 to 1 if yes, and will lose this bet if no. A strategy of insurance using (true) running count is: Bet the insurance if the (true) running count is at least 3, otherwise do not bet. Find the statistical intuition behind this.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Part 2: Hi-Lo Bet Spreading\nBet Spreading is a common strategy to “beat” the blackjack dealer. It requires the true count of the shoe. When the true count is positive, the game is advantageous to the player. Otherwise, it is advantageous to the dealer.\n\nTrue count: An approximation of “the number of high cards (A and all cards with value 10) minus the number of low cards (all cards with value 2-6)” in a shoe with one deck.\nHi-Lo Bet spreading: The bet spreading implemented in this simulator is the following:\n\n– If true count is less than 0, don’t bet.\n– If true count is 0 or 1, bet 1 unit.\n– If true count is 2, bet 2 units.\n– If true count is 3, bet 4 units.\n– If true count is 4, bet 8 units.\n– If true count is greater or equal 5, bet 16 units.\nYou can enable this bet spreading by setting counting_cards = TRUE.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 3\n\n\n\n\n\n\nCreate a data frame containing all information related to the player’s performance in a simulation with \\(10^4\\) rounds. Be sure to include the live (true) running count.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nVisualize, again, the player’s “winning curve”.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the estimated edge of the player. Edge is the share of each bet that someone anticipates it will retain in the long run\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nFind the estimated edge of the player under different (true) running counts.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nInsurance needs to be played as a side bet when the dealer’s up card (the card that is faced-up) is an A. Specifically, player needs to bet whether the dealer gets a blackjack. The player will be paid 2 to 1 if yes, and will lose this bet if no. A strategy of insurance using (true) running count is: Bet the insurance if the (true) running count is at least 3, otherwise do not bet. Find the statistical intuition behind this.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "4. Basics of Statistical Modeling"
     ]
@@ -294,7 +294,7 @@
     "href": "workshop_4.html#part-3-be-realistic",
     "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
     "section": "Part 3: Be realistic!!",
-    "text": "Part 3: Be realistic!!\nNow, let’s be realistic! Everyone’s bankroll is limited, and you are “kicked out” if you lose all your money. In this simulator, you can enable this feature by setting bankroll to be a specific amount, indicating the money you would like to spend in the game. See below\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nPractice 4\n\n\n\n\n\n\nAssume that the player wants to play at most 1000 rounds. For one simulation, extract the information about the player’s survival rounds.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nRepeat the simulation for 100 times, find the mean and median of the player’s survival rounds.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nRedo 2 but enabling the bet spreading (card counting)\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nProgressive betting is the following bet strategy: Bet double as the last time’s bet if lost at the last time, return to the original bet if won at the last time. Without coding, thinking about why this CANNOT help you beating the dealer.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Part 3: Be realistic!!\nNow, let’s be realistic! Everyone’s bankroll is limited, and you are “kicked out” if you lose all your money. In this simulator, you can enable this feature by setting bankroll to be a specific amount, indicating the money you would like to spend in the game. See below\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nCautionPractice 4\n\n\n\n\n\n\nAssume that the player wants to play at most 1000 rounds. For one simulation, extract the information about the player’s survival rounds.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nRepeat the simulation for 100 times, find the mean and median of the player’s survival rounds.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nRedo 2 but enabling the bet spreading (card counting)\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nProgressive betting is the following bet strategy: Bet double as the last time’s bet if lost at the last time, return to the original bet if won at the last time. Without coding, thinking about why this CANNOT help you beating the dealer.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "4. Basics of Statistical Modeling"
     ]
@@ -304,7 +304,7 @@
     "href": "workshop_4.html#part-4-casinos-tricks",
     "title": "Biomedical Data Science (BDS) Workshop 4: Basics of Statistical Modeling",
     "section": "Part 4: Casinos’ Tricks",
-    "text": "Part 4: Casinos’ Tricks\nHere, let’s think about some strategies casinos implemented to “prevent you winning”.\n\n\n\n\n\n\nPractice 5\n\n\n\n\n\n\nMany casinos use continuous shuffling machine (CSM) in the games. Can you see why this prevents you beating the game?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nMany casinos do not pay 3 to 2 for player’s blackjack, but pay 6 to 5. Can you see why this prevents you beating the game?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nSome casinos have a relatively short range of the bet requirement (e.g. minimum 10, maximum 100), can you see why this prevents you beating the game?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\nRECAP: In short, casinos can easily win a lot of money by solid math/stats, and by luring people to believe that they are lucky guys :)",
+    "text": "Part 4: Casinos’ Tricks\nHere, let’s think about some strategies casinos implemented to “prevent you winning”.\n\n\n\n\n\n\nCautionPractice 5\n\n\n\n\n\n\nMany casinos use continuous shuffling machine (CSM) in the games. Can you see why this prevents you beating the game?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nMany casinos do not pay 3 to 2 for player’s blackjack, but pay 6 to 5. Can you see why this prevents you beating the game?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nSome casinos have a relatively short range of the bet requirement (e.g. minimum 10, maximum 100), can you see why this prevents you beating the game?\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\nRECAP: In short, casinos can easily win a lot of money by solid math/stats, and by luring people to believe that they are lucky guys :)",
     "crumbs": [
       "4. Basics of Statistical Modeling"
     ]
@@ -754,9 +754,329 @@
     "href": "index.html",
     "title": "Biomedical Data Science (BDS) Club Workshop",
     "section": "",
-    "text": "This is the indexing page for all the archived materials from Biomedical Data Science (BDS) Club. Richard Liu and Emily Zhang co-found this club based in NYU Langone Health.\n\n\n\nTopic\nWorkshop\n\n\n\n\nBasic R\n1\n\n\nTidyverse: Data Manipulation\n1-3\n\n\nVisualization\n4-6\n\n\nStatistical Modeling\n7-8\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "This is the indexing page for all the archived materials from Biomedical Data Science (BDS) Club. Richard Liu and Emily Zhang co-found this club based in NYU Langone Health.\n\n\n\nTopic\nWorkshop\n\n\n\n\nBasic R\n1\n\n\nTidyverse: Data Manipulation\n1-3\n\n\nVisualization\n4-6\n\n\nStatistical Modeling\n7-8\n\n\nStatistical Learning in R\n9\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "Welcome!"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html",
+    "href": "workshop_6.html",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "",
+    "text": "Credited to Richard Liu and Emily Zhang from the Biomedical Data Science (BDS) club in NYU Langone Health.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#workshop-goal",
+    "href": "workshop_6.html#workshop-goal",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Workshop goal",
+    "text": "Workshop goal\nIn this workshop, we will build a complete machine learning pipeline using the tidymodels ecosystem in R. The emphasis is not only on fitting a model, but on learning the full modeling workflow:\n\ndefine the prediction problem,\nsplit the data correctly,\npreprocess predictors,\nspecify a model,\ncombine preprocessing and modeling in a workflow,\nestimate performance using resampling,\ntune hyperparameters,\nfinalize the model,\nevaluate on a held-out test set, and\ninterpret the fitted model.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#why-tidymodels",
+    "href": "workshop_6.html#why-tidymodels",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Why tidymodels?",
+    "text": "Why tidymodels?\nThe tidymodels framework provides a consistent grammar for modeling. Different tasks are separated into packages with clear roles:\n\nrsample: train/test split and resampling\nrecipes: preprocessing and feature engineering\nparsnip: model specification\nworkflows: bundle preprocessing + model\ntune: hyperparameter tuning\nyardstick: performance metrics\ndials: tuning parameter definitions",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#learning-objectives",
+    "href": "workshop_6.html#learning-objectives",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Learning objectives",
+    "text": "Learning objectives\nBy the end of the session, participants should be able to:\n\nexplain the purpose of each stage of a supervised ML pipeline,\nimplement a classification workflow in tidymodels,\nunderstand when to use train/test splitting and cross-validation,\ntune a model without leaking test-set information,\ninterpret core classification metrics, and\nreuse this template for their own biomedical data.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#public-dataset",
+    "href": "workshop_6.html#public-dataset",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Public dataset",
+    "text": "Public dataset\nWe use the cell image segmentation dataset from the modeldata package. This dataset is featured in the official tidymodels resampling tutorial and is especially appropriate for a biomedical audience because the predictors are image-derived cellular features and the outcome is segmentation quality.\nThe outcome variable is:\n\nclass = whether the cell image segmentation is PS or WS\n\nFor the workshop, we treat this as a binary classification problem.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#statistical-notation",
+    "href": "workshop_6.html#statistical-notation",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Statistical notation",
+    "text": "Statistical notation\nLet:\n\n\\(Y_i \\in \\{0,1\\}\\) denote the binary outcome for subject or image \\(i\\)\n\\(X_i = (X_{i1}, \\dots, X_{ip})\\) denote the predictor vector\n\\(\\hat{f}(X)\\) denote the fitted prediction rule\n\\(\\hat{p}(X) = P(Y=1 \\mid X)\\) denote the predicted probability of class 1\n\nOur goal is to learn a function\n\\[\n\\hat{f}: X \\mapsto Y\n\\]\nthat predicts segmentation quality well on new, unseen data.\nIn biomedical ML, this same framework applies broadly:\n\ndisease vs no disease,\nresponder vs non-responder,\nhigh-risk vs low-risk,\npoor-quality vs good-quality imaging,\nevent vs no event.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#initial-data-checks",
+    "href": "workshop_6.html#initial-data-checks",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Initial data checks",
+    "text": "Initial data checks\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nBefore modeling, always check:\n\nsample size,\noutcome balance,\nmissingness,\nvariable types,\npossible IDs or leakage variables.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#why-split-the-data",
+    "href": "workshop_6.html#why-split-the-data",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Why split the data?",
+    "text": "Why split the data?\nWe need one portion of the data for model development and one untouched portion for final evaluation.\n\nTraining set: used for preprocessing, model fitting, and tuning\nTest set: used only once at the end for honest performance assessment\n\nThis protects against optimistic bias.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nWe stratify by class so the outcome balance is roughly preserved in both sets. This is especially important in biomedical applications when the positive class is uncommon.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#teaching-note",
+    "href": "workshop_6.html#teaching-note",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Teaching note",
+    "text": "Teaching note\nWe stratify by class so the outcome balance is roughly preserved in both sets. This is especially important in biomedical applications when the positive class is uncommon.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#why-preprocess",
+    "href": "workshop_6.html#why-preprocess",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Why preprocess?",
+    "text": "Why preprocess?\nMany models require predictors to be prepared in a consistent way. Common steps include:\n\nremoving identifiers,\nhandling zero-variance predictors,\nimputing missing values,\ntransforming skewed variables,\nnormalizing continuous predictors,\nencoding categorical predictors.\n\nA recipe stores these steps in order and estimates them using only the training data.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#recipe-notation",
+    "href": "workshop_6.html#recipe-notation",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Recipe notation",
+    "text": "Recipe notation\nA recipe defines a transformation\n\\[\nX \\longrightarrow \\widetilde{X}\n\\]\nwhere \\(\\widetilde{X}\\) is the processed predictor matrix used by the model.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#build-the-recipe",
+    "href": "workshop_6.html#build-the-recipe",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Build the recipe",
+    "text": "Build the recipe\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#inspect-the-preprocessed-design",
+    "href": "workshop_6.html#inspect-the-preprocessed-design",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Inspect the preprocessed design",
+    "text": "Inspect the preprocessed design\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nRecipe is learned on the training set and then applied to new data. This avoids data leakage.\nIn real biomedical projects, you might also add:\n\nstep_impute_median() or step_impute_knn() for missing predictors,\nstep_dummy() for nominal predictors,\nstep_YeoJohnson() or step_log() for skewed biomarkers,\nstep_corr() to reduce collinearity,\nstep_pca() for dimension reduction.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#model-1-penalized-logistic-regression",
+    "href": "workshop_6.html#model-1-penalized-logistic-regression",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Model 1: Penalized logistic regression",
+    "text": "Model 1: Penalized logistic regression\nFor binary outcomes, logistic regression models\n\\[\n\\text{logit}\\{P(Y=1 \\mid X)\\} = \\beta_0 + \\beta_1 X_1 + \\cdots + \\beta_p X_p.\n\\]\nWith regularization, we shrink coefficients to reduce overfitting. In tidymodels, penalty controls shrinkage strength.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nHere, mixture = 1 corresponds to the lasso penalty.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#model-2-random-forest",
+    "href": "workshop_6.html#model-2-random-forest",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Model 2: Random forest",
+    "text": "Model 2: Random forest\nRandom forests average many trees and can capture nonlinear relationships and interactions.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#why-resampling",
+    "href": "workshop_6.html#why-resampling",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Why resampling?",
+    "text": "Why resampling?\nA single train/validation split can be noisy. Cross-validation gives a more stable estimate of model performance and helps with parameter tuning.\nIn \\(V\\)-fold cross-validation:\n\nsplit the training data into \\(V\\) folds,\nfit the model on \\(V-1\\) folds,\nevaluate on the held-out fold,\nrepeat for each fold,\naverage the performance.\n\nIf the fold-level model evaluation metric values are \\(M_1, \\dots, M_V\\), then the cross-validated estimate is\n\\[\n\\bar{M} = \\frac{1}{V}\\sum_{v=1}^V M_v.\n\\]\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nThis means each fold contains: 1292 observations for training and 323 observations for validation.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#metrics-for-classification",
+    "href": "workshop_6.html#metrics-for-classification",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Metrics for classification",
+    "text": "Metrics for classification\nWe will use:\n\nROC AUC: discrimination across thresholds\nAccuracy: overall fraction classified correctly\nSensitivity: true positive rate\nSpecificity: true negative rate\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#set-up-tuning-grid-for-logistic-regression",
+    "href": "workshop_6.html#set-up-tuning-grid-for-logistic-regression",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Set-up Tuning grid for logistic regression",
+    "text": "Set-up Tuning grid for logistic regression\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#tuning-grid-for-random-forest",
+    "href": "workshop_6.html#tuning-grid-for-random-forest",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Tuning grid for random forest",
+    "text": "Tuning grid for random forest\nFor mtry, it is best to finalize the range after the recipe knows the number of predictors.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#parallel-processing-optional-but-useful-if-the-dataset-is-large-and-running-more-complex-models",
+    "href": "workshop_6.html#parallel-processing-optional-but-useful-if-the-dataset-is-large-and-running-more-complex-models",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Parallel processing (optional but useful if the dataset is large and running more complex models)",
+    "text": "Parallel processing (optional but useful if the dataset is large and running more complex models)\nCreates multiple R workers (cores).Why using it?\nExample: 5 folds, 10 grid values —-&gt; 50 model fits\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#tune-the-logistic-regression-model",
+    "href": "workshop_6.html#tune-the-logistic-regression-model",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Tune the logistic regression model",
+    "text": "Tune the logistic regression model\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#tune-the-random-forest-model",
+    "href": "workshop_6.html#tune-the-random-forest-model",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Tune the random forest model",
+    "text": "Tune the random forest model\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#stop-parallel-backend",
+    "href": "workshop_6.html#stop-parallel-backend",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Stop parallel backend",
+    "text": "Stop parallel backend\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#best-logistic-regression-setting",
+    "href": "workshop_6.html#best-logistic-regression-setting",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Best logistic regression setting",
+    "text": "Best logistic regression setting\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#best-random-forest-setting",
+    "href": "workshop_6.html#best-random-forest-setting",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Best random forest setting",
+    "text": "Best random forest setting\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#visualize-tuning-results",
+    "href": "workshop_6.html#visualize-tuning-results",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Visualize tuning results",
+    "text": "Visualize tuning results\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nchoose a primary metric before tuning,\nuse the resampling results to select the best hyperparameters,\nkeep the test set untouched until the end.\n\nFor many biomedical screening settings, ROC AUC is a sensible primary metric, though sometimes sensitivity, PR AUC, calibration, or decision-analytic metrics may be more clinically relevant.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#confusion-matrix",
+    "href": "workshop_6.html#confusion-matrix",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Confusion matrix",
+    "text": "Confusion matrix\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#roc-curve",
+    "href": "workshop_6.html#roc-curve",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "ROC curve",
+    "text": "ROC curve\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nCross-validation results estimate how the model performed during development.\nTest-set results estimate how the final chosen model performs on held-out data. These are not exactly the same quantity, and test performance may be slightly worse.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#variable-importance-of-random-forest-model",
+    "href": "workshop_6.html#variable-importance-of-random-forest-model",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "Variable importance of random forest model",
+    "text": "Variable importance of random forest model\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nVariable importance is often useful for communication, but in biomedical settings it should be interpreted carefully:\n\nimportance is not causation,\ncorrelated variables can distort rankings,\ndifferent models can give different importance metrics and profiles.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#class-imbalance",
+    "href": "workshop_6.html#class-imbalance",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "1. Class imbalance",
+    "text": "1. Class imbalance\nIf the positive class is rare, consider:\n\nsensitivity/specificity as metrics,\nclass weights\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\ndownsampling or upsampling.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#missing-data-we-will-have-a-workshop",
+    "href": "workshop_6.html#missing-data-we-will-have-a-workshop",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "2. Missing data (We will have a workshop)",
+    "text": "2. Missing data (We will have a workshop)\nCommon options:\n\nmedian/mode imputation,\nk-nearest-neighbor imputation,\nmodel-based imputation,\nmultiple imputation outside the predictive pipeline, depending on the scientific question.",
+    "crumbs": [
+      "5. ML in R"
+    ]
+  },
+  {
+    "objectID": "workshop_6.html#high-dimensional-omics-data",
+    "href": "workshop_6.html#high-dimensional-omics-data",
+    "title": "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R",
+    "section": "3. High-dimensional omics data",
+    "text": "3. High-dimensional omics data\nOften add: - penalized regression - sparse PCA, - feature selection nested within resampling.",
+    "crumbs": [
+      "5. ML in R"
     ]
   }
 ]

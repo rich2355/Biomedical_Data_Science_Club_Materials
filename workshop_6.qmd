@@ -1,0 +1,608 @@
+---
+title: "Biomedical Data Science (BDS) Workshop 6: Machine Learning in R"
+format: html
+engine: knitr
+filters:
+  - webr
+webr:
+  packages: ["dplyr", "ggplot2", "rsample", "recipes", "parsnip", "workflows", "tune", "yardstick", "dials", "modeldata", "vip", "tune"]
+---
+
+# Credits
+
+Credited to Richard Liu and Emily Zhang from the Biomedical Data Science (BDS) club in NYU Langone Health.
+
+# Disclaimer
+
+The datasets provided here are all synthetically generated for demonstration and educational purposes only. It does not represent real patient data and should not be used for clinical decision-making, medical research, or policy development. Any resemblance to real persons, conditions, or outcomes is purely coincidental. The values and relationships were generated using statistical simulation techniques and do not reflect actual medical situations.
+
+# Reference
+
+1. Tidymodels "Get Started" case study and tutorials: https://www.tidymodels.org/start/
+2. Tidymodels resampling tutorial using the `cells` dataset: https://www.tidymodels.org/start/resampling/
+3. Tidymodels tuning tutorial: https://www.tidymodels.org/start/tuning/
+4. Tidymodels recipes tutorial: https://www.tidymodels.org/start/recipes/
+
+# Overview
+
+
+## Workshop goal
+
+In this workshop, we will build a **complete machine learning pipeline** using the **tidymodels** ecosystem in R. The emphasis is not only on fitting a model, but on learning the full modeling workflow:
+
+1. define the prediction problem,
+2. split the data correctly,
+3. preprocess predictors,
+4. specify a model,
+5. combine preprocessing and modeling in a workflow,
+6. estimate performance using resampling,
+7. tune hyperparameters,
+8. finalize the model,
+9. evaluate on a held-out test set, and
+10. interpret the fitted model.
+
+## Why tidymodels?
+
+The `tidymodels` framework provides a consistent grammar for modeling. Different tasks are separated into packages with clear roles:
+
+- **rsample**: train/test split and resampling
+- **recipes**: preprocessing and feature engineering
+- **parsnip**: model specification
+- **workflows**: bundle preprocessing + model
+- **tune**: hyperparameter tuning
+- **yardstick**: performance metrics
+- **dials**: tuning parameter definitions
+
+## Learning objectives
+
+By the end of the session, participants should be able to:
+
+- explain the purpose of each stage of a supervised ML pipeline,
+- implement a classification workflow in tidymodels,
+- understand when to use train/test splitting and cross-validation,
+- tune a model without leaking test-set information,
+- interpret core classification metrics, and
+- reuse this template for their own biomedical data.
+
+# Data and prediction problem
+
+## Public dataset
+
+We use the **cell image segmentation** dataset from the `modeldata` package. This dataset is featured in the official tidymodels resampling tutorial and is especially appropriate for a biomedical audience because the predictors are image-derived cellular features and the outcome is segmentation quality.
+
+The outcome variable is:
+
+- `class` = whether the cell image segmentation is **PS** or **WS**
+
+For the workshop, we treat this as a **binary classification** problem.
+
+## Statistical notation
+
+Let:
+
+- $Y_i \in \{0,1\}$ denote the binary outcome for subject or image $i$
+- $X_i = (X_{i1}, \dots, X_{ip})$ denote the predictor vector
+- $\hat{f}(X)$ denote the fitted prediction rule
+- $\hat{p}(X) = P(Y=1 \mid X)$ denote the predicted probability of class 1
+
+Our goal is to learn a function
+
+$$
+\hat{f}: X \mapsto Y
+$$
+
+that predicts segmentation quality well on **new, unseen data**.
+
+In biomedical ML, this same framework applies broadly:
+
+- disease vs no disease,
+- responder vs non-responder,
+- high-risk vs low-risk,
+- poor-quality vs good-quality imaging,
+- event vs no event.
+
+# Load packages and data
+
+This dataset comes from a **high-throughput cell imaging experiment**, which is common in biomedical research.
+```{webr-r}
+library(tidymodels)
+library(modeldata) # A package of example datasets designed for tidymodels tutorials.
+library(vip) # tool for Variable Importance Plots
+library(doParallel) #Enables parallel computing in R, speeds up cross-validation and hyperparameter tuning
+
+# resolves function name conflicts in favor of the tidymodels ecosystem
+tidymodels_prefer() 
+# For example:
+# dplyr::filter() vs stats::filter()
+# Whenever there’s a conflict, prefer the tidymodels-related version (like dplyr, recipes, yardstick, etc.)
+```
+
+```{webr-r}
+data(cells, package = "modeldata")
+glimpse(cells)
+```
+
+## Initial data checks
+
+```{webr-r}
+count(cells, class)
+```
+
+```{webr-r}
+sum(is.na(cells))
+colnames(cells)
+```
+
+Before modeling, always check:
+
+- sample size,
+- outcome balance,
+- missingness,
+- variable types,
+- possible IDs or leakage variables.
+
+# Step 1: Split into training and test sets
+
+## Why split the data?
+
+We need one portion of the data for **model development** and one untouched portion for **final evaluation**.
+
+- **Training set**: used for preprocessing, model fitting, and tuning
+- **Test set**: used only once at the end for honest performance assessment
+
+This protects against **optimistic bias**.
+
+```{webr-r}
+set.seed(123)
+
+cell_split <- initial_split(cells, prop = 0.80, strata = class);cell_split
+cell_train <- training(cell_split)
+cell_test  <- testing(cell_split)
+
+count(cell_train, class)
+count(cell_test, class)
+```
+
+We stratify by `class` so the outcome balance is roughly preserved in both sets. This is especially important in biomedical applications when the positive class is uncommon.
+
+# Step 2: Preprocessing with recipes
+
+## Why preprocess?
+
+Many models require predictors to be prepared in a consistent way. Common steps include:
+
+- removing identifiers,
+- handling zero-variance predictors,
+- imputing missing values,
+- transforming skewed variables,
+- normalizing continuous predictors,
+- encoding categorical predictors.
+
+A **recipe** stores these steps in order and estimates them using only the training data.
+
+## Recipe notation
+
+A recipe defines a transformation
+
+$$
+X \longrightarrow \widetilde{X}
+$$
+
+where $\widetilde{X}$ is the processed predictor matrix used by the model.
+
+## Build the recipe
+
+```{webr-r}
+cell_rec <- 
+  recipe(class ~ ., data = cell_train) %>%
+  update_role(case, new_role = "ID") %>% # case is the identifier variable in the data
+  step_zv(all_predictors()) %>% # Removes predictors with zero variance
+  step_normalize(all_numeric_predictors()) # Standardize
+
+cell_rec
+```
+
+## Inspect the preprocessed design
+
+```{webr-r}
+# prep(): estimates all preprocessing steps using the training data
+# - computes means/SDs for normalization
+# - identifies zero-variance predictors
+# - stores these transformations for later use
+cell_rec_prep <- prep(cell_rec)
+
+# bake(): applies the learned preprocessing steps to data
+# new_data = NULL → apply to the training data itself
+# (in practice, you would also use this to transform test data)
+baked_train <- bake(cell_rec_prep, new_data = NULL)
+glimpse(baked_train)
+```
+
+Recipe is **learned on the training set** and then **applied** to new data. This avoids data leakage.
+
+In real biomedical projects, you might also add:
+
+- `step_impute_median()` or `step_impute_knn()` for missing predictors,
+- `step_dummy()` for nominal predictors,
+- `step_YeoJohnson()` or `step_log()` for skewed biomarkers,
+- `step_corr()` to reduce collinearity,
+- `step_pca()` for dimension reduction.
+
+# Step 3: Specify models with parsnip
+
+We will compare two classification models:
+
+1. **Penalized logistic regression**: interpretable and often a strong baseline
+2. **Random forest**: flexible nonlinear model
+
+## Model 1: Penalized logistic regression
+
+For binary outcomes, logistic regression models
+
+$$
+\text{logit}\{P(Y=1 \mid X)\} = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p.
+$$
+
+With regularization, we shrink coefficients to reduce overfitting. In tidymodels, `penalty` controls shrinkage strength.
+
+```{webr-r}
+log_reg_spec <- 
+  logistic_reg(
+    penalty = tune(),
+    mixture = 1
+  ) %>%
+  set_engine("glmnet")
+
+log_reg_spec
+```
+
+Here, `mixture = 1` corresponds to the lasso penalty.
+
+## Model 2: Random forest
+
+Random forests average many trees and can capture nonlinear relationships and interactions.
+
+```{webr-r}
+rf_spec <- 
+  rand_forest(
+    mtry = tune(),
+    min_n = tune(),
+    trees = 500
+  ) %>%
+  set_mode("classification") %>%
+  set_engine("ranger", importance = "impurity")
+
+rf_spec
+```
+
+# Step 4: Bundle preprocessing and model in workflows
+
+A **workflow** keeps the recipe and model together so the same preprocessing is used consistently during resampling, tuning, and final fitting.
+
+```{webr-r}
+log_reg_wf <- 
+  workflow() %>%
+  add_recipe(cell_rec) %>% # recipe
+  add_model(log_reg_spec) # model
+
+rf_wf <- 
+  workflow() %>%
+  add_recipe(cell_rec) %>%
+  add_model(rf_spec)
+```
+
+Biggest strengths of tidymodels: preprocessing and modeling are treated as one reproducible object.
+
+# Step 5: Cross-validation on the training set
+
+## Why resampling?
+
+A single train/validation split can be noisy. Cross-validation gives a more stable estimate of model performance and helps with parameter tuning.
+
+In $V$-fold cross-validation:
+
+1. split the training data into $V$ folds,
+2. fit the model on $V-1$ folds,
+3. evaluate on the held-out fold,
+4. repeat for each fold,
+5. average the performance.
+
+If the fold-level model evaluation metric values are $M_1, \dots, M_V$, then the cross-validated estimate is
+
+$$
+\bar{M} = \frac{1}{V}\sum_{v=1}^V M_v.
+$$
+
+```{webr-r}
+set.seed(2026)
+cell_folds <- vfold_cv(cell_train, v = 5, strata = class)
+
+# strata = class is optional. It ensures that each fold has a similar proportion of the outcome.So instead of random splits, you get balanced folds.
+
+cell_folds
+```
+
+This means each fold contains: 1292 observations for training and 323 observations for validation. 
+
+
+## Metrics for classification
+
+We will use:
+
+- **ROC AUC**: discrimination across thresholds
+- **Accuracy**: overall fraction classified correctly
+- **Sensitivity**: true positive rate
+- **Specificity**: true negative rate
+
+```{webr-r}
+class_metrics <- metric_set(roc_auc, accuracy, sens, spec)
+class_metrics
+```
+
+# Step 6: Tune hyperparameters
+
+## Set-up Tuning grid for logistic regression
+
+```{webr-r}
+log_grid <- grid_regular(
+  penalty(range = c(-4, 0)),
+  levels = 20
+)
+
+log_grid
+```
+
+## Tuning grid for random forest
+
+For `mtry`, it is best to finalize the range after the recipe knows the number of predictors.
+
+```{webr-r}
+rf_grid <- grid_regular(
+  mtry(range = c(5L, 20L)),
+  min_n(range = c(5L, 20L)),
+  levels = 2 # keep it run faster for workshop
+)
+rf_grid
+```
+
+## Parallel processing (optional but useful if the dataset is large and running more complex models)
+
+Creates multiple R workers (cores).Why using it? 
+
+Example: 5 folds, 10 grid values ---->  50 model fits
+
+```{webr-r}
+cl <- makePSOCKcluster(parallel::detectCores(logical = FALSE))
+registerDoParallel(cl)
+```
+
+## Tune the logistic regression model
+
+```{webr-r}
+set.seed(2026)
+log_res <- 
+  tune_grid(
+    log_reg_wf,
+    resamples = cell_folds,
+    grid = log_grid,
+    metrics = class_metrics,
+    control = control_grid(save_pred = TRUE)
+  )
+```
+
+```{webr-r}
+collect_metrics(log_res)
+```
+
+## Tune the random forest model
+
+```{webr-r}
+set.seed(2026)
+rf_res <- 
+  tune_grid(
+    rf_wf,
+    resamples = cell_folds,
+    grid = rf_grid,
+    metrics = class_metrics,
+    control = control_grid(save_pred = TRUE)
+  )
+```
+
+```{webr-r}
+collect_metrics(rf_res)
+```
+
+## Stop parallel backend
+
+```{webr-r}
+stopCluster(cl)
+registerDoSEQ()
+```
+
+# Step 7: Compare models and choose the best candidate
+
+## Best logistic regression setting
+
+```{webr-r}
+best_log <- select_best(log_res, metric = "roc_auc")
+best_log
+```
+
+## Best random forest setting
+
+```{webr-r}
+best_rf <- select_best(rf_res, metric = "roc_auc")
+best_rf
+```
+
+## Visualize tuning results
+
+```{webr-r}
+autoplot(log_res)
+```
+
+```{webr-r}
+autoplot(rf_res)
+```
+
+- choose a **primary metric** before tuning,
+- use the resampling results to select the best hyperparameters,
+- keep the test set untouched until the end.
+
+For many biomedical screening settings, ROC AUC is a sensible primary metric, though sometimes sensitivity, PR AUC, calibration, or decision-analytic metrics may be more clinically relevant.
+
+# Step 8: Finalize the workflow
+
+We will finalize the random forest workflow below, but you can switch to logistic regression if it performs better in your run.
+
+```{webr-r}
+final_rf_wf <- finalize_workflow(rf_wf, best_rf)
+final_rf_wf
+```
+
+# Step 9: Fit on the training set and evaluate on the test set
+
+The `last_fit()` function fits the finalized workflow on the full training set and evaluates it once on the test set.
+
+```{webr-r}
+final_rf_res <- 
+  last_fit(
+    final_rf_wf,
+    split = cell_split,
+    metrics = class_metrics
+  )
+
+collect_metrics(final_rf_res)
+```
+
+## Confusion matrix
+
+```{webr-r}
+final_preds <- collect_predictions(final_rf_res)
+
+final_preds %>%
+  conf_mat(truth = class, estimate = .pred_class)
+```
+
+## ROC curve
+
+```{webr-r}
+final_preds %>%
+  roc_curve(class, .pred_PS) %>%
+  autoplot()
+```
+
+- **Cross-validation results** estimate how the model performed during development.
+- **Test-set results** estimate how the final chosen model performs on held-out data.
+These are not exactly the same quantity, and test performance may be slightly worse.
+
+# Step 10: Interpret the fitted model
+
+## Variable importance of random forest model
+
+```{webr-r}
+final_fit_obj <- extract_fit_parsnip(final_rf_res$.workflow[[1]])
+
+vip(final_fit_obj$fit)
+```
+
+
+Variable importance is often useful for communication, but in biomedical settings it should be interpreted carefully:
+
+- importance is not causation,
+- correlated variables can distort rankings,
+- different models can give different importance metrics and profiles.
+
+
+
+# A compact reusable template
+
+Below is the shortest version of the pipeline that participants can adapt later.
+
+```{webr-r}
+library(tidymodels)
+library(modeldata)
+
+# data
+ndata <- your_data_frame
+
+# split
+set.seed(1)
+split_obj <- initial_split(ndata, prop = 0.8, strata = outcome)
+train_dat <- training(split_obj)
+test_dat  <- testing(split_obj)
+
+# recipe
+rec <- recipe(outcome ~ ., data = train_dat) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+
+# model
+mod <- rand_forest(mtry = tune(), min_n = tune(), trees = 500) %>%
+  set_mode("classification") %>%
+  set_engine("ranger")
+
+# workflow
+wf <- workflow() %>%
+  add_recipe(rec) %>%
+  add_model(mod)
+
+# resampling
+set.seed(1)
+folds <- vfold_cv(train_dat, v = 5, strata = outcome)
+
+# tune
+grid <- grid_regular(parameters(wf), levels = 4)
+res <- tune_grid(
+  wf,
+  resamples = folds,
+  grid = grid,
+  metrics = metric_set(roc_auc, accuracy)
+)
+
+# finalize and test
+best_params <- select_best(res, metric = "roc_auc")
+final_wf <- finalize_workflow(wf, best_params)
+last_fit(final_wf, split_obj, metrics = metric_set(roc_auc, accuracy))
+```
+
+# Common biomedical extensions
+
+## 1. Class imbalance
+
+If the positive class is rare, consider:
+
+- sensitivity/specificity as metrics,
+- class weights
+
+```{webr-r}
+# Give more importance to the rare class and many models support 
+set_engine(..., class.weights = ...)
+```
+
+- downsampling or upsampling.
+
+## 2. Missing data (We will have a workshop)
+
+Common options:
+
+- median/mode imputation,
+- k-nearest-neighbor imputation,
+- model-based imputation,
+- multiple imputation outside the predictive pipeline, depending on the scientific question.
+
+## 3. High-dimensional omics data
+Often add:
+- penalized regression
+- sparse PCA,
+- feature selection nested within resampling.
+
+
+# Conclusion
+
+A machine learning model is **not just an algorithm**. It is a pipeline:
+
+$$
+\text{data} \rightarrow \text{preprocessing} \rightarrow \text{model training} \rightarrow \text{validation} \rightarrow \text{final test evaluation}
+$$
+

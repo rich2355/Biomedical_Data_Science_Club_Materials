@@ -22,6 +22,8 @@ website:
         text: 3. Data Visualization for Research Project
       - href: workshop_4.qmd
         text: 4. Basics of Statistical Modeling
+      - href: workshop_6.qmd
+        text: 5. ML in R
       
 format:
   html:
